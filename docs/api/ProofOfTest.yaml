@@ -1,0 +1,49 @@
+openapi: 3.0.1
+info:
+  title: ProofOfTestAPI
+  version: v1
+paths:
+  "/ProofOfTest":
+    post:
+      tags:
+      - ProofOfTest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProofOfTestRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ProofOfTestRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ProofOfTestRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProofOfTestResult"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProofOfTestResult"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProofOfTestResult"
+components:
+  schemas:
+    ProofOfTestRequest:
+      type: object
+      properties:
+        testType:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ProofOfTestResult:
+      type: object
+      properties:
+        proof:
+          type: string
+          nullable: true
+      additionalProperties: false
