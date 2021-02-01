@@ -35,7 +35,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             // Our things
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IKeyStore, AssemblyKeyStore>();
-            services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
+            //services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
+            services.AddScoped<IProofOfTestService, DummyProofOfTestService>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
         }
 

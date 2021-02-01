@@ -3,55 +3,73 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 {
-    public static class Issuer
+    public class Issuer : IIssuerInterop
     {
         private const string LibraryName = "issuer.dll";
-
-
-        // ReSharper disable InconsistentNaming
-        // ReSharper disable NotAccessedField.Local
-        private struct GoString
-        {
-            public IntPtr p;
-            public long n;
-        }
-        // ReSharper enable InconsistentNaming
-        // ReSharper enable NotAccessedField.Local
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr GenerateIssuerNonceB64();
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64, GoString commitmentsJson);
-        
-        public static string GenerateNonce()
-        {
-            return Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
-        }
-        
-        public static string IssueProof(string issuerPkXml, string issuerSkXml, string issuerNonceB64, string commitmentsJson)
-        {
-            var issuerPkXmlGo = ToGoString(issuerPkXml);
-            var issuerSkXmlGo = ToGoString(issuerSkXml);
-            var issuerNonceB6Go4 = ToGoString(issuerNonceB64);
-            var commitmentsJsoGon = ToGoString(commitmentsJson);
+        private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64,
+            GoString commitmentsJson, GoString attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB6Go4, commitmentsJsoGon);
+        // extern char* Issue(GoString publicKey, GoString privateKey, GoString nonce, GoString commitments, GoString attributesJson);
 
-            return Marshal.PtrToStringAnsi(result);
+        public string GenerateNonce()
+        {
+            var result = Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
+
+            return GoHelpers.UnwrapString(result);
         }
 
-        private static GoString ToGoString(string str)
+        /// <summary>
+        /// Issue the cryptographic proof of test
+        /// </summary>
+        /// <param name="publicKey">Public key from the issuer in XML format</param>
+        /// <param name="privateKey">Private key from the issuer in XML format</param>
+        /// <param name="nonce">Nonce received from client encoded as a base64 string</param>
+        /// <param name="commitments">Commitments received from client [TBC]</param>
+        /// <param name="attributes">Attributes received from the client encoded as a JSON array ( </param>
+        /// <returns>
+        /// JSON which looks like this:
+        ///{
+        ///    "proof": {
+        ///        "c": "KAa4x/vraG0lPee1RcGTXVWcNUjfhaNsUV5ZZpOFUdw=",
+        ///        "e_response": "Ad7CXKGmg8O15j2rV9TZHvUk3RlwR/Brk5Rncjtyb+2QHPY2uWgOgCaTAqVTwvnujDJl1xun5NC2ppCsWXpUlPX1WwctTZlzf3mhGx7CYai6T18eciWtCrHeNLwcY0WhBdnBUoiEGKBl7MroMc3BdLog8Qh9kP4oFRkott+ucn0="
+        ///    },
+        ///    "signature": {
+        ///        "A": "QBYdFuXXey0xq6koWRQdIRTcHhUrR2dRqSO0ToqVTs/pEFwvs8RUJMS+NNlhMo2Boqqy2OvxpcAE83+IkPhfFoPx9Wd5R2Mg9Oh8kOK6DkwZZg3e0ztHLKubqU2Xltu9rxS1b9y6v97uXtaVZzeUL5jgUmCOdFMeavUHc/IN1Jg=",
+        ///        "e": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcGo/nkxXXQc5wsP+hVlT",
+        ///        "v": "DXsE/xfPJ6DKb9HTAbJ43G13g8BmSI5g9WYfC9IAvv+tyF9IfEx44OZ5g7XrfPnhEvWNbTmqVGNvl3BIbdFjYeGHtVVcV+mQ+6L6wFH8rhuVz1AOnesqqnrGCwSSgSDp9jLFF3Wa8tElFmvFYxnw+mQp/XlHj4CwP0yBsrNIoiYv52h6OIs6AASwplLf2ahrlHZ4tCNo8PMJJMpSSDAvLLIBmZjf/iwqYVUVMaBm/sFZW9CUQYCuJRn8bNgiAfriaIZqxPjBWECXKZFQs0eBF7CzX+Bz",
+        ///        "KeyshareP": null
+        ///    }
+        ///}
+        /// </returns>
+        public string IssueProof(string publicKey, string privateKey, string nonce, string commitments, string attributes)
         {
-            return new GoString
+            var issuerPkXmlGo = GoHelpers.ToGoString(publicKey, true);
+            var issuerSkXmlGo = GoHelpers.ToGoString(privateKey, true);
+            var issuerNonceB64Go = GoHelpers.ToGoString(nonce, true);
+            var commitmentsJsoGon = GoHelpers.ToGoString(commitments);
+            var attributesGo = GoHelpers.ToGoString(attributes);
+
+            try
             {
-                p = Marshal.StringToHGlobalAnsi(str),
-                n = str.Length
-            };
+                var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
+
+                return Marshal.PtrToStringAnsi(result);
+            }
+            catch (RuntimeWrappedException)
+            {
+                return string.Empty;
+            }
+
         }
     }
 }

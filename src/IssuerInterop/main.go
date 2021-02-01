@@ -12,7 +12,7 @@ func GenerateIssuerNonceB64() *C.char {
 }
 
 //export Issue
-func Issue(issuerPkXml, issuerSkXml, issuerNonceB64, commitmentsJson string) *C.char {
-	result := issuerPkXml + "|" + issuerSkXml + "|" + issuerNonceB64 + "|" + commitmentsJson
+func Issue(issuerPkXml, issuerSkXml, issuerNonceB64, commitmentsJson string, attributes []string) *C.char {
+	result := issuerPkXml + "|" + issuerSkXml + "|" + issuerNonceB64 + "|" + commitmentsJson + "|" + attributes[0]
 	return C.CString(result)
 }

@@ -11,11 +11,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
+        private readonly IIssuerInterop _issuer;
 
-        public IssuerProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore)
+        public IssuerProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
+            _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
 
         }
 
@@ -26,13 +28,15 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
                 DateTime = dateTime,
                 TestType = testType
             };
-            
-            return Issuer.IssueProof(_keyStore.GetPrivateKey(), _keyStore.GetPublicKey(), nonce, _jsonSerializer.Serialize(commitments));
+
+            var attr = "['foo', 'bar']";
+
+            return _issuer.IssueProof(_keyStore.GetPrivateKey(), _keyStore.GetPublicKey(), nonce, _jsonSerializer.Serialize(commitments), attr);
         }
 
         public string GenerateNonce()
         {
-            return Issuer.GenerateNonce();
+            return _issuer.GenerateNonce();
         }
     }
 }
