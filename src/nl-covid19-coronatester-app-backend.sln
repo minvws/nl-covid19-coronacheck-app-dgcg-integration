@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{4647
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerInteropExampleTests", "IssuerInteropExampleTests\IssuerInteropExampleTests.csproj", "{B84B176D-7351-4F23-951B-F783105B4C46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProofOfTestApiTests", "ProofOfTestApiTests\ProofOfTestApiTests.csproj", "{F99B9622-595C-4E73-BFBF-9F1D47975288}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{B84B176D-7351-4F23-951B-F783105B4C46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B84B176D-7351-4F23-951B-F783105B4C46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B84B176D-7351-4F23-951B-F783105B4C46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F99B9622-595C-4E73-BFBF-9F1D47975288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F99B9622-595C-4E73-BFBF-9F1D47975288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F99B9622-595C-4E73-BFBF-9F1D47975288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F99B9622-595C-4E73-BFBF-9F1D47975288}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
