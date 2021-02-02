@@ -2,11 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Reflection;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExampleTests
 {
     public class IssuerInteropTests
     {
@@ -26,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
             const string issuerSkXml = "issuerSkXml";
             const string issuerNonceB64 = "issuerNonceB64";
             const string commitmentsJson = "{ infected: false }";
-            var attributes = new string[] {"attributes", "tested"};
+            var attributes = new[] {"attributes", "tested"};
 
             var expected = issuerPkXml + "|" + issuerSkXml + "|" + issuerNonceB64 + "|" + commitmentsJson + "|" + attributes[0];
             

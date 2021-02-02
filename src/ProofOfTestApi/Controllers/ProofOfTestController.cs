@@ -41,7 +41,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             {
                 var proof = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
 
-                return Ok(new IssueProofResult {Proof = proof});
+                return Ok(new IssueProofResult {Proof = Base64.Encode(proof)});
             }
             catch (IssuerException)
             {
