@@ -18,11 +18,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
     {
         private readonly IProofOfTestService _potService;
         private readonly IUtcDateTimeProvider _dateTimeProvider;
+        private readonly IJsonSerializer _jsonSerializer;
 
-        public ProofOfTestController(IProofOfTestService potService, IUtcDateTimeProvider dateTimeProvider)
+        public ProofOfTestController(IProofOfTestService potService, IUtcDateTimeProvider dateTimeProvider, IJsonSerializer jsonSerializer)
         {
             _potService = potService ?? throw new ArgumentNullException(nameof(potService));
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+            _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
         /// <summary>
@@ -39,13 +41,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             try
             {
-                var proof = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
+                var proofResult = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
 
-                return Ok(new IssueProofResult {Proof = Base64.Encode(proof)});
+                var result = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
+
+                return Ok(result);
             }
             catch (IssuerException)
             {
-                // todo log
+                // todo IssuerException as urgent/actionable
+                // todo JsonDeserialized exception as urgent/actionable
 
                 return StatusCode(500);
             }
