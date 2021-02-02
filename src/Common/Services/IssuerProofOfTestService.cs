@@ -21,17 +21,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 
         }
 
-        public string GetProofOfTest(string testType, string dateTime, string nonce)
+        public string GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
         {
-            var commitments = new Commitments
-            {
-                DateTime = dateTime,
-                TestType = testType
-            };
+            var attributes = new[] {dateTime, testType};
 
-            var attr = "['foo', 'bar']";
-
-            return _issuer.IssueProof(_keyStore.GetPrivateKey(), _keyStore.GetPublicKey(), nonce, _jsonSerializer.Serialize(commitments), attr);
+            return _issuer.IssueProof(_keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, _jsonSerializer.Serialize(attributes));
         }
 
         public string GenerateNonce()

@@ -15,5 +15,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         /// Nonce bytes formatted as a base64 string.
         /// </summary>
         public string Nonce { get; set; }
+
+        /// <summary>
+        /// Commitments bytes formatted as a base64 string.
+        /// </summary>
+        public string Commitments { get; set; }
     }
 }

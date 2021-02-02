@@ -4,7 +4,6 @@
 
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {

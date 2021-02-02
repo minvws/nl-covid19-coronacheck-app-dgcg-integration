@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -35,9 +36,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             // Our things
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IKeyStore, AssemblyKeyStore>();
-            //services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
-            services.AddScoped<IProofOfTestService, DummyProofOfTestService>();
+            services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
+            services.AddScoped<IIssuerInterop, Issuer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

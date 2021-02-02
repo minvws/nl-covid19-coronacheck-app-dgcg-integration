@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,10 +13,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
     {
         private const string LibraryName = "issuer.dll";
 
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern IntPtr GenerateIssuerNonceB64();
 
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64,
             GoString commitmentsJson, GoString attributes);
 
@@ -59,17 +60,18 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             var commitmentsJsoGon = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            try
-            {
-                var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
+            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
 
-                return Marshal.PtrToStringAnsi(result);
-            }
-            catch (RuntimeWrappedException)
+            var returnType = Marshal.PtrToStringAnsi(result);
+
+            if (returnType == null)
             {
-                return string.Empty;
+                throw new GoIssuerException();
             }
 
+            return returnType;
         }
     }
+
+    public class GoIssuerException : IssuerException {}
 }
