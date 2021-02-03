@@ -41,11 +41,15 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             try
             {
-                var proofResult = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
+                var (proofResult, attributes) = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
 
-                var result = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
+                var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
 
-                return Ok(result);
+                return Ok(new IssueProofResult
+                {
+                    Ism = issuerMessage,
+                    Attributes = attributes
+                });
             }
             catch (IssuerException)
             {

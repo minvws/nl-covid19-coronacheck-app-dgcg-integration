@@ -11,9 +11,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
     /// </summary>
     public class DummyProofOfTestService : IProofOfTestService
     {
-        public string GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
+        public (string, string[]) GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
         {
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(IssuerResponse));
+            return (Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(IssuerResponse)), new string[0]);
         }
         
         public string GenerateNonce()

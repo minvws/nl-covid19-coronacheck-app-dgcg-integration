@@ -18,14 +18,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
-
         }
 
-        public string GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
+        public (string, string[]) GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
         {
             var attributes = new[] {dateTime, testType};
 
-            return _issuer.IssueProof(_keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, _jsonSerializer.Serialize(attributes));
+            return (_issuer.IssueProof(_keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, _jsonSerializer.Serialize(attributes)), attributes);
         }
 
         public string GenerateNonce()
