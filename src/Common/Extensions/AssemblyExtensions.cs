@@ -23,5 +23,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
         }
+
+        public static Stream? GetEmbeddedResourceAsStream(this Assembly assembly, string resourcePath)
+        {
+            return assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
+        }
     }
 }

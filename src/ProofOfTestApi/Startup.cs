@@ -9,8 +9,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Commands;
+using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -34,12 +39,24 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             });
 
 
-            // Our things
+            // Proof of Test API
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IKeyStore, AssemblyKeyStore>();
             services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<IIssuerInterop, Issuer>();
+
+            // Dotnet configuration stuff
+            var configuration = ConfigurationRootBuilder.Build();
+            services.AddSingleton<IConfiguration>(configuration);
+
+            // App config stuff
+            services.AddScoped<HttpGetAppConfigCommand>();
+            services.AddScoped<ZippedSignedContentFormatter>();
+            services.AddScoped<IContentSigner, CmsSignerEnhanced>();
+            services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+            services.AddScoped<ICertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

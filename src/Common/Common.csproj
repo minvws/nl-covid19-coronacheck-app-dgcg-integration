@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.Common</RootNamespace>
     <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.Common</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,26 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Signing\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Configuration">
+      <HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
+      <HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
