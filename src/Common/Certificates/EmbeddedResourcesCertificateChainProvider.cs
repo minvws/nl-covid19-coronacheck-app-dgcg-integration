@@ -21,16 +21,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
         public X509Certificate2[] GetCertificates()
         {
             var certList = new List<X509Certificate2>();
-
-            var a = typeof(EmbeddedResourcesCertificateChainProvider).Assembly;
-            var s = a.GetEmbeddedResourceAsStream($"Resources.{_pathProvider.Path}");
-
-            if (s == null)
-                throw new InvalidOperationException($"Certificate chain not found in resources - Path:{_pathProvider.Path}.");
-
-            var bytes = new byte[s.Length];
-            s.Read(bytes, 0, bytes.Length);
-
+            var bytes = typeof(EmbeddedResourcesCertificateChainProvider)
+                .Assembly
+                .GetEmbeddedResourceAsBytes($"Resources.{_pathProvider.Path}");
             var result = new X509Certificate2Collection();
             result.Import(bytes);
             foreach (var c in result)

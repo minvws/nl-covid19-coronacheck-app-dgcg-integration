@@ -10,19 +10,20 @@
   <ItemGroup>
     <None Remove="Resources\private_key.xml" />
     <None Remove="Resources\public_key.xml" />
+    <None Remove="Resources\sign.p12" />
+    <None Remove="Resources\sign.pfx" />
+    <None Remove="Resources\test-private.pem" />
+    <None Remove="Resources\test-public.pem" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\private_key.xml" />
     <EmbeddedResource Include="Resources\public_key.xml" />
+    <EmbeddedResource Include="Resources\sign.p12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Signing\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +40,12 @@
     <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
       <HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\sign.pfx" />
+    <Resource Include="Resources\test-private.pem" />
+    <Resource Include="Resources\test-public.pem" />
   </ItemGroup>
 
 </Project>

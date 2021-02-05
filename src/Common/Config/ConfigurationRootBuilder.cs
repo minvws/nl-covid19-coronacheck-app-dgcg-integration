@@ -17,8 +17,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
             if (string.IsNullOrWhiteSpace(environmentName))
                 environmentName = "Development";
 
+            var baseDirectory = Directory.GetParent(AppContext.BaseDirectory);
+
+            if (baseDirectory == null)
+                throw new InvalidOperationException($"No parent directory for {AppContext.BaseDirectory}");
+
             return new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .SetBasePath(baseDirectory.FullName)
                 .AddJsonFile("appsettings.json", false)
                 .AddJsonFile($"appsettings.{environmentName}.json", true, true)
                 .Build();

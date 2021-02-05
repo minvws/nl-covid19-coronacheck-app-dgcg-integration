@@ -11,16 +11,14 @@ using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 {
-    public class CmsSignerEnhanced : IContentSigner
+    public class CmsSignerSimple : IContentSigner
     {
         private readonly ICertificateProvider _certificateProvider;
-        private readonly ICertificateChainProvider _certificateChainProvider;
         private readonly IUtcDateTimeProvider _dateTimeProvider;
 
-        public CmsSignerEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider, IUtcDateTimeProvider dateTimeProvider)
+        public CmsSignerSimple(ICertificateProvider certificateProvider, IUtcDateTimeProvider dateTimeProvider)
         {
             _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
-            _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
@@ -35,13 +33,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
             if (!certificate.HasPrivateKey)
                 throw new InvalidOperationException($"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
 
-            var certificateChain = _certificateChainProvider.GetCertificates();
-
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
-
-            signedCms.Certificates.AddRange(certificateChain);
-
+            
             var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
             var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Now());
 

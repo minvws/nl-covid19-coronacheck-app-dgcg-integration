@@ -10,15 +10,15 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
 {
     public static class ZippedContentBuilderEx
     {
-        public static async Task<byte[]> BuildStandardAsync(this ZippedContentBuilder thiz, byte[] content, byte[] nlSig)
+        public static async Task<byte[]> BuildStandardAsync(this ZippedContentBuilder zipBuilder, byte[] content, byte[] nlSig)
         {
             var args = new[]
             {
-                new ZippedContentBuilderArgs { Value = content, EntryName = "content.bin"},
-                new ZippedContentBuilderArgs { Value = nlSig, EntryName = "content.sig"},
+                new ZippedContentBuilderArgs(content, "content.bin"),
+                new ZippedContentBuilderArgs(nlSig, "content.sig"),
             };
 
-            return await thiz.BuildAsync(args);
+            return await zipBuilder.BuildAsync(args);
         }
     }
 }

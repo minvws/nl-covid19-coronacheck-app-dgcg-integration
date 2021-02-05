@@ -6,7 +6,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
     public class ZippedContentBuilderArgs
     {
+        public ZippedContentBuilderArgs(byte[] value, string entryName)
+        {
+            Value = value;
+            EntryName = entryName;
+        }
+
         public byte[] Value { get; set; }
+
         public string EntryName { get; set; }
     }
 }

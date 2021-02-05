@@ -9,7 +9,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
 {
     public class StandardCertificateLocationConfig : AppSettingsReader, ICertificateLocationConfig
     {
-        public StandardCertificateLocationConfig(IConfiguration config) : base(config, "certificates:NL")
+        public StandardCertificateLocationConfig(IConfiguration config) : base(config, "Certificates:CmsSigning")
         {
         }
 

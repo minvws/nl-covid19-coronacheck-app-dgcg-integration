@@ -18,15 +18,22 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
             using var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
             if (stream == null)
             {
-                throw new Exception("Unable to load key");
+                throw new InvalidOperationException("Could not find resource.");
             }
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
         }
 
-        public static Stream? GetEmbeddedResourceAsStream(this Assembly assembly, string resourcePath)
+        public static byte[] GetEmbeddedResourceAsBytes(this Assembly assembly, string resourcePath)
         {
-            return assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
+            var file = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
+            if (file == null)
+            {
+                throw new InvalidOperationException("Could not find resource.");
+            }
+            var buffer = new byte[file.Length];
+            file.Read(buffer, 0, buffer.Length);
+            return buffer;
         }
     }
 }

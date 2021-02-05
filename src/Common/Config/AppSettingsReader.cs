@@ -12,7 +12,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
         private readonly IConfiguration _config;
         private readonly string _prefix;
 
-        protected AppSettingsReader(IConfiguration config, string prefix = null)
+        protected AppSettingsReader(IConfiguration config, string? prefix = null)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -22,7 +22,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
                 _prefix = prefix + ":";
         }
 
-        protected T GetConfigValue<T>(string path, T defaultValue = default)
-            => _config.GetValue($"{_prefix}{path}", defaultValue);
+        protected T GetConfigValue<T>(string path, T defaultValue = default) where T : notnull
+        {
+            // NOTE: disabled the warning here; neither _config or the return value can be null, it's a false positive
+            #pragma warning disable CS8603 // Possible null reference return.
+            return _config.GetValue($"{_prefix}{path}", defaultValue);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
     }
 }

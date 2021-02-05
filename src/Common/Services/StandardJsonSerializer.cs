@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         {
             if (string.IsNullOrWhiteSpace(input)) throw new ArgumentException(nameof(input));
 
-            return JsonSerializer.Deserialize<TContent>(input, _serializerOptions);
+            return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
         }
     }
 }
