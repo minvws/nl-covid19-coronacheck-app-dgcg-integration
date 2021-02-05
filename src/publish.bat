@@ -1,0 +1,1 @@
+dotnet publish ProofOfTestApi/ProofOfTestApi.csproj -o ../publish-output -p:PublishProfile=FolderProfileProofOfTestApi.csproj
