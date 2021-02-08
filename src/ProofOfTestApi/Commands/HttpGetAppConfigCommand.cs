@@ -24,8 +24,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Commands
 
             var content = await _formatter.SignedContentPacketAsync(testJsonBytes);
 
-            //_CacheControlHeaderProcessor.Execute(httpContext, e);
-
             await context.Response.Body.WriteAsync(content);
         }
     }

@@ -15,6 +15,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Commands;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware;
 using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
@@ -56,8 +57,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<IContentSigner, CmsSignerSimple>();
             services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
             services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            //services.AddScoped<IContentSigner, CmsSignerEnhanced>();
-            //services.AddScoped<ICertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
+            
+            // Register middleware
+            services.AddTransient<ResponseSigningMiddleware>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,8 +83,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            
             app.UseAuthorization();
+
+            app.UseResponseSigningMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

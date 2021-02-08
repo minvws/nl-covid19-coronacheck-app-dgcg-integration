@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Commands;
 using System.Threading.Tasks;
@@ -13,10 +14,28 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
     public class AppConfigController : ControllerBase
     {
         [HttpGet]
-        [Route("/")]
-        public async Task Get([FromServices] HttpGetAppConfigCommand command)
+        [Route("/config-zip")]
+        [Produces("application/zip")]
+        public async Task GetConfigZip([FromServices] HttpGetAppConfigCommand command)
         {
             await command.ExecuteAsync(HttpContext);
         }
+
+        [HttpGet]
+        [Route("/config")]
+
+        public  AppConfig GetConfig()
+        {
+            return new AppConfig
+            {
+                Message = "Hello world"
+            };
+        }
+    }
+    
+    public class AppConfig
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
     }
 }
