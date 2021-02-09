@@ -10,15 +10,24 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
     public static class StreamExtensions
     {
         /// <summary>
-        /// Reads all of the bytes from the given stream from the first position without changing the current position in the stream.
+        /// Reads all of the bytes from the given stream.
         /// </summary>
         public static byte[] ReadAllBytes(this Stream stream)
         {
-            var startPosition = stream.Position;
-            stream.Seek(0, SeekOrigin.Begin);
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
-            stream.Seek(startPosition, SeekOrigin.Begin);
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Reads all of the bytes from the given stream starting at offset, returns to offset when done
+        /// </summary>
+        public static byte[] ReadAllBytes(this Stream stream, int startAtOffset)
+        {
+            stream.Seek(startAtOffset, SeekOrigin.Begin);
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            stream.Seek(startAtOffset, SeekOrigin.Begin);
 
             return ms.ToArray();
         }

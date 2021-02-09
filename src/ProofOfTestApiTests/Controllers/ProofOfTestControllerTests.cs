@@ -30,6 +30,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             _factory = WithWebHostBuilder(builder => { builder.ConfigureTestServices(services => { }); });
             _jsonSerializer = new StandardJsonSerializer();
         }
+        
+        // 
+        // TODO: validate signatures!
+        //
 
         [Fact]
         public async Task Get_Proof_Nonce_returns_nonce()

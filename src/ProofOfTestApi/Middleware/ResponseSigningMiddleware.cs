@@ -44,7 +44,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
 
         private void SignBody(HttpResponse response)
         {
-            var bodyBytes = response.Body.ReadAllBytes();
+            var bodyBytes = response.Body.ReadAllBytes(0);
             var signature = _signer.GetSignature(bodyBytes);
             var signatureB64 = Convert.ToBase64String(signature);
             response.Headers.Add(SignatureHeaderName, new[] { signatureB64 });
