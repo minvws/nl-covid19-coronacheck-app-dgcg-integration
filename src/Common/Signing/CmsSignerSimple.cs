@@ -5,6 +5,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
@@ -24,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 
         public string SignatureOid => "2.16.840.1.101.3.4.2.1";
 
-        public byte[] GetSignature(byte[] content)
+        public byte[] GetSignature(byte[] content, bool excludeCertificates = false)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
 
@@ -38,6 +39,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
             
             var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
             var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Now());
+            if(excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
 
             if(signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
 

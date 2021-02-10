@@ -15,6 +15,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
     public class ResponseSigningMiddleware : IMiddleware
     {
         private const string SignatureHeaderName = "Signature";
+        private const string SignatureSmallHeaderName = "SignatureSmall";
 
         private readonly IContentSigner _signer;
 
@@ -37,6 +38,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
 
             // Calculate signature and add to the response
             SignBody(context.Response);
+            SignBodySmall(context.Response);
 
             // Copy the output of the new stream back to the original one
             await temporaryResponseBody.CopyToAsync(responseBody);
@@ -48,6 +50,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
             var signature = _signer.GetSignature(bodyBytes);
             var signatureB64 = Convert.ToBase64String(signature);
             response.Headers.Add(SignatureHeaderName, new[] { signatureB64 });
+        }
+
+        private void SignBodySmall(HttpResponse response)
+        {
+            var bodyBytes = response.Body.ReadAllBytes(0);
+            var signature = _signer.GetSignature(bodyBytes, true);
+            var signatureB64 = Convert.ToBase64String(signature);
+            response.Headers.Add(SignatureSmallHeaderName, new[] { signatureB64 });
         }
     }
 }
