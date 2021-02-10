@@ -22,3 +22,11 @@ jobs:
       run:  chmod +x publish.sh
     - name: Build and Publish
       run: ./publish.sh
+      
+    - name: Archive build results
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist-without-markdown
+        path: |
+          publish
+          !publish/issuer.dll.md
