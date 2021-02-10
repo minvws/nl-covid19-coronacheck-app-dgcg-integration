@@ -18,11 +18,8 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    - name: Move to source directory
-      run:  cd src
+
     - name: Make publish.sh executable
-      run:  chmod +x publish.sh
+      run:  chmod +x src/publish.sh
     - name: Build and Publish
-      run: ./publish.sh
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: ./src/publish.sh
