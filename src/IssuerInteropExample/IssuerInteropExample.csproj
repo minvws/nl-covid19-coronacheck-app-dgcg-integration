@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="issuer.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
