@@ -18,8 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-
     - name: Make publish.sh executable
-      run:  chmod +x src/publish.sh
+      run:  chmod +x publish.sh
     - name: Build and Publish
-      run: ./src/publish.sh
+      run: ./publish.sh
