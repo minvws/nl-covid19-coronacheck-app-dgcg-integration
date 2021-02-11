@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: EUPL-1.2
 // using System;
 
-using Microsoft.AspNetCore.Http;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Middleware
 {
     public class ResponseSigningMiddleware : IMiddleware
     {

@@ -8,7 +8,6 @@ using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 {

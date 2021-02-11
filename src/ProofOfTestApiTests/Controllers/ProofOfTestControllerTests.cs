@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
@@ -36,20 +37,26 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         //
 
         [Fact]
-        public async Task Get_Proof_Nonce_returns_nonce()
+        public async Task Post_Proof_Nonce_returns_nonce()
         {
             // Arrange
             var client = _factory.CreateClient();
+            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("Resources.Post_Proof_Nonce_returns_nonce.json");
+            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act
-            var result = await client.GetAsync("proof/nonce");
+            var result = await client.PostAsync("proof/nonce", requestContent );
 
             // Assert: result OK
             Assert.Equal(HttpStatusCode.OK, result.StatusCode); 
 
             // Assert: result type sent
             var responseBody = result.Content.ReadAsStringAsync();
-            var typedResult = _jsonSerializer.Deserialize<GenerateNonceResult>(responseBody.Result);
+            var signingWrapperResult = _jsonSerializer.Deserialize<SignedDataResponse<GenerateNonceResult>>(responseBody.Result);
+            Assert.NotEmpty(signingWrapperResult.Payload);
+            Assert.NotEmpty(signingWrapperResult.Signature);
+            var payloadString = Base64.Decode(signingWrapperResult.Payload);
+            var typedResult = _jsonSerializer.Deserialize<GenerateNonceResult>(payloadString);
             Assert.NotEmpty(typedResult.Nonce);
 
             // Assert: nonce is b64 string
@@ -58,7 +65,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         }
 
         [Fact]
-        public async Task Get_Proof_Nonce_returns_unique_nonce_on_each_call()
+        public async Task Post_Proof_Nonce_returns_unique_nonce_on_each_call()
         {
             // Act
             var resultA = await GetNonce();
@@ -67,7 +74,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             // Assert
             Assert.NotEqual(resultA.Nonce, resultB.Nonce);
         }
-
+        
         [Fact]
         public async Task Post_Proof_Issue_returns_proof()
         {
@@ -84,8 +91,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
 
             // Assert: result type sent
             var responseBody = result.Content.ReadAsStringAsync();
-            var typedResult = _jsonSerializer.Deserialize<IssueProofResult>(responseBody.Result);
-            Assert.NotNull(typedResult);
+            var signingWrapperResult = _jsonSerializer.Deserialize<SignedDataResponse<IssueProofResult>>(responseBody.Result);
+            Assert.NotEmpty(signingWrapperResult.Payload);
+            Assert.NotEmpty(signingWrapperResult.Signature);
+            var payloadString = Base64.Decode(signingWrapperResult.Payload);
+            var typedResult = _jsonSerializer.Deserialize<IssueProofResult>(payloadString);
+            Assert.NotEmpty(typedResult.SessionToken);
+            Assert.NotNull(typedResult.Attributes);
+            Assert.NotNull(typedResult.Ism);
+            Assert.NotNull(typedResult.Ism.Proof);
+            Assert.NotNull(typedResult.Ism.Signature);
 
             // TODO test the contents of the result; need more details / to dig into them
         }
@@ -94,10 +109,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         {
             var client = _factory.CreateClient();
             var jsonSerializer = new StandardJsonSerializer();
-            var result = await client.GetAsync("proof/nonce");
+            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("Resources.Post_Proof_Nonce_returns_nonce.json");
+            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync("proof/nonce", requestContent);
             var responseBody = result.Content.ReadAsStringAsync();
+            var signingWrapperResult = _jsonSerializer.Deserialize<SignedDataResponse<GenerateNonceResult>>(responseBody.Result);
+            var payloadString = Base64.Decode(signingWrapperResult.Payload);
 
-            return jsonSerializer.Deserialize<GenerateNonceResult>(responseBody.Result);
+            return jsonSerializer.Deserialize<GenerateNonceResult>(payloadString);
         }
     }
 }

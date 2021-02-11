@@ -5,7 +5,7 @@
 using System;
 using System.Threading.Tasks;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
