@@ -13,6 +13,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
         {
         }
 
+        public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), true);
         public string Path => GetConfigValue(nameof(Path), "Unspecified default!");
         public string Password => GetConfigValue(nameof(Password), "Unspecified default!");
     }

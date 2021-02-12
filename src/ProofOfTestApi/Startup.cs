@@ -46,13 +46,17 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<ZippedSignedContentFormatter>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
             services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
             services.AddSingleton<IConfiguration>(configuration);
+
+            // Certificate providers
+            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddScoped<ICertificateProvider, CertificateProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

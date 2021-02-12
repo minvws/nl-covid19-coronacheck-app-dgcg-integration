@@ -3,18 +3,18 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
 {
-    public class EmbeddedResourcesCertificateChainProvider : ICertificateChainProvider
+    public class FileSystemCertificateChainProvider : ICertificateChainProvider
     {
         private readonly ICertificateLocationConfig _pathProvider;
 
-        public EmbeddedResourcesCertificateChainProvider(ICertificateLocationConfig pathProvider)
+        public FileSystemCertificateChainProvider(ICertificateLocationConfig pathProvider)
         {
             _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         }
@@ -22,9 +22,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
         public X509Certificate2[] GetCertificates()
         {
             var certList = new List<X509Certificate2>();
-            var bytes = typeof(EmbeddedResourcesCertificateChainProvider)
-                .Assembly
-                .GetEmbeddedResourceAsBytes($"Resources.{_pathProvider.Path}");
+            var bytes = File.ReadAllBytes(_pathProvider.Path);
             var result = new X509Certificate2Collection();
             result.Import(bytes);
             foreach (var c in result)

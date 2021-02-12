@@ -38,27 +38,31 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HolderAppApi", Version = "v1" });
             });
-            
-            services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-            services.AddScoped<IKeyStore, AssemblyKeyStore>();
-            services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
-            services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
-            services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
-            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            //services.AddScoped<IAppConfigProvider, HardcodedAppConfigProvider>();
-            //services.AddScoped<ITestTypesProvider, HardcodedTestTypesProvider>();
-            services.AddScoped<IAppConfigProvider, AppConfigProvider>();
-            services.AddScoped<ITestTypesProvider, TestTypesProvider>();
-            services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
+
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
             services.AddSingleton<IConfiguration>(configuration);
 
+            // Normal things
+            services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
+            services.AddScoped<IKeyStore, AssemblyKeyStore>();
+            services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
+            services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
+            services.AddScoped<IContentSigner, CmsSignerSimple>();
+            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+            services.AddScoped<IAppConfigProvider, AppConfigProvider>();
+            services.AddScoped<ITestTypesProvider, TestTypesProvider>();
+            services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
+
             // Database
             services.AddTransient(x => x.CreateDbContext(y => new TesterContext(y), "tester"));
             services.AddTransient<Func<TesterContext>>(x => x.GetService<TesterContext>);
+
+            // Certificate providers
+            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddScoped<ICertificateProvider, CertificateProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

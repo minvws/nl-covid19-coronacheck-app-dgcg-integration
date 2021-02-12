@@ -9,6 +9,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
     /// </summary>
     public interface ICertificateLocationConfig
     {
+        public bool UseEmbedded { get; }
         public string Path { get; }
         public string Password { get; }
     }

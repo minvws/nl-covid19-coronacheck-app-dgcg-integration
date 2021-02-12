@@ -2,7 +2,6 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
 using Common.Database;
 using Common.Database.Model;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +17,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
+using System;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi
 {
@@ -44,9 +44,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
             services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            //services.AddScoped<IAppConfigProvider, HardcodedAppConfigProvider>();
             services.AddScoped<IAppConfigProvider, AppConfigProvider>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
@@ -57,6 +55,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi
             // Database
             services.AddTransient(x => x.CreateDbContext(y => new TesterContext(y), "tester"));
             services.AddTransient<Func<TesterContext>>(x => x.GetService<TesterContext>);
+
+            // Certificate providers
+            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddScoped<ICertificateProvider, CertificateProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
