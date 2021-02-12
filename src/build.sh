@@ -1,1 +1,0 @@
-dotnet build ProofOfTestApi/ProofOfTestApi.csproj
