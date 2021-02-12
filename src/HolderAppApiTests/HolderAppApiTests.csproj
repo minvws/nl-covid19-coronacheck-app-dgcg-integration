@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\HolderAppApi\HolderAppApi.csproj" />
   </ItemGroup>
 

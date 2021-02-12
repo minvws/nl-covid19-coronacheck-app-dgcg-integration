@@ -50,6 +50,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
             //services.AddScoped<ITestTypesProvider, HardcodedTestTypesProvider>();
             services.AddScoped<IAppConfigProvider, AppConfigProvider>();
             services.AddScoped<ITestTypesProvider, TestTypesProvider>();
+            services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();

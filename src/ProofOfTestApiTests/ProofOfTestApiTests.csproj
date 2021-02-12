@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\ProofOfTestApi\ProofOfTestApi.csproj" />
   </ItemGroup>
 

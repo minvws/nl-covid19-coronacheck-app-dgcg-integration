@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.AspNetCore.Mvc;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
@@ -16,20 +17,31 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi.Controllers
     {
         private readonly ISignedDataResponseBuilder _signedResponseBuilder;
         private readonly IAppConfigProvider _appConfigProvider;
+        private readonly IApiSigningConfig _apiSigningConfig;
+
         private const string AppName = "verifier";
 
-        public VerifierController(ISignedDataResponseBuilder signedResponseBuilder, IAppConfigProvider appConfigProvider)
+        public VerifierController(
+            ISignedDataResponseBuilder signedResponseBuilder,
+            IAppConfigProvider appConfigProvider,
+            IApiSigningConfig apiSigningConfig)
         {
-            _signedResponseBuilder = signedResponseBuilder ?? throw new ArgumentNullException(nameof(signedResponseBuilder));
+            _signedResponseBuilder =
+                signedResponseBuilder ?? throw new ArgumentNullException(nameof(signedResponseBuilder));
             _appConfigProvider = appConfigProvider ?? throw new ArgumentNullException(nameof(appConfigProvider));
+            _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
         }
 
         [HttpGet]
         [Route("config")]
-
-        public SignedDataResponse<AppConfigResult> Config()
+        [ProducesResponseType(typeof(AppConfigResult), 200)]
+        public IActionResult Config()
         {
-            return _signedResponseBuilder.Build(_appConfigProvider.Get(AppName));
+            var result = _appConfigProvider.Get(AppName);
+
+            return _apiSigningConfig.WrapAndSignResult
+                ? Ok(_signedResponseBuilder.Build(result))
+                : Ok(result);
         }
     }
 }

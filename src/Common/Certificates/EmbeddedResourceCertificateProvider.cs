@@ -5,6 +5,7 @@
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
 {

@@ -48,6 +48,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi
             services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             //services.AddScoped<IAppConfigProvider, HardcodedAppConfigProvider>();
             services.AddScoped<IAppConfigProvider, AppConfigProvider>();
+            services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
