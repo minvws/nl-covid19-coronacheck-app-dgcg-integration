@@ -10,6 +10,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
     {
         [JsonPropertyName("ism")] public IssueSignatureMessage Ism { get; set; }
         [JsonPropertyName("attributes")] public string[] Attributes { get; set; }
+        [JsonPropertyName("stoken")] public string SessionToken { get; set; }
     }
 
     public class IssueSignatureMessage

@@ -2,8 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
 using System.ComponentModel.DataAnnotations;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Validation;
+using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 {
@@ -13,13 +14,15 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         /// String representing the type of test, valid values are: [TBC]
         /// </summary>
         [Required]
+        [JsonPropertyName("testType")]
         public string TestType { get; set; }
         
         /// <summary>
         /// Nonce bytes formatted as a base64 string.
         /// </summary>
         [Required]
-        //[Base64String]
+        [JsonPropertyName("nonce")]
+        [Base64String]
         public string Nonce { get; set; }
 
         /// <summary>
@@ -27,6 +30,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         /// </summary>
         [Required]
         [Base64String]
+        [JsonPropertyName("commitments")]
         public string Commitments { get; set; }
+
+        /// <summary>
+        /// SessionToken.
+        /// </summary>
+        [Required]
+        [JsonPropertyName("sessionToken")]
+        public string SessionToken { get; set; }
     }
 }

@@ -6,7 +6,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Validation
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
 {
     public class Base64StringAttribute : ValidationAttribute
     {
@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Validation
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value == null) return base.IsValid(value, validationContext);
+            if (value == null) return new ValidationResult(ValidationError);
 
             var valueString = (string) value;
             

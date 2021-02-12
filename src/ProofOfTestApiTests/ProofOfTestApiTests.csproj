@@ -12,9 +12,11 @@
 
   <ItemGroup>
     <None Remove="Resources\Post_Proof_Issue_returns_proof_request.json" />
+    <None Remove="Resources\Post_Proof_Nonce_returns_nonce.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Post_Proof_Nonce_returns_nonce.json" />
     <EmbeddedResource Include="Resources\Post_Proof_Issue_returns_proof_request.json" />
   </ItemGroup>
 
@@ -33,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\ProofOfTestApi\ProofOfTestApi.csproj" />
   </ItemGroup>
 

@@ -13,10 +13,8 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Commands;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware;
-using NL.Rijksoverheid.ExposureNotification.BackEnd.Crypto.Signing;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -32,7 +30,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -46,20 +43,23 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<IIssuerInterop, Issuer>();
+            services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
+            services.AddScoped<ZippedSignedContentFormatter>();
+            services.AddScoped<IContentSigner, CmsSignerSimple>();
+            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+            services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
             services.AddSingleton<IConfiguration>(configuration);
 
-            // App config stuff
-            services.AddScoped<HttpGetAppConfigCommand>();
-            services.AddScoped<ZippedSignedContentFormatter>();
-            services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateProvider, EmbeddedResourceCertificateProvider>();
-            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            
-            // Register middleware
-            services.AddTransient<ResponseSigningMiddleware>();
+            // Certificate providers
+            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddScoped<ICertificateProvider, CertificateProvider>();
+            services.AddScoped<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
+            services.AddScoped<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
+            services.AddScoped<ICertificateChainProvider, CertificateChainProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,9 +85,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             app.UseRouting();
             
             app.UseAuthorization();
-
-            app.UseResponseSigningMiddleware();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

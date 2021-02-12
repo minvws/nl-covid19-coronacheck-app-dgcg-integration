@@ -5,7 +5,7 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Middleware
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Middleware
 {
     public static class MiddlewareExtensions
     {

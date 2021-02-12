@@ -4,8 +4,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using System;
@@ -19,12 +21,22 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         private readonly IProofOfTestService _potService;
         private readonly IUtcDateTimeProvider _dateTimeProvider;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly ISignedDataResponseBuilder _signedDataResponseBuilder;
+        private readonly IApiSigningConfig _apiSigningConfig;
 
-        public ProofOfTestController(IProofOfTestService potService, IUtcDateTimeProvider dateTimeProvider, IJsonSerializer jsonSerializer)
+        public ProofOfTestController(
+            IProofOfTestService potService,
+            IUtcDateTimeProvider dateTimeProvider,
+            IJsonSerializer jsonSerializer,
+            ISignedDataResponseBuilder signedDataResponseBuilder,
+            IApiSigningConfig apiSigningConfig)
         {
             _potService = potService ?? throw new ArgumentNullException(nameof(potService));
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
+            _signedDataResponseBuilder = signedDataResponseBuilder ??
+                                         throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
         }
 
         /// <summary>
@@ -41,15 +53,21 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             try
             {
-                var (proofResult, attributes) = _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
+                var (proofResult, attributes) =
+                    _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
 
                 var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
 
-                return Ok(new IssueProofResult
+                var issueProofResult = new IssueProofResult
                 {
                     Ism = issuerMessage,
-                    Attributes = attributes
-                });
+                    Attributes = attributes,
+                    SessionToken = request.SessionToken
+                };
+
+                return _apiSigningConfig.WrapAndSignResult
+                    ? Ok(_signedDataResponseBuilder.Build(issueProofResult))
+                    : Ok(issueProofResult);
             }
             catch (IssuerException)
             {
@@ -63,14 +81,19 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         /// <summary>
         /// Generates and returns a random nonce
         /// </summary>
-        [HttpGet]
+        [HttpPost]
         [Route("nonce")]
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]
-        public IActionResult GenerateNonce()
+        public IActionResult GenerateNonce(GenerateNonceRequest request)
         {
             var nonce = _potService.GenerateNonce();
 
-            return Ok(new GenerateNonceResult {Nonce = nonce});
+            var result = new GenerateNonceResult {Nonce = nonce, SessionToken = request.SessionToken};
+
+
+            return _apiSigningConfig.WrapAndSignResult
+                ? Ok(_signedDataResponseBuilder.Build(result))
+                : Ok(result);
         }
     }
 }

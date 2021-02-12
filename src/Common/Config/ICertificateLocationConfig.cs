@@ -2,13 +2,14 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
 {
     /// <summary>
     /// Embedded resources or file system.
     /// </summary>
     public interface ICertificateLocationConfig
     {
+        public bool UseEmbedded { get; }
         public string Path { get; }
         public string Password { get; }
     }
