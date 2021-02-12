@@ -1,0 +1,37 @@
+name: Create ProofOfTestApi Release package
+
+on:
+  create:
+    tags:
+      - v*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Add version.json to public/ dir
+        run: 'dotnet publish src/ProofOfTestApi/ProofOfTestApi.csproj -o publish/ProofOfTestApi -p:PublishProfile=FolderProfileProofOfTestApi.csproj'
+
+      - name: Create version.json
+        run: 'echo "{ \"version\": \"${{ env.RELEASE_VERSION }}\", \"git_ref\": \"$GITHUB_SHA\"}" > publish/ProofOfTestApi/version.json'
+
+      - name: Create tar
+        run: tar -czf ct_backend_pota_${{ env.RELEASE_VERSION }}.tar.gz -C publish/ProofOfTestApi .
+
+      - name: Upload release tar
+        uses: actions/upload-artifact@v1
+        with:
+            name: ct_backend_pota_${{ env.RELEASE_VERSION }}
+            path: ct_backend_pota_${{ env.RELEASE_VERSION }}.tar.gz
