@@ -57,6 +57,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
             services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
             services.AddScoped<ICertificateProvider, CertificateProvider>();
+            services.AddScoped<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
+            services.AddScoped<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
+            services.AddScoped<ICertificateChainProvider, CertificateChainProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
