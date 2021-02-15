@@ -66,38 +66,3 @@ The response looks like this:
         },
         "attributes": ["", ""]
     }
-
-# Response signing
-
-We sign responses our CMS signer. You'll need an x.509 certificate for that. One is included in the package for testing, or you can follow the guide below to generate a new one.
-
-Prereqs:
-* OpenSSL
-* Bash or bash-compatible terminal (Windows users: WSL 2.0 or Conemu/Cmder)
-
-0. Save this in a file called ext.cnf:
-
-    ```
-    [ tester_signing_key ]
-    nsComment = For testing only and no this is not the real thing. Duh.
-    keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-    subjectKeyIdentifier=hash
-    authorityKeyIdentifier=keyid:always,issuer
-    basicConstraints = CA:FALSE
-    ```
-
-1. Create an x509 certificate
-
-    ```
-    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaTester/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
-    ```
-
-2. Create a pkcs12 from the x509 keypair with the password '123456'
-
-    ```
-    openssl pkcs12 -export -out=sign.pfx -in sign.pub -inkey sign.key -nodes -passout pass:123456
-    ```
-
-3. PROFIT
-
-An example is included in Common /  
