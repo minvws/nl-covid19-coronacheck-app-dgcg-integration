@@ -48,20 +48,24 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         public IActionResult IssueProof(IssueProofRequest request)
         {
             var dateTime = _dateTimeProvider.Now().ToGoApiString();
-
             var commitmentsJson = Base64.Decode(request.Commitments);
+            var attributes = new ProofOfTestAttributes(dateTime, request.TestType);
 
             try
             {
-                var (proofResult, attributes) =
-                    _potService.GetProofOfTest(request.TestType, dateTime, request.Nonce, commitmentsJson);
+                var proofResult=
+                    _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
 
                 var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
 
                 var issueProofResult = new IssueProofResult
                 {
                     Ism = issuerMessage,
-                    Attributes = attributes,
+                    Attributes = new Attributes
+                    {
+                        SampleTime = attributes.SampleTime,
+                        TestType = attributes.TestType
+                    },
                     SessionToken = request.SessionToken
                 };
 

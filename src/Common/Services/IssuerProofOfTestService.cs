@@ -2,8 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using System;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
@@ -20,11 +20,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
         }
 
-        public (string, string[]) GetProofOfTest(string testType, string dateTime, string nonce, string commitments)
+        public string GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments)
         {
-            var attributes = new[] {dateTime, testType};
+            if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
+            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentNullException(nameof(nonce));
+            if (string.IsNullOrWhiteSpace(commitments)) throw new ArgumentNullException(nameof(commitments));
 
-            return (_issuer.IssueProof(_keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, _jsonSerializer.Serialize(attributes)), attributes);
+            var serializedAttributes = _jsonSerializer.Serialize(proofOfTestAttributes);
+
+            return _issuer
+                .IssueProof(_keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
         }
 
         public string GenerateNonce()
