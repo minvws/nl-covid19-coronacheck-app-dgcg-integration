@@ -1,7 +1,12 @@
+// Copyright 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using System;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
@@ -19,6 +24,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
 
         protected T Unwrap<T>(string content)
         {
+            if(string.IsNullOrWhiteSpace(content)) throw new ArgumentNullException(nameof(content));
+
             if (content.Contains("payload"))
             {
                 var signingWrapperResult = JsonSerializer.Deserialize<SignedDataResponse<T>>(content);
