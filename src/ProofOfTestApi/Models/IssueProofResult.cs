@@ -17,12 +17,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
     public class Attributes
     {
         /// <summary>
-        /// Well known string identifying the type of test.
+        /// Unix timestamp of when the test was taken.
         /// </summary>
         [JsonPropertyName("sampleTime")] public string SampleTime { get; set; }
 
         /// <summary>
-        /// UTC date/time in ISO format with time rounded to the hour
+        /// UUID of the test type
         /// </summary>
         [JsonPropertyName("testType")] public string TestType { get; set; }
     }

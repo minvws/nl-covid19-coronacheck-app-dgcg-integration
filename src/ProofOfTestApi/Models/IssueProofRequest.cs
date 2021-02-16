@@ -11,12 +11,19 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
     public class IssueProofRequest
     {
         /// <summary>
-        /// String representing the type of test, valid values are: [TBC]
+        /// String representing (UUID) of the test type.
         /// </summary>
         [Required]
         [JsonPropertyName("testType")]
         public string TestType { get; set; }
         
+        /// <summary>
+        /// Unix time for when the test sample was taken
+        /// </summary>
+        [Required]
+        [JsonPropertyName("sampleTime")]
+        public string SampleTime { get; set; }
+
         /// <summary>
         /// Nonce bytes formatted as a base64 string.
         /// </summary>
