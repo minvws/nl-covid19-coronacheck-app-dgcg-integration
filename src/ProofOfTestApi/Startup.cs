@@ -35,8 +35,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProofOfTestAPI", Version = "v1" });
             });
-
-
+            
             // Proof of Test API
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IKeyStore, AssemblyKeyStore>();
