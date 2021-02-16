@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         private readonly IProofOfTestService _potService;
         private readonly IUtcDateTimeProvider _dateTimeProvider;
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly ISignedDataResponseBuilder _signedDataResponseBuilder;
+        private readonly ISignedDataResponseBuilder _srb;
         private readonly IApiSigningConfig _apiSigningConfig;
 
         public ProofOfTestController(
@@ -34,8 +34,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             _potService = potService ?? throw new ArgumentNullException(nameof(potService));
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
-            _signedDataResponseBuilder = signedDataResponseBuilder ??
-                                         throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
             _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
         }
 
@@ -47,12 +46,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public IActionResult IssueProof(IssueProofRequest request)
         {
-            var dateTime = _dateTimeProvider.Now().ToGoApiString();
-            var commitmentsJson = Base64.Decode(request.Commitments);
-            var attributes = new ProofOfTestAttributes(dateTime, request.TestType);
-
             try
             {
+                var dateTime = _dateTimeProvider.Now().ToGoApiString();
+                var commitmentsJson = Base64.Decode(request.Commitments);
+                var attributes = new ProofOfTestAttributes(dateTime, request.TestType);
+
                 var proofResult=
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
 
@@ -70,7 +69,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                 };
 
                 return _apiSigningConfig.WrapAndSignResult
-                    ? Ok(_signedDataResponseBuilder.Build(issueProofResult))
+                    ? Ok(_srb.Build(issueProofResult))
                     : Ok(issueProofResult);
             }
             catch (IssuerException)
@@ -93,10 +92,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             var nonce = _potService.GenerateNonce();
 
             var result = new GenerateNonceResult {Nonce = nonce, SessionToken = request.SessionToken};
-
-
+            
             return _apiSigningConfig.WrapAndSignResult
-                ? Ok(_signedDataResponseBuilder.Build(result))
+                ? Ok(_srb.Build(result))
                 : Ok(result);
         }
     }

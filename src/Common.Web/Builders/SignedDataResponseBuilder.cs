@@ -1,8 +1,12 @@
-﻿using System;
-using System.Text;
+﻿// Copyright 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
+
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using System;
+using System.Text;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders
 {
@@ -19,6 +23,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders
 
         public SignedDataResponse<T> Build<T>(T responseDto)
         {
+            if(responseDto == null) throw new ArgumentNullException(nameof(responseDto));
+
             var jsonString = _jsonSerializer.Serialize(responseDto);
             var response = new SignedDataResponse<T>
             {

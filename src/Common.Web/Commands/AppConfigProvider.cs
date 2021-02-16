@@ -2,11 +2,11 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
-using System.Linq;
 using Common.Database.Model;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using System;
+using System.Linq;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands
 {
@@ -24,6 +24,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands
         public AppConfigResult Get(string type)
         {
             if(string.IsNullOrWhiteSpace(type)) throw new ArgumentNullException(nameof(type));
+
             using var ctx = _contextFactory();
 
             var item = ctx.AppConfigs.FirstOrDefault(_ => _.Type == type);
