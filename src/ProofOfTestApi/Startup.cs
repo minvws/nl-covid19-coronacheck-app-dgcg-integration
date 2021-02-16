@@ -44,7 +44,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<IIssuerInterop, Issuer>();
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
-            services.AddScoped<ZippedSignedContentFormatter>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
             services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
