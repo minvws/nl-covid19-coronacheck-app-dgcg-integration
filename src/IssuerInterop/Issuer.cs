@@ -57,10 +57,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
             var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
             var issuerNonceB64Go = GoHelpers.ToWrappedGoString(nonce);
-            var commitmentsJsoGo = GoHelpers.ToGoString(commitments);
+            var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGo, attributesGo);
+            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
 
             var returnType = Marshal.PtrToStringAnsi(result);
 
