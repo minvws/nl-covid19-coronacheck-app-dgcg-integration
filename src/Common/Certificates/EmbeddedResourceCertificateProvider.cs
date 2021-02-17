@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
         {
             var cert = typeof(EmbeddedResourceCertificateProvider)
                 .Assembly
-                .GetEmbeddedResourceAsBytes($"Resources.{_config.Path}");
+                .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_config.Path}");
 
             return new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
         }

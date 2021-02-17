@@ -31,7 +31,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             
             // Proof of Test API
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-            services.AddScoped<IKeyStore, AssemblyKeyStore>();
             services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<IIssuerInterop, Issuer>();
@@ -51,6 +50,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
             services.AddScoped<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
             services.AddScoped<ICertificateChainProvider, CertificateChainProvider>();
+
+            // Issuer
+            services.AddScoped<IKeyStore, KeyStore>();
+            services.AddScoped<AssemblyKeyStore, AssemblyKeyStore>();
+            services.AddScoped<FileSystemKeyStore, FileSystemKeyStore>();
+            services.AddScoped<IIssuerCertificateConfig, IssuerCertificateConfig>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,8 +8,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
     public class AssemblyKeyStore : IKeyStore
     {
-        private const string PrivateKeyPath = @"Resources.private_key.xml";
-        private const string PublicKeyPath = @"Resources.public_key.xml";
+        private const string PrivateKeyPath = @"EmbeddedResources.private_key.xml";
+        private const string PublicKeyPath = @"EmbeddedResources.public_key.xml";
 
         public string GetPrivateKey()
         {
