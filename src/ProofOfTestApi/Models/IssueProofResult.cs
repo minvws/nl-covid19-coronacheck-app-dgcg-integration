@@ -13,38 +13,4 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         [JsonPropertyName("attributes")] public Attributes Attributes { get; set; }
         [JsonPropertyName("stoken")] public string SessionToken { get; set; }
     }
-
-    public class Attributes
-    {
-        /// <summary>
-        /// Well known string identifying the type of test.
-        /// </summary>
-        [JsonPropertyName("sampleTime")] public string SampleTime { get; set; }
-
-        /// <summary>
-        /// UTC date/time in ISO format with time rounded to the hour
-        /// </summary>
-        [JsonPropertyName("testType")] public string TestType { get; set; }
-    }
-
-    public class IssueSignatureMessage
-    {
-        [JsonPropertyName("proof")] public Proof Proof { get; set; }
-        [JsonPropertyName("signature")] public object Signature { get; set; }
-    }
-
-    public class Proof
-    {
-        [JsonPropertyName("c")] public string C { get; set; }
-
-        [JsonPropertyName("e_response")] public string ErrorResponse { get; set; }
-    }
-
-    public class Signature
-    {
-        [JsonPropertyName("A")] public string A { get; set; }
-        [JsonPropertyName("e")] public string E { get; set; }
-        [JsonPropertyName("v")] public string V { get; set; }
-        [JsonPropertyName("KeyshareP")] public string Keyshare { get; set; }
-    }
 }

@@ -2,8 +2,6 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Text.Json.Serialization;
-
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
     public interface IProofOfTestService
@@ -22,24 +20,5 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         /// </summary>
         /// <returns></returns>
         string GenerateNonce();
-    }
-
-    public class ProofOfTestAttributes
-    {
-        public ProofOfTestAttributes(string sampleTime, string testType)
-        {
-            SampleTime = sampleTime;
-            TestType = testType;
-        }
-
-        /// <summary>
-        /// Well known string identifying the type of test.
-        /// </summary>
-        [JsonPropertyName("sampleTime")] public string SampleTime { get; set; }
-
-        /// <summary>
-        /// UTC date/time in ISO format with time rounded to the hour
-        /// </summary>
-        [JsonPropertyName("testType")] public string TestType { get; set; }
     }
 }

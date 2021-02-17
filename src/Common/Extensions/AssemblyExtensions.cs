@@ -20,6 +20,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
         /// <returns>File contents in an UTF-8 string</returns>
         public static string GetEmbeddedResourceAsString(this Assembly assembly, string resourcePath)
         {
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
+
             using var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
             if (stream == null)
             {
@@ -31,6 +34,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
 
         public static byte[] GetEmbeddedResourceAsBytes(this Assembly assembly, string resourcePath)
         {
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
+
             var file = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
             if (file == null)
             {

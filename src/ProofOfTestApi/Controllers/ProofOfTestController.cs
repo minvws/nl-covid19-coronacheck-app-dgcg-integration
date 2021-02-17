@@ -46,6 +46,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public IActionResult IssueProof(IssueProofRequest request)
         {
+            if (request == null)
+                return new BadRequestResult();
+
             try
             {
                 var dateTime = _dateTimeProvider.Now().ToGoApiString();
@@ -89,6 +92,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]
         public IActionResult GenerateNonce(GenerateNonceRequest request)
         {
+            if (request == null)
+                return new BadRequestResult();
+
             var nonce = _potService.GenerateNonce();
 
             var result = new GenerateNonceResult {Nonce = nonce, SessionToken = request.SessionToken};

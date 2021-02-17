@@ -24,7 +24,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
             _expression = new Regex(Base64StringPattern);
         }
 
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext _)
         {
             if (value == null) return new ValidationResult(ValidationError);
 

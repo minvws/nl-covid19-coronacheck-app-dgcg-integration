@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public IConfiguration Configuration { get; }
@@ -33,6 +33,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -71,6 +73,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (app == null) throw new ArgumentNullException(nameof(app));
+            if (env == null) throw new ArgumentNullException(nameof(env));
+
             // Support for a reverse proxy
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
