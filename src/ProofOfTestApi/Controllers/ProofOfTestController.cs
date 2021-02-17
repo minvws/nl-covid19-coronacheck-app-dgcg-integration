@@ -51,9 +51,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             try
             {
-                var dateTime = _dateTimeProvider.Now().ToGoApiString();
                 var commitmentsJson = Base64.Decode(request.Commitments);
-                var attributes = new ProofOfTestAttributes(dateTime, request.TestType);
+                var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType);
 
                 var proofResult=
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);

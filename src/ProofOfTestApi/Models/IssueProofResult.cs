@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 {
