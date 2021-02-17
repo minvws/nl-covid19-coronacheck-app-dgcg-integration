@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.Configuration;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
 {
@@ -13,8 +12,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
         {
         }
 
+        //TODO production is actually false?
         public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), true);
-        public string Path => GetConfigValue(nameof(Path), "Unspecified default!");
-        public string Password => GetConfigValue(nameof(Password), "Unspecified default!");
+        public string Path => GetConfigValue<string>(nameof(Path));
+        public string Password => GetConfigValue<string>(nameof(Password));
     }
 }

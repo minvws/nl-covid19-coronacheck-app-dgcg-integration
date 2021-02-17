@@ -15,8 +15,9 @@ namespace Common.Database
         public static T CreateDbContext<T>(this IServiceProvider serviceProvider, Func<DbContextOptions, T> ctor, string connName) 
             where T : DbContext
         {
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
             if (ctor == null) throw new ArgumentNullException(nameof(ctor));
-            if (string.IsNullOrWhiteSpace(connName)) throw new ArgumentNullException(nameof(connName));
+            if (string.IsNullOrWhiteSpace(connName)) throw new ArgumentException(nameof(connName));
 
             var config = new StandardEfDbConfig(serviceProvider.GetRequiredService<IConfiguration>(), connName);
             var builder = new PostgresqlDbContextOptionsBuilder(config);

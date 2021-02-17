@@ -39,14 +39,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             return str;
         }
 
-        public static GoString ToGoString(string str, bool wrap = false)
-        {
-            if (wrap)
-            {
-                str = WrapString(str);
-            }
+        //TODO This requires a length of 1 cos WrapString? 
+        public static GoString ToWrappedGoString(string str) => ToGoString(WrapString(str));
 
-            return new GoString
+        public static GoString ToGoString(string str)
+        {
+            return new()
             {
                 p = Marshal.StringToHGlobalAnsi(str),
                 n = str.Length

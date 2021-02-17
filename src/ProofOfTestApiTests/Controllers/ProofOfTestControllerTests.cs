@@ -65,6 +65,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
             // Act
+            
             var result = await client.PostAsync("proof/issue", requestContent);
 
             // Assert: result OK
