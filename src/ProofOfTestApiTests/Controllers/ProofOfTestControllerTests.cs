@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         {
             // Arrange
             var client = Factory.CreateClient();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("Resources.Post_Proof_Nonce_returns_nonce.json");
+            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Nonce_returns_nonce.json");
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act
@@ -61,7 +61,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         {
             // Arrange
             var client = Factory.CreateClient();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("Resources.Post_Proof_Issue_returns_proof_request.json");
+            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
             // Act
@@ -85,7 +85,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
         {
             var client = Factory.CreateClient();
             var jsonSerializer = new StandardJsonSerializer();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("Resources.Post_Proof_Nonce_returns_nonce.json");
+            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Nonce_returns_nonce.json");
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
             var result = await client.PostAsync("proof/nonce", requestContent);
             var responseBody = await result.Content.ReadAsStringAsync();

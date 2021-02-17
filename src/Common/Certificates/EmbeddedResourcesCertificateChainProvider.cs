@@ -24,7 +24,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
             var certList = new List<X509Certificate2>();
             var bytes = typeof(EmbeddedResourcesCertificateChainProvider)
                 .Assembly
-                .GetEmbeddedResourceAsBytes($"Resources.{_pathProvider.Path}");
+                .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_pathProvider.Path}");
             var result = new X509Certificate2Collection();
             result.Import(bytes);
             foreach (var c in result)

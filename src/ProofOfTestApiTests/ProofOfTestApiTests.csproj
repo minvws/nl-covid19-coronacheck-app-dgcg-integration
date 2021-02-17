@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Post_Proof_Issue_returns_proof_request.json" />
-    <None Remove="Resources\Post_Proof_Nonce_returns_nonce.json" />
+    <None Remove="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
+    <None Remove="EmbeddedResources\Post_Proof_Nonce_returns_nonce.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Post_Proof_Nonce_returns_nonce.json" />
-    <EmbeddedResource Include="Resources\Post_Proof_Issue_returns_proof_request.json" />
+    <EmbeddedResource Include="EmbeddedResources\Post_Proof_Nonce_returns_nonce.json" />
+    <EmbeddedResource Include="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
   </ItemGroup>
 
   <ItemGroup>

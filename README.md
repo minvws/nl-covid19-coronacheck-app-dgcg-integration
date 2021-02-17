@@ -67,17 +67,39 @@ Both the `VerifierAppApi` and `HolderAppApi` use a Postgres database. Create a d
   },
 ```
 
-### Configuration: certificates and signing
+### Configuration: Issuer keys
+
+The issuer uses two certificates - a public and provide key. We currently ship two methods to load these files - from the filesystem or embedded in the assembly. For development you can use the test certificates which are embedded into the assembly using this configuration:
+
+```
+	"IssuerCertificates": {
+		"UseEmbedded": true
+	}
+```
+
+This is highly recommended because the path is not always predictable, different editors and deployments can all.. differ. We want to support the broadest range of development environments and using the embedded resources makes that easier.
+
+When running the system on a proper webserver you need to provide your own keys and configure them like this:
+
+```
+	"IssuerCertificates": {
+		"UseEmbedded": false,
+		"PathPublicKey": "Resources/public_key.xml",
+		"PathPrivateKey": "Resources/private_key.xml"
+	}
+```
+
+### Configuration: CMS call signing 
 
 The services can be configured to wrap all of the service call responses with a signature. You can enable this by first enabling the wrapper:
 
 ```
   "ApiSigning": {
-    "WrapAndSignResult": false
+    "WrapAndSignResult": true
   }
 ```
 
-You will also need to configure the certificate for each of the services; use the following configuration to load the cert from the file system:
+You will also need to configure the CMS certificate for each of the services; use the following configuration to load the cert from the file system:
   
 ```
   "Certificates": {
@@ -89,7 +111,7 @@ You will also need to configure the certificate for each of the services; use th
   }
 ```
 
-We currently build the test certificate into the assembly, if you want to use that (recommended for local development) then you can use this configuration:
+We currently build the test CMS certificate into the assembly, if you want to use that (recommended for local development for reasons mentioned earlier) then you can use this configuration:
 
 ```
   "Certificates": {
@@ -101,9 +123,9 @@ We currently build the test certificate into the assembly, if you want to use th
   }
 ```
 
-## CMS Certificate
+## Creating a CMS Certificate
 
-for the response singing, you'll need an x.509 certificate. One is included in the package for testing, or you can follow the guide below to generate a new one.
+As mentioned earlier, for the response singing, you'll need an x.509 certificate. One is included in the package for testing, or you can follow the guide below to generate a new one.
 
 Prereqs:
 
