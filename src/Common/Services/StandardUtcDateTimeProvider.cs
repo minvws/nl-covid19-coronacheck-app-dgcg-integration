@@ -18,6 +18,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         /// <summary>
         /// Time of start of transaction scope
         /// </summary>
-        public DateTime Snapshot { get; private set; }
+        public DateTime Snapshot { get; }
     }
 }

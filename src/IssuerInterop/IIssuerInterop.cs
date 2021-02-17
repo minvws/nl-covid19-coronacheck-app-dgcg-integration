@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+﻿namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 {
     public interface IIssuerInterop
     {
@@ -8,6 +6,4 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 
         string IssueProof(string publicKey, string privateKey, string nonce, string commitments, string attributes);
     }
-
-    public abstract class IssuerException : Exception { }
 }

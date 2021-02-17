@@ -54,13 +54,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         /// </returns>
         public string IssueProof(string publicKey, string privateKey, string nonce, string commitments, string attributes)
         {
-            var issuerPkXmlGo = GoHelpers.ToGoString(publicKey, true);
-            var issuerSkXmlGo = GoHelpers.ToGoString(privateKey, true);
-            var issuerNonceB64Go = GoHelpers.ToGoString(nonce, true);
-            var commitmentsJsoGon = GoHelpers.ToGoString(commitments);
+            var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
+            var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
+            var issuerNonceB64Go = GoHelpers.ToWrappedGoString(nonce);
+            var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
+            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
 
             var returnType = Marshal.PtrToStringAnsi(result);
 
@@ -72,6 +72,4 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             return returnType;
         }
     }
-
-    public class GoIssuerException : IssuerException {}
 }

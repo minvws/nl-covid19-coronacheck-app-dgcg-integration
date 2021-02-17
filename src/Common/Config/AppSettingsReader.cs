@@ -12,22 +12,38 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
         private readonly IConfiguration _config;
         private readonly string _prefix;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="prefix">//NB should do a Regex.IsMatch(input, @"^[a-zA-Z0-9_]+$"); to avoid invalid characters</param>
         protected AppSettingsReader(IConfiguration config, string? prefix = null)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
-            if (string.IsNullOrWhiteSpace(prefix) || prefix != prefix.Trim())
+            if (string.IsNullOrWhiteSpace(prefix))
                 _prefix = string.Empty;
             else
-                _prefix = prefix + ":";
+                _prefix = prefix.Trim() + ":";
         }
 
-        protected T GetConfigValue<T>(string path, T defaultValue = default) where T : notnull
+        protected T GetConfigValue<T>(string path, T defaultValue)
         {
-            // NOTE: disabled the warning here; neither _config or the return value can be null, it's a false positive
-            #pragma warning disable CS8603 // Possible null reference return.
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
+
             return _config.GetValue($"{_prefix}{path}", defaultValue);
-            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        protected T GetConfigValue<T>(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
+
+            var key = $"{_prefix}{path}";
+
+            if (_config[key] == null)
+                throw new MissingConfigurationValueException(key);
+
+            return _config.GetValue<T>($"{_prefix}{path}");
         }
     }
 }

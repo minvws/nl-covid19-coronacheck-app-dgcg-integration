@@ -6,6 +6,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 {
     public interface IContentSigner
     {
+        //TODO dead code
         //https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-crypt_algorithm_identifier
         string SignatureOid { get; }
         byte[] GetSignature(byte[] content, bool excludeCertificates = false);
