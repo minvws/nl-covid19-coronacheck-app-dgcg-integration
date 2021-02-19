@@ -15,6 +15,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using System.Threading.Tasks;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -26,9 +27,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProofOfTestAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProofOfTestAPI", Version = "v1"});
             });
-            
+
             // Proof of Test API
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
@@ -69,23 +70,26 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 
             if (env.IsDevelopment())
             {
+                // Show detailed exceptions
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // This returns an empty body in the case of exceptions
+                app.UseExceptionHandler(a => a.Run(context => Task.CompletedTask));
+            }
 
-            // Enable swagger everywhere temporarily!
+            // Provide swagger interface
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProofOfTestAPI v1"));
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseAuthorization();
-            
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

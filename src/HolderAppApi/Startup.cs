@@ -18,6 +18,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
 {
@@ -77,7 +78,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi
 
             if (env.IsDevelopment())
             {
+                // Show detailed exceptions
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // This returns an empty body in the case of exceptions
+                app.UseExceptionHandler(a => a.Run(context => Task.CompletedTask));
             }
 
             // Enable swagger everywhere temporarily!

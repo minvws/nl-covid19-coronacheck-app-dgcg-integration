@@ -11,6 +11,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using System;
+using System.Net;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 {
@@ -46,6 +47,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public IActionResult IssueProof(IssueProofRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestResult();
+            }
+
             if (request == null)
                 return new BadRequestResult();
 
@@ -54,7 +60,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                 var commitmentsJson = Base64.Decode(request.Commitments);
                 var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType);
 
-                var proofResult=
+                var proofResult =
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
 
                 var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
@@ -79,7 +85,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                 // todo IssuerException as urgent/actionable
                 // todo JsonDeserialized exception as urgent/actionable
 
-                return StatusCode(500);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+            catch (FormatException)
+            {
+                return new BadRequestResult();
             }
         }
 
