@@ -5,7 +5,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
