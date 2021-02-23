@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 {

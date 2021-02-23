@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HolderAppApiTests", "Holder
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Testing", "Common.Testing\Common.Testing.csproj", "{C3E6C58F-9B5E-48B2-902A-5862809DE416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsSigner", "CmsSigner\CmsSigner.csproj", "{76059D67-AED6-441B-B3E4-B1364D5F410C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmsSigner", "CmsSigner\CmsSigner.csproj", "{76059D67-AED6-441B-B3E4-B1364D5F410C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A20C5F91-0261-4C37-9370-42762BAB07EC}"
 EndProject

@@ -3,70 +3,90 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using CmsSigner.Certificates;
+using CmsSigner.Model;
+using CommandLine;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Pkcs;
+using static System.Convert;
 
 namespace CmsSigner
 {
     internal class Program
     {
-        private const string Example = "CmsSigner file_to_sign.xyz [path-to-x509-CMS-certificate] [password] [path-to-x509-CMS-chain]";
+        public class Options
+        {
+            [Option('i', "inputFile", Required = true, HelpText = "File to sign (Validate=False) | File containing json wrapper with payload/signature to validate (Validate=True")]
+            public string InputFile { get; set; }
+            
+            [Option('s', "signingCertFile", Required = true, HelpText = "Certificate (pfx, including private key) used to sign the input file")]
+            public string SigningCertificateFile { get; set; }
+
+            [Option('p', "password", Required = true, HelpText = "Password for the private key associated with the signing certificate")]
+            public string Password { get; set; }
+            
+            [Option('c', "certChainFile", Required = true, HelpText = "Certificate chain (p7b) for the signing certificate")]
+            public string CertificateChainFile { get; set; }
+
+            [Option('v', "validate", Required = false, HelpText = "Instead of signing inputFile, instead check the signature in signatureFile matches that from inputFile.")]
+            public bool Validate { get; set; }
+        }
+
 
         private static void Main(string[] args)
         {
-            if (args == null
-                || args.Length != 4
-                || string.IsNullOrWhiteSpace(args[0])
-                || string.IsNullOrWhiteSpace(args[1])
-                || string.IsNullOrWhiteSpace(args[2])
-                || string.IsNullOrWhiteSpace(args[3]))
-            {
-                Console.WriteLine("Something bad happened, this is how you call me: ");
-                Console.WriteLine();
-                Console.WriteLine(Example);
-
-                Environment.Exit(1);
-            }
-
-            try
-            {
-                Run(args);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something bad happened! See exception message for details:");
-                Console.WriteLine($"{e.Message}");
-
-                Environment.Exit(2);
-            }
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(Run)
+                .WithNotParsed(HandleParseError);
         }
-
-        private static void Run(IReadOnlyList<string> args)
+        
+        private static void Run(Options options)
         {
-            var inputFile = Load(args[0]);
-            var certFile = Load(args[1]);
-            var password = args[2];
-            var chainFile = Load(args[3]);
+            var inputFile = Load(options.InputFile);
+            var certFile = Load(options.SigningCertificateFile);
+            var chainFile = Load(options.CertificateChainFile);
 
-            var certProvider = new CertProvider(CertificateHelpers.Load(certFile, password));
+            var certProvider = new CertProvider(CertificateHelpers.Load(certFile, options.Password));
             var chainProvider = new ChainProvider(CertificateHelpers.LoadAll(chainFile));
             var signer = new CmsSignerEnhanced(certProvider, chainProvider, new StandardUtcDateTimeProvider());
             var serializer = new StandardJsonSerializer();
 
-            var result = new SignedDataResponse<object>
+            if (options.Validate)
             {
-                Payload = Convert.ToBase64String(inputFile),
-                Signature = Convert.ToBase64String(signer.GetSignature(inputFile))
+                var validator = new CmsValidatorEnhanced(certProvider, chainProvider);
+                var json = System.Text.Encoding.UTF8.GetString(inputFile);
+                var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
+                var signatureBytes = FromBase64String(signedDataResponse.Signature);
+                var payloadBytes = FromBase64String(signedDataResponse.Payload);
+
+                var valid = validator.Validate(payloadBytes, signatureBytes);
+
+                Console.WriteLine(valid ? "true" : "false");
+
+                Environment.Exit(0);
+            }
+
+            var result = new SignedDataResponse
+            {
+                Payload = ToBase64String(inputFile),
+                Signature = ToBase64String(signer.GetSignature(inputFile))
             };
 
-
             var resultJson = serializer.Serialize(result);
-
+            
             Console.Write(resultJson);
+        }
+
+        public static void HandleParseError(IEnumerable<Error> errs)
+        {
+            Console.WriteLine("Error parsing input, please check your call and try again.");
+
+            Environment.Exit(1);
         }
 
         private static byte[] Load(string path)
@@ -86,5 +106,29 @@ namespace CmsSigner
 
             return null;
         }
+        
+        //private static bool Validate(ICmsValidator signer, byte[] file)
+        //{
+        //    var serializer = new StandardJsonSerializer();
+        //    var json = System.Text.Encoding.UTF8.GetString(file);
+        //    var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
+        //    var signatureBytes = FromBase64String(signedDataResponse.Signature);
+        //    var payloadBytes = FromBase64String(signedDataResponse.Payload);
+
+        //    return signer.Validate(payloadBytes, signatureBytes);
+
+        //    //try
+        //    //{
+        //    //    var contentInfo = new ContentInfo(payloadBytes);
+        //    //    var cms = new SignedCms(contentInfo, true);
+        //    //    cms.Decode(signatureBytes);
+        //    //    cms.CheckSignature(true);
+        //    //}
+        //    //catch (CryptographicException)
+        //    //{
+        //    //    return false;
+        //    //}
+        //    //return true;
+        //}
     }
 }
