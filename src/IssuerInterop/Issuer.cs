@@ -2,9 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
