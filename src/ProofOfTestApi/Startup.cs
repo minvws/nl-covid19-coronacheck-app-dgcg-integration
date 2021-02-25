@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -114,19 +115,26 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             if (env == null) throw new ArgumentNullException(nameof(env));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
             
-            logger.LogInformation($"Initializing ProofOfTestAPI");
-            logger.LogInformation($"Service Registration information");
-            logger.LogInformation($"The following {_services.Count} services have been registered.");
+            var message = new StringBuilder();
+
+            logger.LogInformation("Initializing ProofOfTestAPI");
+
+            message.AppendLine("Service Registration information");
+            message.AppendLine($"The following {_services.Count} services have been registered.");
             foreach (var service in _services)
             {
-                logger.LogInformation(
+                message.AppendLine(
                     $"{service.ServiceType.Name} > {service.ImplementationType?.Name} [{service.Lifetime}]");
             }
+            logger.LogInformation(message.ToString());
 
-            logger.LogInformation($"Runtime Environment information");
-            logger.LogInformation($"Application name: {env.ApplicationName}");
-            logger.LogInformation($"Path: {env.ContentRootPath}");
-            logger.LogInformation($"Environment name: {env.EnvironmentName}");
+            message.Clear();
+            message.AppendLine("Runtime Environment information");
+            message.AppendLine($"Application name: {env.ApplicationName}");
+            message.AppendLine($"Path: {env.ContentRootPath}");
+            message.AppendLine($"Environment name: {env.EnvironmentName}");
+            
+            logger.LogInformation(message.ToString());
         }
     }
 }

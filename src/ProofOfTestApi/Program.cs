@@ -18,7 +18,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 
             try
             {
-                logger.Debug("Initializing..");
+                logger.Debug("Initializing the application.");
 
                 CreateHostBuilder(args).Build().Run();
             }
