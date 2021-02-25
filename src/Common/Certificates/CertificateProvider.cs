@@ -47,7 +47,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
             }
             else
             {
-                _logger.LogInformation("Using file-base CMS certificate: {_config.Path");
+                _logger.LogInformation($"Using file-base CMS certificate: {_config.Path}.");
             }
         }
     }

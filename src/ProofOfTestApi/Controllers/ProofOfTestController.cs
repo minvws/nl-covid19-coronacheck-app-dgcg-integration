@@ -49,14 +49,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogDebug("IssueProof: Invalid model state");
+                _logger.LogDebug("IssueProof: Invalid model state.");
 
                 return new BadRequestResult();
             }
 
             if (request == null)
             {
-                _logger.LogDebug("IssueProof: Empty request received");
+                _logger.LogDebug("IssueProof: Empty request received.");
 
                 return new BadRequestResult();
             }
@@ -88,19 +88,19 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             }
             catch (FormatException e)
             {
-                _logger.LogError("IssueProof: Error decoding either commitments or issuer message", e);
+                _logger.LogError("IssueProof: Error decoding either commitments or issuer message.", e);
 
                 return new BadRequestResult();
             }
             catch (IssuerException e)
             {
-                _logger.LogError("IssueProof: Error issuing proof", e);
+                _logger.LogError("IssueProof: Error issuing proof.", e);
 
                 return StatusCode((int) HttpStatusCode.InternalServerError);
             }
             catch (Exception e)
             {
-                _logger.LogError("IssueProof: Unexpected exception", e);
+                _logger.LogError("IssueProof: Unexpected exception.", e);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -116,7 +116,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         {
             if (request == null)
             {
-                _logger.LogDebug("IssueProof: Empty request received");
+                _logger.LogDebug("IssueProof: Empty request received.");
 
                 return new BadRequestResult();
             }
@@ -133,7 +133,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             }
             catch (IssuerException e)
             {
-                _logger.LogError("IssueProof: Error generating nonce", e);
+                _logger.LogError("IssueProof: Error generating nonce.", e);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }

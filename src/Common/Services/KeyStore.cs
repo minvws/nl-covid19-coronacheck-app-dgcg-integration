@@ -47,9 +47,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
             {
                 var msg = new StringBuilder();
 
-                msg.AppendLine("Using file-system certificates for the crypto library");
-                msg.AppendLine($"Private key: {_config.PathPrivateKey}");
-                msg.AppendLine($"Public key: {_config.PathPublicKey}");
+                msg.AppendLine("Using file-system certificates for the crypto library.");
+                msg.AppendLine($"Private key: {_config.PathPrivateKey}.");
+                msg.AppendLine($"Public key: {_config.PathPublicKey}.");
 
                 _logger.LogInformation(msg.ToString());
             }
