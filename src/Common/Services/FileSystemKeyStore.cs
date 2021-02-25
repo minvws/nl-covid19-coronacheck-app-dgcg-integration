@@ -22,7 +22,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 
         public string GetPrivateKey()
         {
-            _logger.LogInformation($"Loading private key from: {_config.PathPrivateKey}");
+            _logger.LogDebug($"Loading private key from: {_config.PathPrivateKey}");
 
             var file = File.ReadAllBytes(_config.PathPrivateKey);
 
@@ -31,7 +31,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 
         public string GetPublicKey()
         {
-            _logger.LogInformation($"Loading public key from: {_config.PathPublicKey}");
+            _logger.LogDebug($"Loading public key from: {_config.PathPublicKey}");
 
             var file = File.ReadAllBytes(_config.PathPublicKey);
 

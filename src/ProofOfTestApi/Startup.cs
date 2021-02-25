@@ -42,7 +42,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<IIssuerInterop, Issuer>();
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+            services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
@@ -50,18 +50,18 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddSingleton<IConfiguration>(configuration);
 
             // Certificate providers
-            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
-            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
-            services.AddScoped<ICertificateProvider, CertificateProvider>();
-            services.AddScoped<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
-            services.AddScoped<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
-            services.AddScoped<ICertificateChainProvider, CertificateChainProvider>();
+            services.AddSingleton<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddSingleton<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddSingleton<ICertificateProvider, CertificateProvider>();
+            services.AddSingleton<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
+            services.AddSingleton<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
+            services.AddSingleton<ICertificateChainProvider, CertificateChainProvider>();
 
             // Issuer
-            services.AddScoped<IKeyStore, KeyStore>();
-            services.AddScoped<AssemblyKeyStore, AssemblyKeyStore>();
-            services.AddScoped<FileSystemKeyStore, FileSystemKeyStore>();
-            services.AddScoped<IIssuerCertificateConfig, IssuerCertificateConfig>();
+            services.AddSingleton<IKeyStore, KeyStore>();
+            services.AddSingleton<AssemblyKeyStore, AssemblyKeyStore>();
+            services.AddSingleton<FileSystemKeyStore, FileSystemKeyStore>();
+            services.AddSingleton<IIssuerCertificateConfig, IssuerCertificateConfig>();
 
             _services = services;
         }
