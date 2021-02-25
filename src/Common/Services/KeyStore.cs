@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _assemblyKeyStore = assemblyKeyStore ?? throw new ArgumentNullException(nameof(assemblyKeyStore));
             _fileKeyStore = fileKeyStore ?? throw new ArgumentNullException(nameof(fileKeyStore));
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InitLog();
         }
