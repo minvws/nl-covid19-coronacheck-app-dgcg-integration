@@ -2,6 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -16,11 +18,14 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
     public class Startup
     {
+        private IServiceCollection _services;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,7 +42,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<IIssuerInterop, Issuer>();
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
-            services.AddScoped<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+            services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
 
             // Dotnet configuration stuff
@@ -45,24 +50,32 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddSingleton<IConfiguration>(configuration);
 
             // Certificate providers
-            services.AddScoped<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
-            services.AddScoped<FileSystemCertificateProvider, FileSystemCertificateProvider>();
-            services.AddScoped<ICertificateProvider, CertificateProvider>();
-            services.AddScoped<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
-            services.AddScoped<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
-            services.AddScoped<ICertificateChainProvider, CertificateChainProvider>();
+            services.AddSingleton<EmbeddedResourceCertificateProvider, EmbeddedResourceCertificateProvider>();
+            services.AddSingleton<FileSystemCertificateProvider, FileSystemCertificateProvider>();
+            services.AddSingleton<ICertificateProvider, CertificateProvider>();
+            services.AddSingleton<EmbeddedResourcesCertificateChainProvider, EmbeddedResourcesCertificateChainProvider>();
+            services.AddSingleton<FileSystemCertificateChainProvider, FileSystemCertificateChainProvider>();
+            services.AddSingleton<ICertificateChainProvider, CertificateChainProvider>();
 
             // Issuer
-            services.AddScoped<IKeyStore, KeyStore>();
-            services.AddScoped<AssemblyKeyStore, AssemblyKeyStore>();
-            services.AddScoped<FileSystemKeyStore, FileSystemKeyStore>();
-            services.AddScoped<IIssuerCertificateConfig, IssuerCertificateConfig>();
+            services.AddSingleton<IKeyStore, KeyStore>();
+            services.AddSingleton<AssemblyKeyStore, AssemblyKeyStore>();
+            services.AddSingleton<FileSystemKeyStore, FileSystemKeyStore>();
+            services.AddSingleton<IIssuerCertificateConfig, IssuerCertificateConfig>();
+
+            _services = services;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-            // Support for a reverse proxy
+            if (app == null) throw new ArgumentNullException(nameof(app));
+            if (env == null) throw new ArgumentNullException(nameof(env));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
+
+            LogInitializationBanner(env, logger);
+
+            logger.LogInformation("Enabling support for reverse proxy headers");
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -70,18 +83,23 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 
             if (env.IsDevelopment())
             {
-                // Show detailed exceptions
+                logger.LogWarning("Development Mode is active!");
+
+                logger.LogInformation("Development Mode: Exceptions will be displayed.");
                 app.UseDeveloperExceptionPage();
+                
+                logger.LogInformation("Development Mode: Swagger interface activate.");
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProofOfTestAPI v1"));
+
             }
             else
             {
-                // This returns an empty body in the case of exceptions
+                logger.LogInformation("Production Mode is active!");
+                
+                logger.LogInformation("Supressing exception message body");
                 app.UseExceptionHandler(a => a.Run(context => Task.CompletedTask));
             }
-
-            // Provide swagger interface
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProofOfTestAPI v1"));
 
             app.UseHttpsRedirection();
 
@@ -90,6 +108,33 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void LogInitializationBanner(IWebHostEnvironment env, ILogger<Startup> logger)
+        {
+            if (env == null) throw new ArgumentNullException(nameof(env));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
+            
+            var message = new StringBuilder();
+
+            logger.LogInformation("Initializing ProofOfTestAPI");
+
+            message.AppendLine("Service Registration information");
+            message.AppendLine($"The following {_services.Count} services have been registered.");
+            foreach (var service in _services)
+            {
+                message.AppendLine(
+                    $"{service.ServiceType.Name} > {service.ImplementationType?.Name} [{service.Lifetime}]");
+            }
+            logger.LogInformation(message.ToString());
+
+            message.Clear();
+            message.AppendLine("Runtime Environment information");
+            message.AppendLine($"Application name: {env.ApplicationName}");
+            message.AppendLine($"Path: {env.ContentRootPath}");
+            message.AppendLine($"Environment name: {env.EnvironmentName}");
+            
+            logger.LogInformation(message.ToString());
         }
     }
 }

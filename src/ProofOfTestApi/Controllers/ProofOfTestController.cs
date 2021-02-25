@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
@@ -18,21 +19,21 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
     [Route("proof")]
     public class ProofOfTestController : ControllerBase
     {
+        private readonly ILogger<ProofOfTestController> _logger;
         private readonly IProofOfTestService _potService;
-        private readonly IUtcDateTimeProvider _dateTimeProvider;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISignedDataResponseBuilder _srb;
         private readonly IApiSigningConfig _apiSigningConfig;
 
         public ProofOfTestController(
+            ILogger<ProofOfTestController> logger,
             IProofOfTestService potService,
-            IUtcDateTimeProvider dateTimeProvider,
             IJsonSerializer jsonSerializer,
             ISignedDataResponseBuilder signedDataResponseBuilder,
             IApiSigningConfig apiSigningConfig)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _potService = potService ?? throw new ArgumentNullException(nameof(potService));
-            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
             _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
@@ -48,12 +49,18 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogDebug("IssueProof: Invalid model state.");
+
                 return new BadRequestResult();
             }
 
             if (request == null)
-                return new BadRequestResult();
+            {
+                _logger.LogDebug("IssueProof: Empty request received.");
 
+                return new BadRequestResult();
+            }
+            
             try
             {
                 var commitmentsJson = Base64.Decode(request.Commitments);
@@ -79,16 +86,23 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                     ? Ok(_srb.Build(issueProofResult))
                     : Ok(issueProofResult);
             }
-            catch (IssuerException)
+            catch (FormatException e)
             {
-                // todo IssuerException as urgent/actionable
-                // todo JsonDeserialized exception as urgent/actionable
+                _logger.LogError("IssueProof: Error decoding either commitments or issuer message.", e);
+
+                return new BadRequestResult();
+            }
+            catch (IssuerException e)
+            {
+                _logger.LogError("IssueProof: Error issuing proof.", e);
+
+                return StatusCode((int) HttpStatusCode.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("IssueProof: Unexpected exception.", e);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
-            catch (FormatException)
-            {
-                return new BadRequestResult();
             }
         }
 
@@ -101,15 +115,28 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         public IActionResult GenerateNonce(GenerateNonceRequest request)
         {
             if (request == null)
+            {
+                _logger.LogDebug("IssueProof: Empty request received.");
+
                 return new BadRequestResult();
+            }
 
-            var nonce = _potService.GenerateNonce();
+            try
+            {
+                var nonce = _potService.GenerateNonce();
 
-            var result = new GenerateNonceResult {Nonce = nonce, SessionToken = request.SessionToken};
-            
-            return _apiSigningConfig.WrapAndSignResult
-                ? Ok(_srb.Build(result))
-                : Ok(result);
+                var result = new GenerateNonceResult { Nonce = nonce, SessionToken = request.SessionToken };
+
+                return _apiSigningConfig.WrapAndSignResult
+                    ? Ok(_srb.Build(result))
+                    : Ok(result);
+            }
+            catch (IssuerException e)
+            {
+                _logger.LogError("IssueProof: Error generating nonce.", e);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
