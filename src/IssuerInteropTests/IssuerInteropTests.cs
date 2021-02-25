@@ -7,6 +7,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
@@ -25,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
         public void TestsIssueProof()
         {
             var issuer = new Issuer();
-            var keystore = new AssemblyKeyStore();
+            var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
 
             var issuerPkXml = keystore.GetPublicKey();
             var issuerSkXml = keystore.GetPrivateKey();
