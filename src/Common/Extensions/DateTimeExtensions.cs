@@ -16,5 +16,21 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
         {
             return $"{date:yyyy-MM-dd}T{date:HH}:00:00.0000000Z";
         }
+
+        /// <summary>
+        /// Returns TRUE if [comparisionDate] - [nHours] &lt; [date] &lt; [comparisionDate]
+        /// </summary>
+        public static bool LessThanNHoursBefore(this DateTime date, int nHours, DateTime comparisionDate)
+        {
+            return date >= comparisionDate.AddHours(-1 * nHours) && date <= comparisionDate;
+        }
+
+        /// <summary>
+        /// Returns TRUE if the date-time precision is to the hour
+        /// </summary>
+        public static bool IsHourPrecision(this DateTime date)
+        {
+            return date.Minute == 0 && date.Second == 0 && date.Millisecond == 00;
+        }
     }
 }
