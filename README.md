@@ -11,8 +11,8 @@ This repository contains the <platform> implementation of the Dutch COVID-19 <pr
 ### Prereqs
 
 * Dotnet 5 SDK (https://dotnet.microsoft.com/download/dotnet/5.0)
-* Go issuer C library built for your platform (current the Windows x64 build is included in this repo)
-* Postgres 13+
+* Go issuer C library built for your platform (see [Issuer library](#issuer-library))  
+* Postgres 13+ is required to run `VerifierAppApi` and `HolderAppApi`
 
 ### Nice to have
 
@@ -52,6 +52,29 @@ The services in HolderAppApi and VerifierAppApi are designed to be used behind a
 You can run the projects locally, one at a time, using the Docker images provided in each project.
 
 In order to run the projects you will need to configure them. 
+
+## Issuer library
+
+The backend relies on the CTCL issuer library for the crypto operations. We will include a small guide on building this libary here.
+
+The libary is available in the CTCL repository: https://github.com/minvws/nl-covid19-coronatester-ctcl-core
+
+### Prereqs
+
+Install the version of these tools appropriate to your platform/cpu.
+
+* Go 1.15.7+ installed and in your path.
+  * Check that it's installed by running: `go version`
+* GCC 9.2.0+ installed and in your path.
+  * Check that it's installed by running: `gcc --version`
+
+### Building the library
+
+* Ensure that you've checked out `nl-covid19-coronatester-ctcl-core`.
+* Move to the directory `issuer/cinterface`.
+* Build the libray: `go build -buildmode=c-shared -o issuer.dll`
+
+You can then copy `issuer.dll` and `issuer.h` from `nl-covid19-coronatester-ctcl-core/issuer/cinterface` to the folder `src/IssuerInterop` in `nl-covid19-coronatester-app-backend-private`.
 
 ## Configuration of the services
 
