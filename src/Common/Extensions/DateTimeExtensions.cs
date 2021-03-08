@@ -9,12 +9,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
     public static class DateTimeExtensions
     {
         /// <summary>
-        /// GO API string is based on ISO 1806 format but including only the hour (minutes/second are zeroed out).
+        /// GO API string is based on ISO 1806 format but including only the hour (minutes/second are zeroed out) and is in UTC.
         /// </summary>
-        /// <example>2021-01-25T13:00:00.0000000Z</example>
+        /// <example>2021-01-25T13:00:00.00Z</example>
         public static string ToGoApiString(this DateTime date)
         {
-            return $"{date:yyyy-MM-dd}T{date:HH}:00:00.0000000Z";
+            var utcDate = date.ToUniversalTime();
+
+            return $"{utcDate:yyyy-MM-dd}T{utcDate:HH}:00:00.00Z";
         }
 
         /// <summary>
@@ -22,7 +24,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
         /// </summary>
         public static bool LessThanNHoursBefore(this DateTime date, int nHours, DateTime comparisionDate)
         {
-            return date >= comparisionDate.AddHours(-1 * nHours) && date <= comparisionDate;
+            var from = comparisionDate.AddHours(-1 * nHours);
+
+            return date >= from && date <= comparisionDate;
         }
 
         /// <summary>
