@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
 {
+    /// <summary>
+    /// Validates that the string matches the structure of a base64 string
+    /// </summary>
     public class Base64StringAttribute : ValidationAttribute
     {
         private const string ValidationError = "Input is not a valid base64 string";
@@ -15,7 +18,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
         /// <summary>
         /// Matches the alphabet per page 6 of RFC 4648 (https://tools.ietf.org/html/rfc4648)
         /// </summary>
-        private const string Base64StringPattern = @"[a-zA-Z0-9=\+\/]+";
+        private const string Base64StringPattern = @"^[a-zA-Z0-9=\+\/]+$";
         
         private readonly Regex _expression;
 
@@ -29,8 +32,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
             if (value == null) return new ValidationResult(ValidationError);
 
             var valueString = (string) value;
-            
-            return _expression.IsMatch(valueString) ? ValidationResult.Success : new ValidationResult(ValidationError);
+
+            // Check length is divisible by 4
+            if (valueString.Length % 4 != 0)
+                return new ValidationResult(ValidationError);
+
+            // Check against the regex
+            if (!_expression.IsMatch(valueString))
+                return new ValidationResult(ValidationError);
+
+            return ValidationResult.Success;
         }
     }
 }
