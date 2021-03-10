@@ -21,11 +21,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
             ValidityHours = validityHours;
         }
 
-        protected override ValidationResult? IsValid(object? value, ValidationContext _)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value == null) return new ValidationResult(ValidationError);
 
-            var dateTimeProvider = GetDateTimeProvider(_);
+            var dateTimeProvider = GetDateTimeProvider(validationContext);
             var date = (DateTime) value;
 
             return date.LessThanNHoursBefore(ValidityHours, dateTimeProvider.Snapshot)
@@ -33,9 +33,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
                 : new ValidationResult(ValidationError);
         }
 
-        private static IUtcDateTimeProvider GetDateTimeProvider(ValidationContext _)
+        private static IUtcDateTimeProvider GetDateTimeProvider(ValidationContext validationContext)
         {
-            var service = _.GetService(typeof(IUtcDateTimeProvider));
+            var service = validationContext.GetService(typeof(IUtcDateTimeProvider));
             if (service == null) throw new InvalidOperationException("Service IUtcDateTimeProvider is not available.");
             return (IUtcDateTimeProvider) service;
         }
