@@ -9,24 +9,24 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using System;
 using System.Net;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
 {
     [ApiController]
     [Route("proof")]
-    public class ProofOfTestController : ControllerBase
+    public class IssuerController : ControllerBase
     {
-        private readonly ILogger<ProofOfTestController> _logger;
+        private readonly ILogger<IssuerController> _logger;
         private readonly IProofOfTestService _potService;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISignedDataResponseBuilder _srb;
         private readonly IApiSigningConfig _apiSigningConfig;
 
-        public ProofOfTestController(
-            ILogger<ProofOfTestController> logger,
+        public IssuerController(
+            ILogger<IssuerController> logger,
             IProofOfTestService potService,
             IJsonSerializer jsonSerializer,
             ISignedDataResponseBuilder signedDataResponseBuilder,

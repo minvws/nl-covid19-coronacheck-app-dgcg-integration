@@ -6,15 +6,15 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
 {
     /// <summary>
     /// Tests operating on the HTTP/REST interface and running in a web-server

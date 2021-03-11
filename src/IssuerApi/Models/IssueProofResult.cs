@@ -4,7 +4,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
 {
     public class IssueProofResult
     {

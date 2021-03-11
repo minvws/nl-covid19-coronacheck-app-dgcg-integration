@@ -2,14 +2,13 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
-using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
@@ -17,10 +16,11 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using System;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
 {
     public class Startup
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfTestApi", "ProofOfTestApi\ProofOfTestApi.csproj", "{5021BEB6-5928-48C2-A590-6AFDD6BE8296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerApi", "IssuerApi\IssuerApi.csproj", "{5021BEB6-5928-48C2-A590-6AFDD6BE8296}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerInterop", "IssuerInterop\IssuerInterop.csproj", "{90C7E302-B410-44DF-AD06-6C11FF50A7F4}"
 EndProject
@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{4647
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerInteropExampleTests", "IssuerInteropExampleTests\IssuerInteropExampleTests.csproj", "{B84B176D-7351-4F23-951B-F783105B4C46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfTestApiTests", "ProofOfTestApiTests\ProofOfTestApiTests.csproj", "{F99B9622-595C-4E73-BFBF-9F1D47975288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerApiTests", "IssuerApiTests\IssuerApiTests.csproj", "{F99B9622-595C-4E73-BFBF-9F1D47975288}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Web", "Common.Web\Common.Web.csproj", "{67279E2D-AE0E-454C-BCDF-69B80548E876}"
 EndProject
@@ -40,9 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmsSigner", "CmsSigner\CmsS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A20C5F91-0261-4C37-9370-42762BAB07EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Web.Tests", "Common.Web.Tests\Common.Web.Tests.csproj", "{62D8BBC3-E07F-45D1-A454-8526E18AAC0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Web.Tests", "Common.Web.Tests\Common.Web.Tests.csproj", "{62D8BBC3-E07F-45D1-A454-8526E18AAC0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{EE00A9D5-076D-4BFF-85E7-C08D271698D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{EE00A9D5-076D-4BFF-85E7-C08D271698D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

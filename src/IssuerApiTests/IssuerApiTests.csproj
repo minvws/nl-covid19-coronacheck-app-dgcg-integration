@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</AssemblyName>
+    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests</AssemblyName>
 
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</RootNamespace>
+    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
-    <ProjectReference Include="..\ProofOfTestApi\ProofOfTestApi.csproj" />
+    <ProjectReference Include="..\IssuerApi\IssuerApi.csproj" />
   </ItemGroup>
 
 </Project>
