@@ -39,12 +39,5 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
         [Base64String]
         [JsonPropertyName("commitments")]
         public string Commitments { get; set; }
-
-        /// <summary>
-        /// SessionToken.
-        /// </summary>
-        [Required]
-        [JsonPropertyName("sessionToken")]
-        public string SessionToken { get; set; }
     }
 }

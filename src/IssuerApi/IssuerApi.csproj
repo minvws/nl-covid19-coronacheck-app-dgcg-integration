@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Common.Database\Common.Database.csproj" />
+    <ProjectReference Include="..\IssuerApi.Models\IssuerApi.Models.csproj" />
 	<ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
   </ItemGroup>
 

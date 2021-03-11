@@ -4,12 +4,11 @@
 
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 {
     public class IssueProofResult
     {
         [JsonPropertyName("ism")] public IssueSignatureMessage Ism { get; set; }
         [JsonPropertyName("attributes")] public Attributes Attributes { get; set; }
-        [JsonPropertyName("stoken")] public string SessionToken { get; set; }
     }
 }

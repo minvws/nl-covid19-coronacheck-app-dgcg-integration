@@ -2,16 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
 {
-    public class GenerateNonceRequest
+    public class GenerateNonceResult
     {
-        /// <summary>
-        /// SessionToken.
-        /// </summary>
-        [Required]
-        public string SessionToken { get; set; }
+        [JsonPropertyName("nonce")] public string Nonce { get; set; }
     }
 }

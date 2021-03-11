@@ -4,7 +4,6 @@
 
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
@@ -19,15 +18,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
     /// <summary>
     /// Tests operating on the HTTP/REST interface and running in a web-server
     /// </summary>
-    public class ProofOfTestControllerTests : TesterWebApplicationFactory<Startup>
+    public class IssuerControllerTests : TesterWebApplicationFactory<Startup>
     {
         [Fact]
         public async Task Post_Proof_Nonce_returns_nonce()
         {
             // Arrange
             var client = Factory.CreateClient();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Nonce_returns_nonce.json");
-            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var requestContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
             // Act
             var result = await client.PostAsync("proof/nonce", requestContent );
@@ -61,7 +59,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
         {
             // Arrange
             var client = Factory.CreateClient();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
+            var requestJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
             // Act
@@ -74,7 +72,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<IssueProofResult>(responseBody);
-            Assert.NotEmpty(typedResult.SessionToken);
             Assert.NotNull(typedResult.Attributes);
             Assert.NotNull(typedResult.Ism);
             Assert.NotNull(typedResult.Ism.Proof);
@@ -84,9 +81,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
         private async Task<GenerateNonceResult> GetNonce()
         {
             var client = Factory.CreateClient();
-            var jsonSerializer = new StandardJsonSerializer();
-            var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Nonce_returns_nonce.json");
-            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var requestContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
             var result = await client.PostAsync("proof/nonce", requestContent);
             var responseBody = await result.Content.ReadAsStringAsync();
             return Unwrap<GenerateNonceResult>(responseBody);

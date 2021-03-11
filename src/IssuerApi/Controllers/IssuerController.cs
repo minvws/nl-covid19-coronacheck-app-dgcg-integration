@@ -78,8 +78,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
                     {
                         SampleTime = attributes.SampleTime,
                         TestType = attributes.TestType
-                    },
-                    SessionToken = request.SessionToken
+                    }
                 };
 
                 return _apiSigningConfig.WrapAndSignResult
@@ -112,20 +111,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
         [HttpPost]
         [Route("nonce")]
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]
-        public IActionResult GenerateNonce(GenerateNonceRequest request)
+        public IActionResult GenerateNonce()
         {
-            if (request == null)
-            {
-                _logger.LogDebug("IssueProof: Empty request received.");
-
-                return new BadRequestResult();
-            }
-
             try
             {
                 var nonce = _potService.GenerateNonce();
 
-                var result = new GenerateNonceResult { Nonce = nonce, SessionToken = request.SessionToken };
+                var result = new GenerateNonceResult { Nonce = nonce };
 
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(result))
