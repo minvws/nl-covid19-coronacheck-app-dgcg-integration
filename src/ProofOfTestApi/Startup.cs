@@ -62,6 +62,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 
             // API specific
             services.AddScoped<ITestResultLog, RedisTestResultLog>();
+            services.AddScoped<IRedisTestResultLogConfig, RedisTestResultLogConfig>();
             services.AddScoped<IIssuerApiClient, IssuerApiClient>();
             services.AddScoped<ISessionDataStore, SessionDataStore>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

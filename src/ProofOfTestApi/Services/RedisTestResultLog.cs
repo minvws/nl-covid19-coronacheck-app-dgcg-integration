@@ -19,15 +19,28 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
         public RedisTestResultLog(IRedisTestResultLogConfig config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
+
+            // The multiplexor is designed to be a long-life object, it's expensive to build but thread-safe,
+            // for now I've tied the lifetime of the instance to this instance.
+            // TODO: can we move the LCM to the DI container?
             _redis = ConnectionMultiplexer.Connect(_config.Configuration);
         }
 
-        public async Task Add(string unique, string providerId)
+        public async Task<bool> Add(string unique, string providerId)
         {
             var key = CreateUniqueKey(unique, providerId);
+
             var db = _redis.GetDatabase();
-            await db.StringIncrementAsync(key);
-            await db.KeyExpireAsync(key, TimeSpan.FromHours(_config.Duration));
+
+            // Execute the ADD in a transaction; if a key already exists then
+            // the transaction will rollback and won't be committed. This
+            // ensures that the operation is atomic and thus test results
+            // cannot be issued twice.
+            var tran = db.CreateTransaction();
+            tran.AddCondition(Condition.KeyNotExists(key));
+            await tran.StringSetAsync(key, key, TimeSpan.FromHours(_config.Duration));
+
+            return  await tran.ExecuteAsync();
         }
 
         public async Task<bool> Contains(string unique, string providerId)
@@ -37,7 +50,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
 
             var value = await db.StringGetAsync(key);
 
-            return value.HasValue;
+            // IsNull is TRUE when the key was not found; the documentation on StringGetAsync refers
+            // to a special `nil` value but that appears to be mixing of lingo.
+            // Source: https://github.com/StackExchange/StackExchange.Redis/blob/main/docs/KeysValues.md
+            return !value.IsNull;
         }
 
         private string CreateUniqueKey(string unique, string providerId)

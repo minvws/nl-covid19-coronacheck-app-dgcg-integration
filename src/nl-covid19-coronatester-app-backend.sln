@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfTestApiTests", "Proo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerApi.Models", "IssuerApi.Models\IssuerApi.Models.csproj", "{3EF83306-A96F-41D7-9588-7BB33A38620E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDA17976-FD6F-4549-8074-0C41E7EEB821}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{752749ED-F976-4A04-96A8-5CA9C484D265}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection

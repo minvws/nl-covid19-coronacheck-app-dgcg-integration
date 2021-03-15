@@ -8,7 +8,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
 {
     public interface ITestResultLog
     {
-        Task Add(string unique, string providerId);
+        Task<bool> Add(string unique, string providerId);
         Task<bool> Contains(string unique, string providerId);
     }
 }

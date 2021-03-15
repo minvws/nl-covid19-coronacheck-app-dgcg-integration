@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 {
     [ApiController]
-    [Route("proof")]
+    [Route("test")]
     public class ProofOfTestController : ControllerBase
     {
         private readonly ITestResultLog _testResultLog;
@@ -48,7 +48,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         }
 
         [HttpPost]
-        [Route("issue")]
+        [Route("proof")]
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public async Task<IActionResult> IssueProof(IssueProofRequest request)
         {
@@ -71,7 +71,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
 
-            await _testResultLog.Add(request.UnpackedTestResult.Result.Unique, request.UnpackedTestResult.ProviderIdentifier);
+            var resultAdded = await _testResultLog.Add(request.UnpackedTestResult.Result.Unique, request.UnpackedTestResult.ProviderIdentifier);
+
+            if(!resultAdded)
+                return BadRequest("Duplicate test result");
 
             _sessionData.RemoveNonce();
 
