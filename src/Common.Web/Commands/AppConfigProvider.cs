@@ -23,7 +23,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands
 
         public AppConfigResult Get(string type)
         {
-            if(string.IsNullOrWhiteSpace(type)) throw new ArgumentNullException(nameof(type));
+            if (string.IsNullOrWhiteSpace(type)) throw new ArgumentNullException(nameof(type));
 
             using var ctx = _contextFactory();
 

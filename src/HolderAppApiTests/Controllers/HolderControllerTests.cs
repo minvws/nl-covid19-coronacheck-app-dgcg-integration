@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApiTests.Controllers
             var result = await client.GetAsync("holder/config");
 
             // Assert: result OK
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode); 
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();
@@ -40,7 +40,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApiTests.Controllers
             Assert.NotEmpty(typedResult.InformationUrl);
             Assert.False(typedResult.AppDeactivated);
         }
-        
+
         [Fact]
         public async Task Get_Holder_TestTypes_returns_valid_config_object()
         {

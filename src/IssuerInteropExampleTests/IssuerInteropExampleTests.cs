@@ -28,7 +28,7 @@
 //            var attributes = new[] {"attributes", "tested"};
 
 //            var expected = issuerPkXml + "|" + issuerSkXml + "|" + issuerNonceB64 + "|" + commitmentsJson + "|" + attributes[0];
-            
+
 //            var result = Issuer.IssueProof(issuerPkXml, issuerSkXml, issuerNonceB64, commitmentsJson, attributes);
 
 //            Assert.Equal(result, expected);

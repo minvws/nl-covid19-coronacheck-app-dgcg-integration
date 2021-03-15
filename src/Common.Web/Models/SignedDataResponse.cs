@@ -18,6 +18,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
         [Base64String]
         public string Signature { get; set; }
 
+        [JsonIgnore]
+        public byte[] PayloadBytes => System.Convert.FromBase64String(Payload);
+
+        [JsonIgnore]
+        public byte[] SignatureBytes => System.Convert.FromBase64String(Signature);
+
         /// <summary>
         /// Unpacks Payload as T.
         /// </summary>
@@ -26,7 +32,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
             if (string.IsNullOrWhiteSpace(Payload)) return default;
 
             var payloadString = Base64.Decode(Payload);
-            
+
             return serializer.Deserialize<T>(payloadString);
         }
     }

@@ -23,7 +23,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         [JsonPropertyName("status")]
         [RegularExpression(Expr.Status)]
         public string Status { get; set; }
-        
+
         [Required]
         [JsonPropertyName("result")]
         public TestResultDetails Result { get; set; }

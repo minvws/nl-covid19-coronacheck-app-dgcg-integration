@@ -5,6 +5,7 @@
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -54,14 +55,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 
         [JsonIgnore] public TestResult UnpackedTestResult { get; set; }
 
-        [JsonIgnore] public Commitments UnpackedCommitments { get; set; }
+        [JsonIgnore] public IssuerCommitmentMessage UnpackedCommitments { get; set; }
 
         public bool UnpackAll(IJsonSerializer serializer)
         {
             try
             {
                 UnpackedTestResult = TestResult.Unpack(serializer);
-                UnpackedCommitments = serializer.Deserialize<Commitments>(Commitments);
+                UnpackedCommitments = serializer.Deserialize<IssuerCommitmentMessage>(Commitments);
             }
             catch
             {
@@ -72,10 +73,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         }
 
         #endregion
-    }
 
-    public class Commitments
-    {
-
+        public bool ValidateSignature(ITestProviderSignatureValidator signatureValidator)
+        {
+            return signatureValidator.Validate(
+                UnpackedTestResult.ProviderIdentifier, 
+                TestResult.PayloadBytes,
+                TestResult.SignatureBytes);
+        }
     }
 }

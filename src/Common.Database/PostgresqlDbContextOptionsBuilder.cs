@@ -2,10 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
 using Microsoft.EntityFrameworkCore;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using Npgsql;
+using System;
 
 namespace Common.Database
 {

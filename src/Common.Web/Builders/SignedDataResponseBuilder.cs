@@ -29,7 +29,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders
             var jsonString = _jsonSerializer.Serialize(responseDto);
             var response = new SignedDataResponse<T>
             {
-                Payload = Base64.Encode(jsonString), Signature = GetSignatureB64(jsonString)
+                Payload = Base64.Encode(jsonString),
+                Signature = GetSignatureB64(jsonString)
             };
             return response;
         }

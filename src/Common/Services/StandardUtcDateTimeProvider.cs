@@ -14,7 +14,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         }
 
         public DateTime Now() => DateTime.UtcNow;
-        
+
         /// <summary>
         /// Time of start of transaction scope
         /// </summary>

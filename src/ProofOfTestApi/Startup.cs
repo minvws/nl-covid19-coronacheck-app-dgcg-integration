@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web;
@@ -65,6 +66,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<ISessionDataStore, SessionDataStore>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IIssuerApiClientConfig, IssuerApiClientConfig>();
+
+            // Test validation (one shared instance)
+            services.AddSingleton<IFileLoader, FileSystemFileLoader>();
+            services.AddSingleton<ITestProviderSignatureValidatorConfig, TestProviderSignatureValidatorConfig>();
+            services.AddSingleton<ITestProviderSignatureValidator, TestProviderSignatureValidator>();
 
             // Commonly used services
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();

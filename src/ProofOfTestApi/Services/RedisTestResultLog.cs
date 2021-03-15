@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config;
+using StackExchange.Redis;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
 {

@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
 using Microsoft.AspNetCore.Mvc;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using System;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi.Controllers
 {
@@ -53,7 +53,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.HolderAppApi.Controllers
         public IActionResult TestType()
         {
             var testTypes = _testTypesProvider.Get();
-            var result = new TestTypeResult {TestTypes = testTypes};
+            var result = new TestTypeResult { TestTypes = testTypes };
 
             return _apiSigningConfig.WrapAndSignResult
                 ? Ok(_signedResponseBuilder.Build(result))

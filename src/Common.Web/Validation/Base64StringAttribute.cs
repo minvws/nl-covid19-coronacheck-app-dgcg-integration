@@ -19,7 +19,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
         /// Matches the alphabet per page 6 of RFC 4648 (https://tools.ietf.org/html/rfc4648)
         /// </summary>
         private const string Base64StringPattern = @"^[a-zA-Z0-9=\+\/]+$";
-        
+
         private readonly Regex _expression;
 
         public Base64StringAttribute()
@@ -31,7 +31,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
         {
             if (value == null) return new ValidationResult(ValidationError);
 
-            var valueString = (string) value;
+            var valueString = (string)value;
 
             // Check length is divisible by 4
             if (valueString.Length % 4 != 0)

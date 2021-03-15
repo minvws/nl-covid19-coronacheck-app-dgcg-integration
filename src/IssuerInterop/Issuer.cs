@@ -6,7 +6,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using System;
 using System.Runtime.InteropServices;
 
- namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 {
     public class Issuer : IIssuerInterop
     {
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
         public string GenerateNonce()
         {
             var result = Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
-            
+
             if (string.IsNullOrWhiteSpace(result))
             {
                 throw new GoIssuerException();

@@ -12,7 +12,7 @@ namespace Common.Database
 {
     public static class DbContextExtensions
     {
-        public static T CreateDbContext<T>(this IServiceProvider serviceProvider, Func<DbContextOptions, T> ctor, string connName) 
+        public static T CreateDbContext<T>(this IServiceProvider serviceProvider, Func<DbContextOptions, T> ctor, string connName)
             where T : DbContext
         {
             if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));

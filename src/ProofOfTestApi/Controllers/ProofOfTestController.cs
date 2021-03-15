@@ -24,6 +24,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         private readonly ILogger<ProofOfTestController> _logger;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISignedDataResponseBuilder _srb;
+        private readonly ITestProviderSignatureValidator _signatureValidator;
         private readonly IApiSigningConfig _apiSigningConfig;
 
         public ProofOfTestController(
@@ -33,6 +34,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             ILogger<ProofOfTestController> logger,
             IJsonSerializer jsonSerializer,
             ISignedDataResponseBuilder signedDataResponseBuilder,
+            ITestProviderSignatureValidator signatureValidator,
             IApiSigningConfig apiSigningConfig)
         {
             _testResultLog = testResultLog ?? throw new ArgumentNullException(nameof(testResultLog));
@@ -41,6 +43,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));
             _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
         }
 
@@ -54,7 +57,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             if (!ModelState.IsValid)
                 return ValidationProblem();
-            
+
+            if (!request.ValidateSignature(_signatureValidator))
+                return BadRequest("Test result signature is invalid");
+
             if (await _testResultLog.Contains(request.UnpackedTestResult.Result.Unique, request.UnpackedTestResult.ProviderIdentifier))
                 return BadRequest("Duplicate test result");
 
@@ -64,7 +70,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                 return BadRequest("Invalid session");
 
             var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
-                
+
             await _testResultLog.Add(request.UnpackedTestResult.Result.Unique, request.UnpackedTestResult.ProviderIdentifier);
 
             _sessionData.RemoveNonce();
@@ -73,7 +79,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
                 ? OkWrapped(result.ToProofOfTestApiResult())
                 : Ok(result.ToProofOfTestApiResult());
         }
-        
+
         [HttpPost]
         [Route("nonce")]
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]

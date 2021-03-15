@@ -5,13 +5,13 @@
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
@@ -30,10 +30,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act
-            var result = await client.PostAsync("proof/nonce", requestContent );
+            var result = await client.PostAsync("proof/nonce", requestContent);
 
             // Assert: result OK
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode); 
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();
@@ -55,7 +55,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             // Assert
             Assert.NotEqual(resultA.Nonce, resultB.Nonce);
         }
-        
+
         [Fact]
         public async Task Post_Proof_Issue_returns_proof()
         {
@@ -63,9 +63,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var client = Factory.CreateClient();
             var requestJson = typeof(ProofOfTestControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            
+
             // Act
-            
+
             var result = await client.PostAsync("proof/issue", requestContent);
 
             // Assert: result OK
@@ -79,7 +79,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             Assert.NotNull(typedResult.Ism.Proof);
             Assert.NotNull(typedResult.Ism.Signature);
         }
-        
+
         private async Task<GenerateNonceResult> GetNonce()
         {
             var client = Factory.CreateClient();

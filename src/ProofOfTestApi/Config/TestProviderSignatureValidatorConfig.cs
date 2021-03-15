@@ -4,15 +4,16 @@
 
 using Microsoft.Extensions.Configuration;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using System.Collections.Generic;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config
 {
-    public class IssuerApiClientConfig : AppSettingsReader, IIssuerApiClientConfig
+    public class TestProviderSignatureValidatorConfig : AppSettingsReader, ITestProviderSignatureValidatorConfig
     {
-        public IssuerApiClientConfig(IConfiguration config) : base(config, "IssuerApi")
+        public TestProviderSignatureValidatorConfig(IConfiguration config) : base(config, "TestSigning")
         {
         }
 
-        public string BaseUrl => GetConfigValue<string>(nameof(BaseUrl));
+        public Dictionary<string, string> ProviderCertificates => GetConfigValue<Dictionary<string, string>>(nameof(ProviderCertificates));
     }
 }

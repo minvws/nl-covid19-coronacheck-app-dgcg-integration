@@ -48,7 +48,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfTestApi", "ProofOfTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfTestApiTests", "ProofOfTestApiTests\ProofOfTestApiTests.csproj", "{FFADCCE0-9615-4F6A-B610-AF0713AB1077}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IssuerApi.Models", "IssuerApi.Models\IssuerApi.Models.csproj", "{3EF83306-A96F-41D7-9588-7BB33A38620E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerApi.Models", "IssuerApi.Models\IssuerApi.Models.csproj", "{3EF83306-A96F-41D7-9588-7BB33A38620E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDA17976-FD6F-4549-8074-0C41E7EEB821}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

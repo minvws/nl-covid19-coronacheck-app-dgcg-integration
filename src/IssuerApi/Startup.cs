@@ -32,7 +32,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProofOfTestAPI", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProofOfTestAPI", Version = "v1" });
             });
 
             // Proof of Test API
@@ -87,7 +87,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
 
                 logger.LogInformation("Development Mode: Exceptions will be displayed.");
                 app.UseDeveloperExceptionPage();
-                
+
                 logger.LogInformation("Development Mode: Swagger interface activate.");
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProofOfTestAPI v1"));
@@ -96,7 +96,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
             else
             {
                 logger.LogInformation("Production Mode is active!");
-                
+
                 logger.LogInformation("Supressing exception message body");
                 app.UseExceptionHandler(a => a.Run(context => Task.CompletedTask));
             }
@@ -114,7 +114,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
         {
             if (env == null) throw new ArgumentNullException(nameof(env));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
-            
+
             var message = new StringBuilder();
 
             logger.LogInformation("Initializing ProofOfTestAPI");
@@ -133,7 +133,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
             message.AppendLine($"Application name: {env.ApplicationName}");
             message.AppendLine($"Path: {env.ContentRootPath}");
             message.AppendLine($"Environment name: {env.EnvironmentName}");
-            
+
             logger.LogInformation(message.ToString());
         }
     }

@@ -16,7 +16,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
         [Required]
         [JsonPropertyName("testType")]
         public string TestType { get; set; }
-        
+
         /// <summary>
         /// Unix time for when the test sample was taken
         /// </summary>

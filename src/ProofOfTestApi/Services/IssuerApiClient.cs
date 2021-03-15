@@ -30,7 +30,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
             _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public async Task<IssueProofResult> IssueProof(IssuerApi.Models.IssueProofRequest request)
+        public async Task<IssueProofResult> IssueProof(IssueProofRequest request)
         {
             var client = _clientFactory.CreateClient();
             var requestJson = _jsonSerializer.Serialize(request);

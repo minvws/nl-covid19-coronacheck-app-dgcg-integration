@@ -8,8 +8,8 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using System;
 using System.Net;
 
@@ -60,7 +60,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
 
                 return new BadRequestResult();
             }
-            
+
             try
             {
                 var commitmentsJson = Base64.Decode(request.Commitments);
@@ -95,7 +95,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
             {
                 _logger.LogError("IssueProof: Error issuing proof.", e);
 
-                return StatusCode((int) HttpStatusCode.InternalServerError);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
             catch (Exception e)
             {

@@ -5,7 +5,7 @@
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
     public interface IJsonSerializer
-    { 
+    {
         string Serialize<T>(T obj);
         TContent Deserialize<TContent>(string input);
     }

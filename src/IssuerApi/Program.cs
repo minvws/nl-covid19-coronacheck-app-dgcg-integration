@@ -34,7 +34,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
                 NLog.LogManager.Shutdown();
             }
         }
-        
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })

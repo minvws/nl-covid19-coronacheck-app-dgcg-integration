@@ -2,8 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
 {
