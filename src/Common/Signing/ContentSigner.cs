@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
             var dtp = new StandardUtcDateTimeProvider();
 
             var certificateBytes = System.IO.File.ReadAllBytes(certificatePath);
-            var certificate = new X509Certificate2(certificateBytes);
+            var certificate = new X509Certificate2(certificateBytes, password, X509KeyStorageFlags.Exportable);
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
             var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);

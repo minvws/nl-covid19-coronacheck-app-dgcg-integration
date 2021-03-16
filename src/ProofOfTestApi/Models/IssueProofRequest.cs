@@ -8,6 +8,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 {
@@ -48,7 +49,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
             try
             {
                 Test = TestResult.Unpack(serializer);
-                Icm = serializer.Deserialize<IssuerCommitmentMessage>(Commitments);
+                var icmString = Base64.Decode(Commitments);
+                Icm = serializer.Deserialize<IssuerCommitmentMessage>(icmString);
             }
             catch
             {
