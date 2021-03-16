@@ -9,5 +9,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
     public class GenerateNonceResult
     {
         [JsonPropertyName("nonce")] public string Nonce { get; set; }
+        [JsonPropertyName("sToken")] public string SessionToken { get; set; }
     }
 }

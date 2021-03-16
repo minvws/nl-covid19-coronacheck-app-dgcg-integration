@@ -64,9 +64,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             if (await _testResultLog.Contains(request.UnpackedTestResult.Result.Unique, request.UnpackedTestResult.ProviderIdentifier))
                 return BadRequest("Duplicate test result");
 
-            var nonce = _sessionData.GetNonce();
+            var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken);
 
-            if (nonce == null)
+            if (!nonceFound)
                 return BadRequest("Invalid session");
 
             var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
@@ -76,7 +76,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             if(!resultAdded)
                 return BadRequest("Duplicate test result");
 
-            _sessionData.RemoveNonce();
+            await _sessionData.RemoveNonce(request.SessionToken);
 
             return _apiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result.ToProofOfTestApiResult())
@@ -90,11 +90,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         {
             var result = await _issuerApiClient.GenerateNonce();
 
-            _sessionData.AddNonce(result.Nonce);
+            var sessionToken = await _sessionData.AddNonce(result.Nonce);
 
             return _apiSigningConfig.WrapAndSignResult
-                ? OkWrapped(result.ToProofOfTestApiResult())
-                : Ok(result.ToProofOfTestApiResult());
+                ? OkWrapped(result.ToProofOfTestApiResult(sessionToken))
+                : Ok(result.ToProofOfTestApiResult(sessionToken));
         }
 
         private OkObjectResult OkWrapped<T>(T result)

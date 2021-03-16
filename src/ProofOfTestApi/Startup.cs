@@ -35,7 +35,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Configuration
-            services.AddSingleton<IRedisSessionCacheConfig, RedisSessionCacheConfig>();
+            // services.AddSingleton<IRedisSessionCacheConfig, RedisSessionCacheConfig>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -43,20 +43,20 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProofOfTestApi", Version = "v1"});
             });
 
-            var sessionCacheConfig = ResolveSessionCacheConfig(services);
+            // var sessionCacheConfig = ResolveSessionCacheConfig(services);
 
-            services.AddStackExchangeRedisCache(action =>
-            {
-                action.InstanceName = sessionCacheConfig.InstanceName;
-                action.Configuration = sessionCacheConfig.Configuration;
-            });
+            //services.AddStackExchangeRedisCache(action =>
+            //{
+            //    action.InstanceName = sessionCacheConfig.InstanceName;
+            //    action.Configuration = sessionCacheConfig.Configuration;
+            //});
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromSeconds(StaticConfig.SessionTimeout);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromSeconds(StaticConfig.SessionTimeout);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true;
+            //});
 
             services.AddHttpClient();
 
@@ -64,7 +64,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             services.AddScoped<ITestResultLog, RedisTestResultLog>();
             services.AddScoped<IRedisTestResultLogConfig, RedisTestResultLogConfig>();
             services.AddScoped<IIssuerApiClient, IssuerApiClient>();
-            services.AddScoped<ISessionDataStore, SessionDataStore>();
+            services.AddScoped<ISessionDataStore, RedisSessionStore>();
+            services.AddSingleton<IRedisSessionStoreConfig, RedisSessionStoreConfig>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IIssuerApiClientConfig, IssuerApiClientConfig>();
 
@@ -109,7 +110,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             //app.UseAuthorization();
 
             // NOTE: this must be after .UseRouting() but before .UseEndpoints()
-            app.UseSession();
+            //app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -117,10 +118,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             });
         }
 
-        private static IRedisSessionCacheConfig ResolveSessionCacheConfig(IServiceCollection services)
-        {
-            var provider = services.BuildServiceProvider();
-            return provider.GetService<IRedisSessionCacheConfig>() ?? throw new InvalidOperationException("No IRedisSessionCacheConfig registered ");
-        }
+        //private static IRedisSessionCacheConfig ResolveSessionCacheConfig(IServiceCollection services)
+        //{
+        //    var provider = services.BuildServiceProvider();
+        //    return provider.GetService<IRedisSessionCacheConfig>() ?? throw new InvalidOperationException("No IRedisSessionCacheConfig registered ");
+        //}
     }
 }

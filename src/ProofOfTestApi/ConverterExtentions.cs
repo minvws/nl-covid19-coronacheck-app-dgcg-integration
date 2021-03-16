@@ -41,11 +41,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             };
         }
 
-        public static ProofOfTestApi.Models.GenerateNonceResult ToProofOfTestApiResult(this IssuerApi.Models.GenerateNonceResult result)
+        public static ProofOfTestApi.Models.GenerateNonceResult ToProofOfTestApiResult(this IssuerApi.Models.GenerateNonceResult result, string sessionToken)
         {
             return new GenerateNonceResult
             {
-                Nonce = result.Nonce
+                Nonce = result.Nonce,
+                SessionToken = sessionToken
             };
         }
     }
