@@ -4,20 +4,23 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</AssemblyName>
+
+    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
-    <None Remove="EmbeddedResources\Post_Proof_Nonce_returns_nonce.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
-    <EmbeddedResource Include="EmbeddedResources\Post_Proof_Nonce_returns_nonce.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +35,19 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\ProofOfTestApi\ProofOfTestApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Certs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Certs\TST001.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certs\TST002.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

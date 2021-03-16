@@ -14,8 +14,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             return new IssueProofRequest
             {
                 Commitments = request.Commitments,
-                SampleTime = request.SampleTime,
-                TestType = request.TestType,
+                SampleTime = request.Test.Result.SampleDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                TestType = request.Test.Result.TestType,
                 Nonce = nonce
             };
         }

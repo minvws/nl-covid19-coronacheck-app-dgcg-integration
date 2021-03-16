@@ -22,12 +22,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders
         }
 
         //TODO could constrain to class? If struct are returned, null check is superfluous but would cause no side effects
-        public SignedDataResponse<T> Build<T>(T responseDto)
+        public SignedDataWrapper<T> Build<T>(T responseDto)
         {
             if (responseDto == null) throw new ArgumentNullException(nameof(responseDto));
 
             var jsonString = _jsonSerializer.Serialize(responseDto);
-            var response = new SignedDataResponse<T>
+            var response = new SignedDataWrapper<T>
             {
                 Payload = Base64.Encode(jsonString),
                 Signature = GetSignatureB64(jsonString)

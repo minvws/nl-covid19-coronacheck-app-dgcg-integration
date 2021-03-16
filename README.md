@@ -208,7 +208,7 @@ Prereqs:
 1. Create an x509 certificate
 
     ```
-    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaTester/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
+    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaCheck/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
     ```
 
 2. Create a pkcs12 from the x509 keypair with the password '123456'

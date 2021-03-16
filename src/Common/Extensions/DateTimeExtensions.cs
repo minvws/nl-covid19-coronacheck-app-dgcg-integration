@@ -36,5 +36,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
         {
             return date.Minute == 0 && date.Second == 0 && date.Millisecond == 00;
         }
+        
+        /// <summary>
+        /// Returns a new DateTime with hour precision using FLOOR()
+        /// </summary>
+        public static DateTime ToHourPrecision(this DateTime date)
+        {
+            return date.Date.AddHours(date.Hour);
+        }
     }
 }

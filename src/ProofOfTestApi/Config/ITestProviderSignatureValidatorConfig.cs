@@ -9,7 +9,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config
     public interface ITestProviderSignatureValidatorConfig
     {
         /// <summary>
-        /// Key: providerId, Value: path to their signing certificate
+        /// Key: providerId, Value: path to their signing certificate on the filesystem
         /// </summary>
         Dictionary<string, string> ProviderCertificates { get; }
     }

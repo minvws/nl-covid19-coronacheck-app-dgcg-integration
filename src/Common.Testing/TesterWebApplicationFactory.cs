@@ -28,7 +28,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
 
             if (content.Contains("payload"))
             {
-                var signingWrapperResult = JsonSerializer.Deserialize<SignedDataResponse<T>>(content);
+                var signingWrapperResult = JsonSerializer.Deserialize<SignedDataWrapper<T>>(content);
                 Assert.NotEmpty(signingWrapperResult.Payload);
                 Assert.NotEmpty(signingWrapperResult.Signature);
                 var payloadString = Base64.Decode(signingWrapperResult.Payload);

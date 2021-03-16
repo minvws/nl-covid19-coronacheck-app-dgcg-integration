@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
 {
-    public class SignedDataResponse<T>
+    public class SignedDataWrapper<T>
     {
         [JsonPropertyName("payload")]
         [Base64String]

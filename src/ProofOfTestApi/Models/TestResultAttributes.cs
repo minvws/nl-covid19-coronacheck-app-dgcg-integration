@@ -10,12 +10,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
     public class TestResultAttributes
     {
         [Required]
-        [RegularExpression("A-Z")]
+        [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("firstNameInitial")]
         public char FirstNameInitial { get; set; }
 
         [Required]
-        [RegularExpression("A-Z")]
+        [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("lastNameInitial")]
         public char LastNameInitial { get; set; }
 
