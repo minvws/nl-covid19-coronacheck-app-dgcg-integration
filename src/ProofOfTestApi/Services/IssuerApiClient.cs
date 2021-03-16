@@ -19,9 +19,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
         private readonly IJsonSerializer _jsonSerializer;
 
         private readonly IHttpClientFactory _clientFactory;
-        private string GenerateNonceUrl => _config.BaseUrl + "/issuer/post";
+        private string GenerateNonceUrl => _config.BaseUrl + "/proof/issue";
 
-        private string IssueProofUrl => _config.BaseUrl + "/issuer/post";
+        private string IssueProofUrl => _config.BaseUrl + "/proof/nonce";
 
         public IssuerApiClient(IIssuerApiClientConfig config, IJsonSerializer jsonSerializer, IHttpClientFactory clientFactory)
         {
