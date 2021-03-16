@@ -32,7 +32,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProofOfTestAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IssuerApi", Version = "v1" });
             });
 
             // Proof of Test API

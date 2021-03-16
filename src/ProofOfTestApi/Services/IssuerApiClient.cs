@@ -19,9 +19,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
         private readonly IJsonSerializer _jsonSerializer;
 
         private readonly IHttpClientFactory _clientFactory;
-        private string GenerateNonceUrl => _config.BaseUrl + "/proof/issue";
+        private string IssueProofUrl  => _config.BaseUrl + "/proof/issue";
 
-        private string IssueProofUrl => _config.BaseUrl + "/proof/nonce";
+        private string GenerateNonceUrl => _config.BaseUrl + "/proof/nonce";
 
         public IssuerApiClient(IIssuerApiClientConfig config, IJsonSerializer jsonSerializer, IHttpClientFactory clientFactory)
         {
@@ -52,9 +52,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
         public async Task<GenerateNonceResult> GenerateNonce()
         {
             var client = _clientFactory.CreateClient();
-            var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync(GenerateNonceUrl, content);
+            var request = new HttpRequestMessage(HttpMethod.Post, GenerateNonceUrl);
+            
+            var response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {
