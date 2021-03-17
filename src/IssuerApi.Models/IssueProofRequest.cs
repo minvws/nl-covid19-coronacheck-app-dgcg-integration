@@ -16,50 +16,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
         [Required]
         [JsonPropertyName("attributes")]
         public Attributes Attributes { get; set; }
-
-        #region Attributes
-
-        ///// <summary>
-        ///// String representing (UUID) of the test type.
-        ///// </summary>
-        //[Required]
-        //[JsonPropertyName("testType")]
-        //public string TestType { get; set; }
-
-        ///// <summary>
-        ///// Unix time for when the test sample was taken
-        ///// </summary>
-        //[Required]
-        //[JsonPropertyName("sampleTime")]
-        //public string SampleTime { get; set; }
-
-
-        ///// <summary>
-        ///// A-Z{1}
-        ///// </summary>
-        //[JsonPropertyName("firstNameInitial")] 
-        //public string FirstNameInitial { get; set; }
-
-        ///// <summary>
-        ///// A-Z{1}
-        ///// </summary>
-        //[JsonPropertyName("lastNameInitial")] 
-        //public string LastNameInitial { get; set; }
-
-        ///// <summary>
-        ///// 1-31 or X
-        ///// </summary>
-        //[JsonPropertyName("birthDay")] 
-        //public string BirthDay { get; set; }
-
-        ///// <summary>
-        ///// 1-12 or X
-        ///// </summary>
-        //[JsonPropertyName("birthMonth")] 
-        //public string BirthMonth { get; set; }
-
-        #endregion
-
+        
         /// <summary>
         /// Nonce bytes formatted as a base64 string.
         /// </summary>
