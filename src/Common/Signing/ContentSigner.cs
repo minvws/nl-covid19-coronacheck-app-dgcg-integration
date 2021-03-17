@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
             var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
-            var signingTime = new Pkcs9SigningTime(dtp.Now());
+            var signingTime = new Pkcs9SigningTime(dtp.Snapshot);
 
             if (excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
 
