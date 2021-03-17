@@ -4,7 +4,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
 {
     public class Attributes
     {

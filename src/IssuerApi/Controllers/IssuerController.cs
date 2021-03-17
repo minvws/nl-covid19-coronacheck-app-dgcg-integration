@@ -64,7 +64,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
             try
             {
                 var commitmentsJson = Base64.Decode(request.Commitments);
-                var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType, request.FirstNameInitial, request.LastNameInitial, request.BirthDay, request.BirthMonth);
+                var attributes = new ProofOfTestAttributes(
+                    request.Attributes.SampleTime, 
+                    request.Attributes.TestType, 
+                    request.Attributes.FirstNameInitial, 
+                    request.Attributes.LastNameInitial, 
+                    request.Attributes.BirthDay, 
+                    request.Attributes.BirthMonth);
 
                 var proofResult =
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);

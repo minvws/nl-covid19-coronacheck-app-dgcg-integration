@@ -76,7 +76,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
                 .Setup(x => x.IssueProof(It.IsAny<IssuerApi.Models.IssueProofRequest>()))
                 .ReturnsAsync(new IssueProofResult
                     {
-                        Attributes = new NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models.Attributes
+                        Attributes = new Attributes
                         {
                             SampleTime = "2021-03-01T10:00:00Z",
                             TestType = "PCR"

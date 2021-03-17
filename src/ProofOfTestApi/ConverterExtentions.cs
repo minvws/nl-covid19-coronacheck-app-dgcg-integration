@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using IssueProofRequest = NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models.IssueProofRequest;
 
@@ -14,9 +15,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             return new IssueProofRequest
             {
                 Commitments = request.Commitments,
-                SampleTime = request.Test.Result.SampleDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                TestType = request.Test.Result.TestType,
-                Nonce = nonce
+                Nonce = nonce,
+                Attributes = new Attributes
+                {
+                    SampleTime = request.Test.Result.SampleDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    TestType = request.Test.Result.TestType,
+                    BirthDay = request.Test.Result.Holder.BirthDay,
+                    BirthMonth = request.Test.Result.Holder.BirthMonth,
+                    FirstNameInitial = request.Test.Result.Holder.FirstNameInitial,
+                    LastNameInitial = request.Test.Result.Holder.LastNameInitial
+                }
             };
         }
 
@@ -24,11 +32,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
         {
             return new IssueProofResult
             {
-                Attributes = new Attributes
-                {
-                    SampleTime = result.Attributes.SampleTime,
-                    TestType = result.Attributes.TestType
-                },
+                Attributes = result.Attributes,
                 Ism = new IssueSignatureMessage
                 {
                     Proof = new Proof
