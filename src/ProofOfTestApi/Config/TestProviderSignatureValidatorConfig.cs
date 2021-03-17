@@ -14,6 +14,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config
         {
         }
 
-        public Dictionary<string, string> ProviderCertificates => GetConfigValue<Dictionary<string, string>>(nameof(ProviderCertificates));
+        public Dictionary<string, string> ProviderCertificates => GetSection(nameof(ProviderCertificates)).Get<Dictionary<string, string>>();
     }
 }

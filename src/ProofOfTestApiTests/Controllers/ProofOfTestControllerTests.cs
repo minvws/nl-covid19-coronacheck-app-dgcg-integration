@@ -20,8 +20,11 @@ using Moq;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using Xunit;
+using GenerateNonceResult = NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models.GenerateNonceResult;
+using IssueProofRequest = NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models.IssueProofRequest;
 using IssueProofResult = NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models.IssueProofResult;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
@@ -71,7 +74,24 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                 .Setup(x => x.IssueProof(It.IsAny<IssuerApi.Models.IssueProofRequest>()))
-                .ReturnsAsync(new IssueProofResult());
+                .ReturnsAsync(new IssueProofResult
+                    {
+                        Attributes = new NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models.Attributes
+                        {
+                            SampleTime = "2021-03-01T10:00:00Z",
+                            TestType = "PCR"
+                        },
+                        Ism = new IssuerApi.Models.IssueSignatureMessage
+                        {
+                            Proof = new IssuerApi.Models.Proof
+                            {
+                                C = "",
+                                ErrorResponse = ""
+                            },
+                            Signature = ""
+                        }
+                    }
+                );
             mockIssuerApi
                 .Setup(x => x.GenerateNonce())
                 .ReturnsAsync(new IssuerApi.Models.GenerateNonceResult { Nonce = nonce });

@@ -19,6 +19,7 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -72,8 +73,17 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             // Test validation (one shared instance)
             services.AddSingleton<IFileLoader, FileSystemFileLoader>();
             services.AddSingleton<ITestProviderSignatureValidatorConfig, TestProviderSignatureValidatorConfig>();
-            services.AddSingleton<ITestProviderSignatureValidator, TestProviderSignatureValidator>();
-
+            //services.AddSingleton<ITestProviderSignatureValidator, TestProviderSignatureValidator>();
+            services.AddSingleton<ITestProviderSignatureValidator>(provider =>
+            {
+                var config = provider.GetService<ITestProviderSignatureValidatorConfig>();
+                var fileLoader = provider.GetService<IFileLoader>();
+                var log = provider.GetService<ILogger<TestProviderSignatureValidator>>();
+                var instance = new TestProviderSignatureValidator(config, fileLoader, log);
+                instance.Initialize();
+                return instance;
+            });
+            
             // Commonly used services
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
@@ -116,6 +126,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             {
                 endpoints.MapControllers();
             });
+
+
+
         }
 
         //private static IRedisSessionCacheConfig ResolveSessionCacheConfig(IServiceCollection services)

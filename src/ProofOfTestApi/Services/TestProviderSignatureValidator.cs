@@ -84,7 +84,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
 
                 return true;
             }
-            catch (CryptographicException)
+            catch (CryptographicException e)
             {
                 return false;
             }
