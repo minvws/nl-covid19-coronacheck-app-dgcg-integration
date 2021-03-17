@@ -70,21 +70,20 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
                 return false;
             }
 
+            var collection = new X509Certificate2Collection(providerCertificate);
+
             var contentInfo = new ContentInfo(content);
 
             var signedCms = new SignedCms(contentInfo, true);
-
-            signedCms.Certificates.Add(providerCertificate);
-
             signedCms.Decode(signature);
 
             try
             {
-                signedCms.CheckSignature(true);
+                signedCms.CheckSignature(collection, true);
 
                 return true;
             }
-            catch (CryptographicException e)
+            catch (CryptographicException)
             {
                 return false;
             }

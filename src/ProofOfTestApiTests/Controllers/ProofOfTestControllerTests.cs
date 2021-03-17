@@ -2,26 +2,24 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using System;
-using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Moq;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
+using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Moq;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using Xunit;
 using GenerateNonceResult = NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models.GenerateNonceResult;
 using IssueProofRequest = NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models.IssueProofRequest;
@@ -167,7 +165,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var testResultJson = json.Serialize(testResult);
             var testResultBytes = Encoding.UTF8.GetBytes(testResultJson);
             var testResultB64 = Convert.ToBase64String(testResultBytes);
-            var testResultSignature = Signer.ComputeSignatureCms(testResultB64, "Certs\\TST001.pfx", "123456");
+            var testResultSignature = Signer.ComputeSignatureCms(testResultBytes, "Certs\\TST001.pfx", "123456");
             var testResultSignatureB64 = Convert.ToBase64String(testResultSignature);
 
             var request = new IssueProofRequest
