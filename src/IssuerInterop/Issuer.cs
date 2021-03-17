@@ -16,8 +16,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         private static extern IntPtr GenerateIssuerNonceB64();
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64,
-            GoString commitmentsJson, GoString attributes);
+        private static extern IntPtr Issue(GoString issuerPkId, GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes);
 
         // extern char* Issue(GoString publicKey, GoString privateKey, GoString nonce, GoString commitments, GoString attributesJson);
 
@@ -36,6 +35,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         /// <summary>
         /// Issue the cryptographic proof of test
         /// </summary>
+        /// <param name="publicKeyId">Public key id as a string</param>
         /// <param name="publicKey">Public key from the issuer in XML format</param>
         /// <param name="privateKey">Private key from the issuer in XML format</param>
         /// <param name="nonce">Nonce received from client encoded as a base64 string</param>
@@ -56,15 +56,16 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         ///    }
         ///}
         /// </returns>
-        public string IssueProof(string publicKey, string privateKey, string nonce, string commitments, string attributes)
+        public string IssueProof(string publicKeyId, string publicKey, string privateKey, string nonce, string commitments, string attributes)
         {
+            var issuerPkId = GoHelpers.ToWrappedGoString(publicKeyId);
             var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
             var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
             var issuerNonceB64Go = GoHelpers.ToWrappedGoString(nonce);
             var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
+            var result = Issue(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
 
             var returnType = Marshal.PtrToStringAnsi(result);
 

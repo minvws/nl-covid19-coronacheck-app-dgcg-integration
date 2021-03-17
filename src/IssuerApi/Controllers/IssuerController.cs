@@ -64,22 +64,22 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
             try
             {
                 var commitmentsJson = Base64.Decode(request.Commitments);
-                var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType);
+                var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType, request.FirstNameInitial, request.LastNameInitial, request.BirthDay, request.BirthMonth);
 
                 var proofResult =
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
-
-                var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
-
-                var issueProofResult = new IssueProofResult
-                {
-                    Ism = issuerMessage,
-                    Attributes = new Attributes
-                    {
-                        SampleTime = attributes.SampleTime,
-                        TestType = attributes.TestType
-                    }
-                };
+                
+                var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
+                //// TODO: CreateCredentialMessage
+                //var issueProofResult = new IssueProofResult
+                //{
+                //    Ism = issuerMessage,
+                //    Attributes = new Attributes
+                //    {
+                //        SampleTime = attributes.SampleTime,
+                //        TestType = attributes.TestType
+                //    }
+                //};
 
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(issueProofResult))

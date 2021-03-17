@@ -62,6 +62,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
             services.AddSingleton<AssemblyKeyStore, AssemblyKeyStore>();
             services.AddSingleton<FileSystemKeyStore, FileSystemKeyStore>();
             services.AddSingleton<IIssuerCertificateConfig, IssuerCertificateConfig>();
+            services.AddSingleton<IIssuerConfig, IssuerConfig>();
 
             _services = services;
         }

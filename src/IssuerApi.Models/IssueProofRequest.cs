@@ -24,6 +24,60 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
         [JsonPropertyName("sampleTime")]
         public string SampleTime { get; set; }
 
+
+
+
+
+
+
+        // TODO this properly
+
+        /// <summary>
+        /// A-Z{1}
+        /// </summary>
+        [JsonPropertyName("firstNameInitial")] 
+        public string FirstNameInitial { get; set; }
+
+        /// <summary>
+        /// A-Z{1}
+        /// </summary>
+        [JsonPropertyName("lastNameInitial")] 
+        public string LastNameInitial { get; set; }
+
+        /// <summary>
+        /// 1-31 or X
+        /// </summary>
+        [JsonPropertyName("birthDay")] 
+        public string BirthDay { get; set; }
+
+        /// <summary>
+        /// 1-12 or X
+        /// </summary>
+        [JsonPropertyName("birthMonth")] 
+        public string BirthMonth { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Nonce bytes formatted as a base64 string.
         /// </summary>

@@ -152,10 +152,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
                 {
                     Holder = new TestResultAttributes
                     {
-                        BirthDay = 1,
-                        BirthMonth = 1,
-                        FirstNameInitial = 'A',
-                        LastNameInitial = 'B'
+                        BirthDay = "1",
+                        BirthMonth = "1",
+                        FirstNameInitial = "A",
+                        LastNameInitial = "B"
                     },
                     NegativeResult = true,
                     SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),

@@ -12,21 +12,21 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
         [Required]
         [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("firstNameInitial")]
-        public char FirstNameInitial { get; set; }
+        public string FirstNameInitial { get; set; }
 
         [Required]
         [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("lastNameInitial")]
-        public char LastNameInitial { get; set; }
+        public string LastNameInitial { get; set; }
 
         [Required]
-        [Range(1, 31)]
+        [RegularExpression("^1[0-9]$|^2[0-9]$|^3[0-1]$|^[xX1-9]$")]
         [JsonPropertyName("birthDay")]
-        public int BirthDay { get; set; }
+        public string BirthDay { get; set; }
 
         [Required]
-        [Range(1, 12)]
+        [RegularExpression("^1[0-2]$|^[xX1-9]$")]
         [JsonPropertyName("birthMonth")]
-        public int BirthMonth { get; set; }
+        public string BirthMonth { get; set; }
     }
 }
