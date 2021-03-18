@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
             if (value == null) return new ValidationResult(ValidationError);
 
             var dateTimeProvider = GetDateTimeProvider(validationContext);
-            var date = (DateTime) value;
+            var date = (DateTime)value;
 
             return date.LessThanNHoursBefore(ValidityHours, dateTimeProvider.Snapshot)
                 ? ValidationResult.Success
@@ -37,7 +37,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
         {
             var service = validationContext.GetService(typeof(IUtcDateTimeProvider));
             if (service == null) throw new InvalidOperationException("Service IUtcDateTimeProvider is not available.");
-            return (IUtcDateTimeProvider) service;
+            return (IUtcDateTimeProvider)service;
         }
     }
 }

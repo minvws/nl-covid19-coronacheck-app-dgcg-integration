@@ -6,36 +6,46 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using System;
 using System.Runtime.InteropServices;
 
- namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 {
     public class Issuer : IIssuerInterop
     {
         private const string LibraryName = "issuer.dll";
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr GenerateIssuerNonceB64();
+        private static extern IntPtr GenerateIssuerNonceB64(GoString issuerPkId);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64,
-            GoString commitmentsJson, GoString attributes);
+        private static extern IntPtr Issue(GoString issuerPkId, GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes);
 
         // extern char* Issue(GoString publicKey, GoString privateKey, GoString nonce, GoString commitments, GoString attributesJson);
 
-        public string GenerateNonce()
+        public string GenerateNonce(string publicKeyId)
         {
-            var result = Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
-            
-            if (string.IsNullOrWhiteSpace(result))
+            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
+
+            try
+            {
+                var result = Marshal.PtrToStringAnsi(GenerateIssuerNonceB64(issuerPkId));
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    throw new GoIssuerException();
+                }
+
+                return GoHelpers.UnwrapString(result);
+            }
+            catch (AccessViolationException)
             {
                 throw new GoIssuerException();
             }
-
-            return GoHelpers.UnwrapString(result);
+            
         }
 
         /// <summary>
         /// Issue the cryptographic proof of test
         /// </summary>
+        /// <param name="publicKeyId">Public key id as a string</param>
         /// <param name="publicKey">Public key from the issuer in XML format</param>
         /// <param name="privateKey">Private key from the issuer in XML format</param>
         /// <param name="nonce">Nonce received from client encoded as a base64 string</param>
@@ -56,15 +66,16 @@ using System.Runtime.InteropServices;
         ///    }
         ///}
         /// </returns>
-        public string IssueProof(string publicKey, string privateKey, string nonce, string commitments, string attributes)
+        public string IssueProof(string publicKeyId, string publicKey, string privateKey, string nonce, string commitments, string attributes)
         {
+            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
             var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
             var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
-            var issuerNonceB64Go = GoHelpers.ToWrappedGoString(nonce);
+            var issuerNonceB64Go = GoHelpers.ToGoString(nonce);
             var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
+            var result = Issue(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
 
             var returnType = Marshal.PtrToStringAnsi(result);
 

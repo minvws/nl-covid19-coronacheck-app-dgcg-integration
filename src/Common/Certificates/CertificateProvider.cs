@@ -29,7 +29,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
             _embeddedProvider = embeddedProvider ?? throw new ArgumentNullException(nameof(embeddedProvider));
             _fileSystemProvider = fileSystemProvider ?? throw new ArgumentNullException(nameof(fileSystemProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            
+
             InitLog();
         }
 

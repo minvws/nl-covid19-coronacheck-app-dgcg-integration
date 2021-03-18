@@ -16,7 +16,7 @@ namespace Common.Database.Model
         public virtual DbSet<AppConfig> AppConfigs { get; set; }
 
         public virtual DbSet<TestType> TestTypes { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "English_United Kingdom.1252");

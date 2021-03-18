@@ -20,8 +20,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Tests.Validation
         public void HourPrecisionValidatesCorrectly(string dateString, bool expectedResult)
         {
             var date = DateTime.Parse(dateString, CultureInfo.InvariantCulture).ToUniversalTime();
-            var attribute = new DatePrecisionAttribute { Precision = PrecisionLevel.Hour};
-            
+            var attribute = new DatePrecisionAttribute { Precision = PrecisionLevel.Hour };
+
             var result = attribute.IsValid(date);
 
             Assert.Equal(expectedResult, result);

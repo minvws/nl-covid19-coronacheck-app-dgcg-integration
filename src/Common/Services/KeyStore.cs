@@ -2,9 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
-using Microsoft.Extensions.Logging;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {

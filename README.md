@@ -12,6 +12,7 @@ This repository contains the <platform> implementation of the Dutch COVID-19 <pr
 
 * Dotnet 5 SDK (https://dotnet.microsoft.com/download/dotnet/5.0)
 * Go issuer C library built for your platform (see [Issuer library](#issuer-library))  
+* Redis is required for the ProofOfTestApi, for a small guide to installing it see [Installing Redis](#installing-redis))  
 * Postgres 13+ is required to run `VerifierAppApi` and `HolderAppApi`
 
 ### Nice to have
@@ -75,6 +76,40 @@ Install the version of these tools appropriate to your platform/cpu.
 * Build the libray: `go build -buildmode=c-shared -o issuer.dll`
 
 You can then copy `issuer.dll` and `issuer.h` from `nl-covid19-coronatester-ctcl-core/issuer/cinterface` to the folder `src/IssuerInterop` in `nl-covid19-coronatester-app-backend-private`.
+
+## Installing Redis
+
+We use Redis under Linux; for Windows users there is a port, however it's very easy to install it under `Windows Subsystem for Linux 2` so we recommend using that. You can of course use Docker or a VM. If you choose a Debian-based distribution (Debian, Ubuntu, Linux Mint etc) then you can follow this guide. This small guide has been written using WSL2 with an Ubuntu image.
+
+First, use `apt-get` (or whatever tooling your distro provides) to install redis:
+ 
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install redis-server
+```
+
+Check that it installed OK:
+
+```
+redis-cli -v
+```
+
+Then you can control the service with these commands:
+
+```
+sudo service redis-server start
+sudo service redis-server stop
+sudo service redis-server restart
+```
+
+..and interact with Redis via the CLI:
+
+```
+redis-cli
+```
+
+Redis will now be running on `localhost:6379`.
 
 ## Configuration of the services
 
@@ -146,6 +181,10 @@ We currently build the test CMS certificate into the assembly, if you want to us
   }
 ```
 
+### Configuration: redis
+
+TODO
+
 ## Creating a CMS Certificate
 
 As mentioned earlier, for the response singing, you'll need an x.509 certificate. One is included in the package for testing, or you can follow the guide below to generate a new one.
@@ -169,7 +208,7 @@ Prereqs:
 1. Create an x509 certificate
 
     ```
-    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaTester/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
+    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaCheck/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
     ```
 
 2. Create a pkcs12 from the x509 keypair with the password '123456'

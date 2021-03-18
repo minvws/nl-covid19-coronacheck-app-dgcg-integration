@@ -39,7 +39,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Tests.Validation
 
             // Act
             var result = Validator.TryValidateObject(model, context, results, true);
-            
+
             // Assert
             Assert.Equal(expectedResult, result);
         }

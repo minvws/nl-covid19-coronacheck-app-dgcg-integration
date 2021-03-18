@@ -32,7 +32,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VerifierAppApi", Version = "v1" });
             });
-            
+
             services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddScoped<IKeyStore, AssemblyKeyStore>();
             services.AddScoped<IJsonSerializer, StandardJsonSerializer>();

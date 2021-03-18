@@ -24,11 +24,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
 
         protected T Unwrap<T>(string content)
         {
-            if(string.IsNullOrWhiteSpace(content)) throw new ArgumentNullException(nameof(content));
+            if (string.IsNullOrWhiteSpace(content)) throw new ArgumentNullException(nameof(content));
 
             if (content.Contains("payload"))
             {
-                var signingWrapperResult = JsonSerializer.Deserialize<SignedDataResponse<T>>(content);
+                var signingWrapperResult = JsonSerializer.Deserialize<SignedDataWrapper<T>>(content);
                 Assert.NotEmpty(signingWrapperResult.Payload);
                 Assert.NotEmpty(signingWrapperResult.Signature);
                 var payloadString = Base64.Decode(signingWrapperResult.Payload);

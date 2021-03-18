@@ -13,7 +13,7 @@ namespace CmsSigner.Certificates
         {
             return new X509Certificate2(cert, password, X509KeyStorageFlags.Exportable);
         }
-        
+
         public static X509Certificate2[] LoadAll(byte[] bytes)
         {
             var certList = new List<X509Certificate2>();

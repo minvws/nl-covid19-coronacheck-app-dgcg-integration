@@ -1,4 +1,4 @@
-﻿# Proof of Test API
+﻿# IssuerApi API
 
 You can run the API in Visual Studio, or build it then run it with Docker (under ubuntu).
 

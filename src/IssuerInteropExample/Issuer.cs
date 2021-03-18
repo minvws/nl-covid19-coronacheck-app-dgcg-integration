@@ -30,7 +30,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample
             public long cap;
         }
 
-        
+
 
         // ReSharper enable InconsistentNaming
         // ReSharper enable NotAccessedField.Local
@@ -40,12 +40,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         private static extern IntPtr Issue(GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64, GoString commitmentsJson, GoSlice attributes);
-        
+
         public static string GenerateNonce()
         {
             return Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
         }
-        
+
         public static string IssueProof(string issuerPkXml, string issuerSkXml, string issuerNonceB64, string commitmentsJson, string[] attributes)
         {
             var issuerPkXmlGo = ToGoString(issuerPkXml);

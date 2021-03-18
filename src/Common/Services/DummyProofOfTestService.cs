@@ -15,7 +15,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         {
             return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(IssuerResponse));
         }
-        
+
         public string GenerateNonce()
         {
             return "hgc3oMZzWd/rEcjdpHsNnw==";

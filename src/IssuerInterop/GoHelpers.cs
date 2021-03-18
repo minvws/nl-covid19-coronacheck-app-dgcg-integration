@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop

@@ -4,139 +4,111 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 {
     [ApiController]
-    [Route("proof")]
+    [Route("test")]
     public class ProofOfTestController : ControllerBase
     {
+        private readonly ITestResultLog _testResultLog;
+        private readonly IIssuerApiClient _issuerApiClient;
+        private readonly ISessionDataStore _sessionData;
         private readonly ILogger<ProofOfTestController> _logger;
-        private readonly IProofOfTestService _potService;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISignedDataResponseBuilder _srb;
+        private readonly ITestProviderSignatureValidator _signatureValidator;
         private readonly IApiSigningConfig _apiSigningConfig;
+        private readonly IUtcDateTimeProvider _utcDateTimeProvider;
 
         public ProofOfTestController(
+            ITestResultLog testResultLog,
+            IIssuerApiClient issuerApiClient,
+            ISessionDataStore sessionData,
             ILogger<ProofOfTestController> logger,
-            IProofOfTestService potService,
             IJsonSerializer jsonSerializer,
             ISignedDataResponseBuilder signedDataResponseBuilder,
-            IApiSigningConfig apiSigningConfig)
+            ITestProviderSignatureValidator signatureValidator,
+            IApiSigningConfig apiSigningConfig,
+            IUtcDateTimeProvider utcDateTimeProvider)
         {
+            _testResultLog = testResultLog ?? throw new ArgumentNullException(nameof(testResultLog));
+            _issuerApiClient = issuerApiClient ?? throw new ArgumentNullException(nameof(_issuerApiClient));
+            _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _potService = potService ?? throw new ArgumentNullException(nameof(potService));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));
             _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
+            _utcDateTimeProvider = utcDateTimeProvider ?? throw new ArgumentNullException(nameof(utcDateTimeProvider));
         }
 
-        /// <summary>
-        /// Issues the proof of (negative) test
-        /// </summary>
         [HttpPost]
-        [Route("issue")]
+        [Route("proof")]
         [ProducesResponseType(typeof(IssueProofResult), 200)]
-        public IActionResult IssueProof(IssueProofRequest request)
+        public async Task<IActionResult> IssueProof(IssueProofRequest request)
         {
+            if (!request.UnpackAll(_jsonSerializer))
+                return BadRequest("Unable to unpack either commitments or test result");
+
             if (!ModelState.IsValid)
-            {
-                _logger.LogDebug("IssueProof: Invalid model state.");
+                return ValidationProblem();
 
-                return new BadRequestResult();
-            }
+            // TODO remove once the custom model binder is written as this will be covered by the validation
+            if (!request.Test.Result.SampleDate.LessThanNHoursBefore(72, _utcDateTimeProvider.Snapshot))
+                return BadRequest("");
 
-            if (request == null)
-            {
-                _logger.LogDebug("IssueProof: Empty request received.");
+            // TODO remove once the custom model binder [and sig validation attr] are written as this will be covered by the validation
+            if (!request.ValidateSignature(_signatureValidator))
+                return BadRequest("Test result signature is invalid");
 
-                return new BadRequestResult();
-            }
+            if (await _testResultLog.Contains(request.Test.Result.Unique, request.Test.ProviderIdentifier))
+                return BadRequest("Duplicate test result");
             
-            try
-            {
-                var commitmentsJson = Base64.Decode(request.Commitments);
-                var attributes = new ProofOfTestAttributes(request.SampleTime, request.TestType);
+            var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken);
 
-                var proofResult =
-                    _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
+            if (!nonceFound)
+                return BadRequest("Invalid session");
 
-                var issuerMessage = _jsonSerializer.Deserialize<IssueSignatureMessage>(proofResult);
+            var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
 
-                var issueProofResult = new IssueProofResult
-                {
-                    Ism = issuerMessage,
-                    Attributes = new Attributes
-                    {
-                        SampleTime = attributes.SampleTime,
-                        TestType = attributes.TestType
-                    },
-                    SessionToken = request.SessionToken
-                };
+            var resultAdded = await _testResultLog.Add(request.Test.Result.Unique, request.Test.ProviderIdentifier);
 
-                return _apiSigningConfig.WrapAndSignResult
-                    ? Ok(_srb.Build(issueProofResult))
-                    : Ok(issueProofResult);
-            }
-            catch (FormatException e)
-            {
-                _logger.LogError("IssueProof: Error decoding either commitments or issuer message.", e);
+            if(!resultAdded)
+                return BadRequest("Duplicate test result");
 
-                return new BadRequestResult();
-            }
-            catch (IssuerException e)
-            {
-                _logger.LogError("IssueProof: Error issuing proof.", e);
+            await _sessionData.RemoveNonce(request.SessionToken);
 
-                return StatusCode((int) HttpStatusCode.InternalServerError);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("IssueProof: Unexpected exception.", e);
-
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            return _apiSigningConfig.WrapAndSignResult
+                ? OkWrapped(result.ToProofOfTestApiResult())
+                : Ok(result.ToProofOfTestApiResult());
         }
 
-        /// <summary>
-        /// Generates and returns a random nonce
-        /// </summary>
         [HttpPost]
         [Route("nonce")]
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]
-        public IActionResult GenerateNonce(GenerateNonceRequest request)
+        public async Task<IActionResult> GenerateNonce()
         {
-            if (request == null)
-            {
-                _logger.LogDebug("IssueProof: Empty request received.");
+            var result = await _issuerApiClient.GenerateNonce();
 
-                return new BadRequestResult();
-            }
+            var sessionToken = await _sessionData.AddNonce(result.Nonce);
 
-            try
-            {
-                var nonce = _potService.GenerateNonce();
+            return _apiSigningConfig.WrapAndSignResult
+                ? OkWrapped(result.ToProofOfTestApiResult(sessionToken))
+                : Ok(result.ToProofOfTestApiResult(sessionToken));
+        }
 
-                var result = new GenerateNonceResult { Nonce = nonce, SessionToken = request.SessionToken };
-
-                return _apiSigningConfig.WrapAndSignResult
-                    ? Ok(_srb.Build(result))
-                    : Ok(result);
-            }
-            catch (IssuerException e)
-            {
-                _logger.LogError("IssueProof: Error generating nonce.", e);
-
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+        private OkObjectResult OkWrapped<T>(T result)
+        {
+            return Ok(_srb.Build(result));
         }
     }
 }

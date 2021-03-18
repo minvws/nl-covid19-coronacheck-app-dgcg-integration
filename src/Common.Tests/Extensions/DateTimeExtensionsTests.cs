@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Tests.Extensions
 
             Assert.Equal(expectedResult, result);
         }
-        
+
         [Theory]
         [InlineData("2021-01-25T13:00:00.00Z", "2021-01-25T13:00:00.00Z", 72, true)]
         [InlineData("2021-01-24T13:00:00.00Z", "2021-01-25T13:00:00.00Z", 72, true)]
@@ -40,7 +40,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Tests.Extensions
         {
             var date = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             var comparisonDate = DateTime.Parse(comparisonDateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-            
+
             var result = date.LessThanNHoursBefore(hours, comparisonDate);
 
             Assert.Equal(expectedResult, result);

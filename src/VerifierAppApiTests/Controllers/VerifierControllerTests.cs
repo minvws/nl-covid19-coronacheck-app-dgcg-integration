@@ -16,7 +16,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApiTests.Controllers
     /// </summary>
     public class VerifierControllerTests : TesterWebApplicationFactory<Startup>
     {
-        
+
         [Fact]
         public async Task Get_Holder_Config_returns_valid_config_object()
         {
@@ -27,7 +27,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApiTests.Controllers
             var result = await client.GetAsync("verifier/config");
 
             // Assert: result OK
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode); 
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();

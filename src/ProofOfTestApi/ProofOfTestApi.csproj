@@ -1,28 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi</RootNamespace>
-    <UserSecretsId>8d9a6d02-db0a-4091-9263-dc64ba024bad</UserSecretsId>
+    <UserSecretsId>9f1dc6bd-3fbc-40e2-83e3-6c6b0610730c</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi</RootNamespace>
+    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-    <PackageReference Include="NLog" Version="4.7.7" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
-    <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Common.Database\Common.Database.csproj" />
-	<ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
+    <ProjectReference Include="..\IssuerApi.Models\IssuerApi.Models.csproj" />
   </ItemGroup>
 
 </Project>

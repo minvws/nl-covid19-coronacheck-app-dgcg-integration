@@ -35,12 +35,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
 
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
-            
-            var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
-            var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Now());
-            if(excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
 
-            if(signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
+            var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
+            var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Snapshot);
+            if (excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
+
+            if (signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
 
             signer.SignedAttributes.Add(new CryptographicAttributeObject(signingTime.Oid, new AsnEncodedDataCollection(signingTime)));
 

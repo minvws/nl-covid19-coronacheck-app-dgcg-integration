@@ -10,9 +10,6 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Cryptography.Pkcs;
 using static System.Convert;
 
 namespace CmsSigner
@@ -23,13 +20,13 @@ namespace CmsSigner
         {
             [Option('i', "inputFile", Required = true, HelpText = "File to sign (Validate=False) | File containing json wrapper with payload/signature to validate (Validate=True")]
             public string InputFile { get; set; }
-            
+
             [Option('s', "signingCertFile", Required = true, HelpText = "Certificate (pfx, including private key) used to sign the input file")]
             public string SigningCertificateFile { get; set; }
 
             [Option('p', "password", Required = true, HelpText = "Password for the private key associated with the signing certificate")]
             public string Password { get; set; }
-            
+
             [Option('c', "certChainFile", Required = true, HelpText = "Certificate chain (p7b) for the signing certificate")]
             public string CertificateChainFile { get; set; }
 
@@ -44,7 +41,7 @@ namespace CmsSigner
                 .WithParsed(Run)
                 .WithNotParsed(HandleParseError);
         }
-        
+
         private static void Run(Options options)
         {
             var inputFile = Load(options.InputFile);
@@ -78,7 +75,7 @@ namespace CmsSigner
             };
 
             var resultJson = serializer.Serialize(result);
-            
+
             Console.Write(resultJson);
         }
 
@@ -99,14 +96,14 @@ namespace CmsSigner
             {
                 // ignored
             }
-            
+
             Console.WriteLine($"ERROR: unable to open file: {path}");
 
             Environment.Exit(1);
 
             return null;
         }
-        
+
         //private static bool Validate(ICmsValidator signer, byte[] file)
         //{
         //    var serializer = new StandardJsonSerializer();

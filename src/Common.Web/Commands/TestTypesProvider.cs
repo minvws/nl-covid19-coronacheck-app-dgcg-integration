@@ -15,10 +15,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands
         private readonly Func<TesterContext> _contextFactory;
 
         public TestTypesProvider(Func<TesterContext> contextFactory)
-        { 
+        {
             _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
         }
-        
+
         public IList<TestType> Get()
         {
             using var ctx = _contextFactory();

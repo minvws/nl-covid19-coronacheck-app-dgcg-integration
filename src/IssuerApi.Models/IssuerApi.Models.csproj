@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
+  </ItemGroup>
+
+</Project>

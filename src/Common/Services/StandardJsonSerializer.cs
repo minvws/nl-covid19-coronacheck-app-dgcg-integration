@@ -13,7 +13,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 
         public StandardJsonSerializer()
         {
-            _serializerOptions = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
+            _serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         }
 
         public string Serialize<TContent>(TContent input)
