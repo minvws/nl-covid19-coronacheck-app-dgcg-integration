@@ -70,7 +70,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
                     request.Attributes.FirstNameInitial, 
                     request.Attributes.LastNameInitial, 
                     request.Attributes.BirthDay, 
-                    request.Attributes.BirthMonth);
+                    request.Attributes.BirthMonth,
+                    false, // Always set to false for non-static
+                    request.Attributes.IsSpecimen
+                    );
 
                 var proofResult =
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
@@ -168,7 +171,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
                     request.Attributes.FirstNameInitial,
                     request.Attributes.LastNameInitial,
                     request.Attributes.BirthDay,
-                    request.Attributes.BirthMonth);
+                    request.Attributes.BirthMonth,
+                    true, // Always set to true for static!
+                    request.Attributes.IsSpecimen);
 
                 var qr = _potService.GetStaticProofQr(attributes);
                 

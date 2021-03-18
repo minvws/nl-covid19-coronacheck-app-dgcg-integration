@@ -44,5 +44,11 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
         [JsonPropertyName("birthMonth")]
         public string BirthMonth { get; set; }
 
+        /// <summary>
+        /// Flag to show whether it's a specimen ("1") or not ("0")
+        /// </summary>
+        [JsonPropertyName("isSpecimen")]
+        public bool IsSpecimen { get; set; }
+
     }
 }
