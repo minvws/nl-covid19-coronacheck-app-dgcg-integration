@@ -1,4 +1,4 @@
-name: Create ProofOfTestApi Release package
+name: Create Release package(s)
 
 on:
   create:
@@ -22,16 +22,26 @@ jobs:
           dotnet-version: 5.0.x
 
       - name: Build .net code for ProofOfTestApi
-        run: 'dotnet publish src/ProofOfTestApi/ProofOfTestApi.csproj -o publish/ProofOfTestApi -p:PublishProfile=FolderProfileProofOfTestApi.csproj'
-
+        run: 'dotnet publish src/ProofOfTestApi/ProofOfTestApi.csproj -o publish/ProofOfTestApi'
       - name: Create version.json
         run: 'echo "{ \"version\": \"${{ env.RELEASE_VERSION }}\", \"git_ref\": \"$GITHUB_SHA\"}" > publish/ProofOfTestApi/version.json'
-
       - name: Create tar
         run: tar -czf ct_backend_pota_${{ env.RELEASE_VERSION }}.tar.gz -C publish/ProofOfTestApi .
-
       - name: Upload release tar
         uses: actions/upload-artifact@v1
         with:
-            name: ct_backend_pota_${{ env.RELEASE_VERSION }}
-            path: ct_backend_pota_${{ env.RELEASE_VERSION }}.tar.gz
+          name: ct_backend_pota_${{ env.RELEASE_VERSION }}
+          path: ct_backend_pota_${{ env.RELEASE_VERSION }}.tar.gz
+
+
+      - name: Build .net code for IssuerApi
+        run: 'dotnet publish src/IssuerApi/IssuerApi.csproj -o publish/IssuerApi'
+      - name: Create version.json
+        run: 'echo "{ \"version\": \"${{ env.RELEASE_VERSION }}\", \"git_ref\": \"$GITHUB_SHA\"}" > publish/IssuerApi/version.json'
+      - name: Create tar
+        run: tar -czf cc_issuerapi_${{ env.RELEASE_VERSION }}.tar.gz -C publish/IssuerApi .
+      - name: Upload release tar
+        uses: actions/upload-artifact@v1
+        with:
+          name: cc_issuerapi_${{ env.RELEASE_VERSION }}
+          path: cc_issuerapi_${{ env.RELEASE_VERSION }}.tar.gz
