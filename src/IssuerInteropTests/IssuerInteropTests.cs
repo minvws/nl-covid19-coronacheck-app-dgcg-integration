@@ -46,6 +46,25 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
             Assert.Contains("KeyshareP", result);
         }
 
+        [Fact]
+        public void TestsIssueStaticDisclosureQr()
+        {
+            var issuer = new Issuer();
+            var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
+
+            var attributes = new ProofOfTestAttributes(DateTime.UtcNow.ToString("o"), "PCR", "A", "A", "1", "1");
+
+            var issuerPkId = "testPk";
+            var issuerPkXml = keystore.GetPublicKey();
+            var issuerSkXml = keystore.GetPrivateKey();
+            var attributesJson = JsonSerializer.Serialize(attributes);
+
+            var result = issuer.IssueStaticDisclosureQr(issuerPkId, issuerPkXml, issuerSkXml, attributesJson);
+
+            // Result contains something
+            Assert.NotEmpty(result);
+        }
+
         private static bool IsBase64String(string data)
         {
             try

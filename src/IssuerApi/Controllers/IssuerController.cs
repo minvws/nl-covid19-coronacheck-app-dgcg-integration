@@ -137,5 +137,63 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        /// <summary>
+        /// Issues a static proof, returning QR in PNG format, base64 encoded in a string
+        /// </summary>
+        [HttpPost]
+        [Route("issue-static")]
+        [ProducesResponseType(typeof(string), 200)]
+        public IActionResult IssueStaticProof(IssueStaticProofRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogDebug("IssueProof: Invalid model state.");
+
+                return new BadRequestResult();
+            }
+
+            if (request == null)
+            {
+                _logger.LogDebug("IssueProof: Empty request received.");
+
+                return new BadRequestResult();
+            }
+
+            try
+            {
+                var attributes = new ProofOfTestAttributes(
+                    request.Attributes.SampleTime,
+                    request.Attributes.TestType,
+                    request.Attributes.FirstNameInitial,
+                    request.Attributes.LastNameInitial,
+                    request.Attributes.BirthDay,
+                    request.Attributes.BirthMonth);
+
+                var qr = _potService.GetStaticProofQr(attributes);
+                
+                return _apiSigningConfig.WrapAndSignResult
+                    ? Ok(_srb.Build(qr))
+                    : Ok(qr);
+            }
+            catch (FormatException e)
+            {
+                _logger.LogError("IssueProof: Error decoding either commitments or issuer message.", e);
+
+                return new BadRequestResult();
+            }
+            catch (IssuerException e)
+            {
+                _logger.LogError("IssueProof: Error issuing proof.", e);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("IssueProof: Unexpected exception.", e);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

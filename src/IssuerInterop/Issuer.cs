@@ -5,6 +5,7 @@
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using System;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
 {
@@ -16,12 +17,20 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         private static extern IntPtr GenerateIssuerNonceB64(GoString issuerPkId);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr Issue(GoString issuerPkId, GoString issuerPkXml, GoString issuerSkXml, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes);
+        private static extern IntPtr LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml);
 
-        // extern char* Issue(GoString publicKey, GoString privateKey, GoString nonce, GoString commitments, GoString attributesJson);
+
+        // func                      Issue(issuerKeyId, issuerNoncB64,  commitmentsJson   , attributesJson string) *C.char {
+        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        private static extern IntPtr Issue(GoString issuerPkId, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes);
+
+        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        private static extern IntPtr IssueStaticDisclosureQR(GoString issuerPkId, GoString attributes);
 
         public string GenerateNonce(string publicKeyId)
         {
+            if (string.IsNullOrWhiteSpace(publicKeyId)) throw new ArgumentNullException(nameof(publicKeyId));
+
             var issuerPkId = GoHelpers.ToGoString(publicKeyId);
 
             try
@@ -39,7 +48,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             {
                 throw new GoIssuerException();
             }
-            
+
         }
 
         /// <summary>
@@ -68,6 +77,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
         /// </returns>
         public string IssueProof(string publicKeyId, string publicKey, string privateKey, string nonce, string commitments, string attributes)
         {
+            if (string.IsNullOrWhiteSpace(publicKeyId)) throw new ArgumentNullException(nameof(publicKeyId));
+            if (string.IsNullOrWhiteSpace(publicKey)) throw new ArgumentNullException(nameof(publicKey));
+            if (string.IsNullOrWhiteSpace(privateKey)) throw new ArgumentNullException(nameof(privateKey));
+            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentNullException(nameof(nonce));
+            if (string.IsNullOrWhiteSpace(commitments)) throw new ArgumentNullException(nameof(commitments));
+            if (string.IsNullOrWhiteSpace(attributes)) throw new ArgumentNullException(nameof(attributes));
+            
             var issuerPkId = GoHelpers.ToGoString(publicKeyId);
             var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
             var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
@@ -75,13 +91,60 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
             var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
             var attributesGo = GoHelpers.ToGoString(attributes);
 
-            var result = Issue(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
+            var loadResult = LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo);
+            if (loadResult == IntPtr.Zero)
+            {
+                throw new GoIssuerException();
+            }
+
+            // func             Issue(issuerKeyId, issuerNoncB64,  commitmentsJson   , attributesJson string) *C.char {
+            var result = Issue(issuerPkId, issuerNonceB64Go, commitmentsJsonGo, attributesGo);
 
             var returnType = Marshal.PtrToStringAnsi(result);
-
             if (returnType == null)
             {
                 throw new GoIssuerException();
+            }
+            
+            if (Regex.IsMatch(returnType, ErrorPattern))
+            {
+                throw new GoIssuerException(returnType);
+            }
+
+            return returnType;
+        }
+
+        private const string ErrorPattern = "^(Error:){1}.*";
+
+        public string IssueStaticDisclosureQr(string publicKeyId, string publicKey, string privateKey, string attributes)
+        {
+            if (string.IsNullOrWhiteSpace(publicKeyId)) throw new ArgumentNullException(nameof(publicKeyId));
+            if (string.IsNullOrWhiteSpace(publicKey)) throw new ArgumentNullException(nameof(publicKey));
+            if (string.IsNullOrWhiteSpace(privateKey)) throw new ArgumentNullException(nameof(privateKey));
+            if (string.IsNullOrWhiteSpace(attributes)) throw new ArgumentNullException(nameof(attributes));
+
+            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
+            var attributesGo = GoHelpers.ToGoString(attributes);
+            var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
+            var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
+
+            var loadResult = LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo);
+            if (loadResult == IntPtr.Zero)
+            {
+                throw new GoIssuerException();
+            }
+
+            var result = IssueStaticDisclosureQR(issuerPkId, attributesGo);
+
+            var returnType = Marshal.PtrToStringAnsi(result);
+            if (returnType == null)
+            {
+                throw new GoIssuerException();
+            }
+
+            if (Regex.IsMatch(returnType, ErrorPattern))
+            {
+                throw new GoIssuerException(returnType);
             }
 
             return returnType;

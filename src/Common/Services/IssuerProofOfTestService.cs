@@ -38,5 +38,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         {
             return _issuer.GenerateNonce(_config.PublicKeyIdentifier);
         }
+
+        public string GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes)
+        {
+            if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
+            var serializedAttributes = _jsonSerializer.Serialize(proofOfTestAttributes);
+
+            return _issuer.IssueStaticDisclosureQr(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), serializedAttributes);
+        }
     }
 }
