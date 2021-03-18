@@ -2,7 +2,7 @@
 {
     public interface IIssuerInterop
     {
-        string GenerateNonce();
+        string GenerateNonce(string publicKeyId);
 
         string IssueProof(string publicKeyId, string publicKey, string privateKey, string nonce, string commitments, string attributes);
     }

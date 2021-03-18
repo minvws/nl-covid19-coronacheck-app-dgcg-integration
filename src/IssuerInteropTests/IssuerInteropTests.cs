@@ -16,8 +16,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
         [Fact]
         public void TestsGenerateNonce()
         {
+            var issuerPkId = "testPk";
             var issuer = new Issuer();
-            var result = issuer.GenerateNonce();
+            var result = issuer.GenerateNonce(issuerPkId);
             Assert.True(IsBase64String(result));
         }
 

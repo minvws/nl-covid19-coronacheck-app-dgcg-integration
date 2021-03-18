@@ -76,6 +76,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
                 
                 var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
+                
                 //// TODO: CreateCredentialMessage
                 //var issueProofResult = new IssueProofResult
                 //{

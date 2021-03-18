@@ -74,11 +74,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
                 .Setup(x => x.IssueProof(It.IsAny<IssuerApi.Models.IssueProofRequest>()))
                 .ReturnsAsync(new IssueProofResult
                     {
-                        Attributes = new Attributes
-                        {
-                            SampleTime = "2021-03-01T10:00:00Z",
-                            TestType = "PCR"
-                        },
+                        Attributes = new []{ "MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ==" },
                         Ism = new IssuerApi.Models.IssueSignatureMessage
                         {
                             Proof = new IssuerApi.Models.Proof
@@ -119,7 +115,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var typedResult = Unwrap<IssueProofResult>(responseBody);
             Assert.NotNull(typedResult.Attributes);
             Assert.NotNull(typedResult.Ism);
-            Assert.Equal("PCR", typedResult.Attributes.TestType);
+            Assert.Equal(9, typedResult.Attributes.Length);
         }
 
         private string CreateIssueProofRequest(string sessionToken)

@@ -36,7 +36,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 
         public string GenerateNonce()
         {
-            return _issuer.GenerateNonce();
+            return _issuer.GenerateNonce(_config.PublicKeyIdentifier);
         }
     }
 }
