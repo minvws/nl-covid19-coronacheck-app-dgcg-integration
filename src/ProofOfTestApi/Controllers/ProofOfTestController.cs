@@ -15,10 +15,12 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("test")]
     public class ProofOfTestController : MiddlewareControllerBase
     {
