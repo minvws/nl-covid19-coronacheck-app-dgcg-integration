@@ -11,9 +11,8 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
 using System.IO;
 using System.Net;
@@ -75,9 +74,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
                 .ReturnsAsync(new IssueProofResult
                     {
                         Attributes = new []{ "MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ==" },
-                        Ism = new IssuerApi.Models.IssueSignatureMessage
+                        Ism = new IssueSignatureMessage
                         {
-                            Proof = new IssuerApi.Models.Proof
+                            Proof = new Proof
                             {
                                 C = "",
                                 ErrorResponse = ""

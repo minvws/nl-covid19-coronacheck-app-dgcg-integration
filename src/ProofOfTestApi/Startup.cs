@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Config;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
-using System;
-using Microsoft.Extensions.Logging;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 {
@@ -35,29 +35,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configuration
-            // services.AddSingleton<IRedisSessionCacheConfig, RedisSessionCacheConfig>();
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProofOfTestApi", Version = "v1"});
             });
 
-            // var sessionCacheConfig = ResolveSessionCacheConfig(services);
-
-            //services.AddStackExchangeRedisCache(action =>
-            //{
-            //    action.InstanceName = sessionCacheConfig.InstanceName;
-            //    action.Configuration = sessionCacheConfig.Configuration;
-            //});
-
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromSeconds(StaticConfig.SessionTimeout);
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.IsEssential = true;
-            //});
 
             services.AddHttpClient();
 
@@ -73,7 +56,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
             // Test validation (one shared instance)
             services.AddSingleton<IFileLoader, FileSystemFileLoader>();
             services.AddSingleton<ITestProviderSignatureValidatorConfig, TestProviderSignatureValidatorConfig>();
-            //services.AddSingleton<ITestProviderSignatureValidator, TestProviderSignatureValidator>();
             services.AddSingleton<ITestProviderSignatureValidator>(provider =>
             {
                 var config = provider.GetService<ITestProviderSignatureValidatorConfig>();
@@ -117,24 +99,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
 
             app.UseRouting();
 
-            //app.UseAuthorization();
-
-            // NOTE: this must be after .UseRouting() but before .UseEndpoints()
-            //app.UseSession();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-
-
         }
-
-        //private static IRedisSessionCacheConfig ResolveSessionCacheConfig(IServiceCollection services)
-        //{
-        //    var provider = services.BuildServiceProvider();
-        //    return provider.GetService<IRedisSessionCacheConfig>() ?? throw new InvalidOperationException("No IRedisSessionCacheConfig registered ");
-        //}
     }
 }

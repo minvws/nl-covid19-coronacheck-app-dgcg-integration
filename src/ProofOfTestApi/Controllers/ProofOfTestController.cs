@@ -8,6 +8,9 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Controllers;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
@@ -17,17 +20,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 {
     [ApiController]
     [Route("test")]
-    public class ProofOfTestController : ControllerBase
+    public class ProofOfTestController : MiddlewareControllerBase
     {
         private readonly ITestResultLog _testResultLog;
         private readonly IIssuerApiClient _issuerApiClient;
         private readonly ISessionDataStore _sessionData;
         private readonly ILogger<ProofOfTestController> _logger;
-        private readonly IJsonSerializer _jsonSerializer;
-        private readonly ISignedDataResponseBuilder _srb;
         private readonly ITestProviderSignatureValidator _signatureValidator;
-        private readonly IApiSigningConfig _apiSigningConfig;
-        private readonly IUtcDateTimeProvider _utcDateTimeProvider;
 
         public ProofOfTestController(
             ITestResultLog testResultLog,
@@ -38,17 +37,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
             ISignedDataResponseBuilder signedDataResponseBuilder,
             ITestProviderSignatureValidator signatureValidator,
             IApiSigningConfig apiSigningConfig,
-            IUtcDateTimeProvider utcDateTimeProvider)
+            IUtcDateTimeProvider utcDateTimeProvider) : base(jsonSerializer, utcDateTimeProvider, signedDataResponseBuilder, apiSigningConfig)
         {
             _testResultLog = testResultLog ?? throw new ArgumentNullException(nameof(testResultLog));
             _issuerApiClient = issuerApiClient ?? throw new ArgumentNullException(nameof(_issuerApiClient));
             _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
-            _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
             _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));
-            _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
-            _utcDateTimeProvider = utcDateTimeProvider ?? throw new ArgumentNullException(nameof(utcDateTimeProvider));
         }
 
         [HttpPost]
@@ -56,14 +51,14 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public async Task<IActionResult> IssueProof(IssueProofRequest request)
         {
-            if (!request.UnpackAll(_jsonSerializer))
+            if (!request.UnpackAll(JsonSerializer))
                 return BadRequest("Unable to unpack either commitments or test result");
 
             if (!ModelState.IsValid)
                 return ValidationProblem();
 
             // TODO remove once the custom model binder is written as this will be covered by the validation
-            if (!request.Test.Result.SampleDate.LessThanNHoursBefore(72, _utcDateTimeProvider.Snapshot))
+            if (!request.Test.Result.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
                 return BadRequest("");
 
             // TODO remove once the custom model binder [and sig validation attr] are written as this will be covered by the validation
@@ -87,7 +82,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             await _sessionData.RemoveNonce(request.SessionToken);
 
-            return _apiSigningConfig.WrapAndSignResult
+            return ApiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result.ToProofOfTestApiResult())
                 : Ok(result.ToProofOfTestApiResult());
         }
@@ -101,14 +96,9 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Controllers
 
             var sessionToken = await _sessionData.AddNonce(result.Nonce);
 
-            return _apiSigningConfig.WrapAndSignResult
+            return ApiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result.ToProofOfTestApiResult(sessionToken))
                 : Ok(result.ToProofOfTestApiResult(sessionToken));
-        }
-
-        private OkObjectResult OkWrapped<T>(T result)
-        {
-            return Ok(_srb.Build(result));
         }
     }
 }
