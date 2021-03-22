@@ -65,7 +65,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
             {
                 var commitmentsJson = Base64.Decode(request.Commitments);
                 var attributes = new ProofOfTestAttributes(
-                    request.Attributes.SampleTime, 
+                    request.Attributes.SampleTime,
                     request.Attributes.TestType, 
                     request.Attributes.FirstNameInitial, 
                     request.Attributes.LastNameInitial, 

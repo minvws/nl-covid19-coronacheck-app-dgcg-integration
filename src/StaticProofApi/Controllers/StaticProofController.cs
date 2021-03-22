@@ -83,7 +83,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi.Controllers
                     FirstNameInitial = request.Result.Holder.FirstNameInitial,
                     LastNameInitial = request.Result.Holder.LastNameInitial,
                     TestType = request.Result.TestType,
-                    SampleTime = request.Result.SampleDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    SampleTime = request.Result.SampleDate,
                     IsSpecimen = false
                 }
             });

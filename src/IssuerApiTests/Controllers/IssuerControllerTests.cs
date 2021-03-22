@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
@@ -73,6 +74,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
             var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
             requestObject.Nonce = typedResultNonce.Nonce;
+            requestObject.Attributes.SampleTime = DateTime.UtcNow.ToHourPrecision();
             var requestJson = json.Serialize(requestObject); 
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 

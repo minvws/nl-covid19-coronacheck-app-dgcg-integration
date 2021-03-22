@@ -28,7 +28,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
             var issuer = new Issuer();
             var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
 
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow.ToString("o"), "PCR", "A", "A", "1", "1");
+            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "PCR", "A", "A", "1", "1");
 
             var issuerPkId = "testPk";
             var issuerPkXml = keystore.GetPublicKey();
@@ -52,7 +52,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests
             var issuer = new Issuer();
             var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
 
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow.ToString("o"), "PCR", "A", "A", "1", "1");
+            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "PCR", "A", "A", "1", "1");
 
             var issuerPkId = "testPk";
             var issuerPkXml = keystore.GetPublicKey();
