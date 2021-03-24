@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client
 {
@@ -18,6 +18,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client
         private readonly IJsonSerializer _jsonSerializer;
 
         private readonly IHttpClientFactory _clientFactory;
+
         private string IssueProofUrl  => _config.BaseUrl + "/proof/issue";
 
         private string GenerateNonceUrl => _config.BaseUrl + "/proof/nonce";

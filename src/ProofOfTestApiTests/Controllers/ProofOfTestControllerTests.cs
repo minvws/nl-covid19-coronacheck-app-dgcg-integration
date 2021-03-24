@@ -31,6 +31,8 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
     /// </summary>
     public class ProofOfTestControllerTests : TesterWebApplicationFactory<Startup>
     {
+        private const string CertDir = @"..\..\..\..\..\test\test-certificates";
+
         [Fact]
         public async Task Post_Test_Nonce_returns_nonce_from_IssuerApi()
         {
@@ -160,7 +162,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests.Controllers
             var testResultJson = json.Serialize(testResult);
             var testResultBytes = Encoding.UTF8.GetBytes(testResultJson);
             var testResultB64 = Convert.ToBase64String(testResultBytes);
-            var testResultSignature = Signer.ComputeSignatureCms(testResultBytes, "Certs\\TST001.pfx", "123456");
+            var testResultSignature = Signer.ComputeSignatureCms(testResultBytes, $"{CertDir}\\TST001.pfx", "123456");
             var testResultSignatureB64 = Convert.ToBase64String(testResultSignature);
 
             var request = new IssueProofRequest

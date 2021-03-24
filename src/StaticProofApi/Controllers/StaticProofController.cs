@@ -14,9 +14,9 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Controllers;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi.Controllers
 {

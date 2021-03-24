@@ -2,16 +2,16 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Logging;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services
+namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures
 {
     public class TestProviderSignatureValidator : ITestProviderSignatureValidator
     {

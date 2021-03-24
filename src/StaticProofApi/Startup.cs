@@ -7,13 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi
 {
@@ -36,23 +33,13 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StaticProofApi", Version = "v1" });
             });
 
-
-            services.AddScoped<IIssuerApiClient, IssuerApiClient>();
-            services.AddSingleton<IIssuerApiClientConfig, IssuerApiClientConfig>();
-            services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
-
-            // Test validation (one shared instance)
-            services.AddSingleton<IFileLoader, FileSystemFileLoader>();
-            services.AddSingleton<ITestProviderSignatureValidatorConfig, TestProviderSignatureValidatorConfig>();
-            services.AddSingleton<ITestProviderSignatureValidator>(provider =>
-            {
-                var config = provider.GetService<ITestProviderSignatureValidatorConfig>();
-                var fileLoader = provider.GetService<IFileLoader>();
-                var log = provider.GetService<ILogger<TestProviderSignatureValidator>>();
-                var instance = new TestProviderSignatureValidator(config, fileLoader, log);
-                instance.Initialize();
-                return instance;
-            });
+            services.AddCommon();
+            services.AddCertificateProviders();
+            services.AddResponseSigner();
+            services.AddTestProviderSignatureValidation();
+            services.AddIssuerApiClient();
+            services.AddTestResultLog();
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

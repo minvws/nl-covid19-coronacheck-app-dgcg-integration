@@ -10,9 +10,9 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Controllers;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System;
 using System.Threading.Tasks;
 
