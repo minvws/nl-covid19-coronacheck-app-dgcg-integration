@@ -24,8 +24,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IssuerApiTests", "IssuerApi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Web", "Common.Web\Common.Web.csproj", "{67279E2D-AE0E-454C-BCDF-69B80548E876}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Database", "Common.Database\Common.Database.csproj", "{C29D56E0-9409-4877-8E12-094545672F00}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Testing", "Common.Testing\Common.Testing.csproj", "{C3E6C58F-9B5E-48B2-902A-5862809DE416}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmsSigner", "CmsSigner\CmsSigner.csproj", "{76059D67-AED6-441B-B3E4-B1364D5F410C}"
@@ -93,10 +91,6 @@ Global
 		{67279E2D-AE0E-454C-BCDF-69B80548E876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67279E2D-AE0E-454C-BCDF-69B80548E876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67279E2D-AE0E-454C-BCDF-69B80548E876}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C29D56E0-9409-4877-8E12-094545672F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C29D56E0-9409-4877-8E12-094545672F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C29D56E0-9409-4877-8E12-094545672F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C29D56E0-9409-4877-8E12-094545672F00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3E6C58F-9B5E-48B2-902A-5862809DE416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3E6C58F-9B5E-48B2-902A-5862809DE416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3E6C58F-9B5E-48B2-902A-5862809DE416}.Release|Any CPU.ActiveCfg = Release|Any CPU
