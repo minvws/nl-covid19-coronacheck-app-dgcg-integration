@@ -25,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\VerifierAppApi\VerifierAppApi.csproj" />
   </ItemGroup>
 
 </Project>
