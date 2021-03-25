@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.Common</RootNamespace>
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.Common</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.Common</RootNamespace>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.Common</AssemblyName>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

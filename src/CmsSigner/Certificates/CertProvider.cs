@@ -2,7 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CmsSigner.Certificates

@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class FileSystemKeyStore : IKeyStore
     {

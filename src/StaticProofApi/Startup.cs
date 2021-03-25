@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.DependencyInjection;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi
 {
     public class Startup : StartupCommonBase<Startup>
     {

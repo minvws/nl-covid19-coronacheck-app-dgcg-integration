@@ -4,7 +4,7 @@
 
 using System.Threading.Tasks;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
     public interface ITestResultLog
     {

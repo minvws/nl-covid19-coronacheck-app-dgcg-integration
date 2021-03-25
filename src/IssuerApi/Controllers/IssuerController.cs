@@ -4,17 +4,17 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 using System;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 {
     [ApiController]
     [AllowAnonymous]

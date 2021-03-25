@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi
 {
     public class Program
     {

@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["nl-covid19-coronatester-app-backend/nl-covid19-coronatester-app-backend.csproj", "nl-covid19-coronatester-app-backend/"]
-RUN dotnet restore "nl-covid19-coronatester-app-backend/nl-covid19-coronatester-app-backend.csproj"
+COPY ["nl-covid19-coronacheck-app-backend/nl-covid19-coronacheck-app-backend.csproj", "nl-covid19-coronacheck-app-backend/"]
+RUN dotnet restore "nl-covid19-coronacheck-app-backend/nl-covid19-coronacheck-app-backend.csproj"
 COPY . .
-WORKDIR "/src/nl-covid19-coronatester-app-backend"
-RUN dotnet build "nl-covid19-coronatester-app-backend.csproj" -c Release -o /app/build
+WORKDIR "/src/nl-covid19-coronacheck-app-backend"
+RUN dotnet build "nl-covid19-coronacheck-app-backend.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "nl-covid19-coronatester-app-backend.csproj" -c Release -o /app/publish
+RUN dotnet publish "nl-covid19-coronacheck-app-backend.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "nl-covid19-coronatester-app-backend.dll"]
+ENTRYPOINT ["dotnet", "nl-covid19-coronacheck-app-backend.dll"]

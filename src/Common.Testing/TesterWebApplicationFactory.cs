@@ -4,12 +4,12 @@
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using System;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
 {
     public abstract class TesterWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
     {

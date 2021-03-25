@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
 {
     public class TestLogger<T> : ILogger<T>
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 {
     // ReSharper disable InconsistentNaming
 

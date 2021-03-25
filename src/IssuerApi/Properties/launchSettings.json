@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "nl_covid19_coronatester_app_backend": {
+    "nl_covid19_coronacheck_app_backend": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
     public class CmsValidatorEnhanced : ICmsValidator
     {

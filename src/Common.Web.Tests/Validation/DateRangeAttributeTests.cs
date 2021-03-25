@@ -3,15 +3,15 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Moq;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Tests.Validation
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
 {
     public class DateRangeAttributeTests
     {

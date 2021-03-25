@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>9f1dc6bd-3fbc-40e2-83e3-6c6b0610730c</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi</RootNamespace>
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi</RootNamespace>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

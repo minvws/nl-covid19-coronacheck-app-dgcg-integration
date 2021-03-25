@@ -2,11 +2,11 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models;
-using IssueProofRequest = NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models.IssueProofRequest;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models;
+using IssueProofRequest = NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models.IssueProofRequest;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
 {
     public static class ConverterExtensions
     {

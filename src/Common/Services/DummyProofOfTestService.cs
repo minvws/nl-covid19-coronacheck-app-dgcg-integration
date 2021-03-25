@@ -4,7 +4,7 @@
 
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     /// <summary>
     /// Dummy implementation

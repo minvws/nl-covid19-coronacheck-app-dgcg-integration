@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public interface ITestProviderSignatureValidatorConfig
     {

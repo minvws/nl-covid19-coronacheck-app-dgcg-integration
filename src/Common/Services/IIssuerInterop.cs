@@ -1,4 +1,4 @@
-﻿namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+﻿namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public interface IIssuerInterop
     {

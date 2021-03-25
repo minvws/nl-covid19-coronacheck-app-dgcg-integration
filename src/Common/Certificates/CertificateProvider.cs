@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
 {
     /// <summary>
     /// Loads a certificate in p12 format from the given path

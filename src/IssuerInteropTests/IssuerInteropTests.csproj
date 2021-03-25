@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests</AssemblyName>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropTests</RootNamespace>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

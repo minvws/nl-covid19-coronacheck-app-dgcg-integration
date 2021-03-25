@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Tests</RootNamespace>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

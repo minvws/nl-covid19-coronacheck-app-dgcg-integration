@@ -8,7 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
 {
     public static class AssemblyExtensions
     {

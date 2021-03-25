@@ -3,19 +3,19 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
 {
     /// <summary>
     /// Tests operating on the HTTP/REST interface and running in a web-server

@@ -5,7 +5,7 @@
 using static System.Convert;
 using static System.Text.Encoding;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 {
     public static class Base64
     {

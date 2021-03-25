@@ -4,15 +4,15 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Files;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 {
     public static class ContainerMappingExtensions
     {

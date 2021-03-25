@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample</AssemblyName>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample</RootNamespace>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

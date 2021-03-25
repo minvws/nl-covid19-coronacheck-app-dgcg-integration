@@ -6,7 +6,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 {
     /// <summary>
     /// Validates that the string matches the structure of a base64 string

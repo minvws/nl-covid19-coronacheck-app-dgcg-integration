@@ -128,7 +128,7 @@ Before a PR is submitted:
 * No compiler warnings
 * Security scan analyzer must return a clean
 	* https://security-code-scan.github.io/
-	* security-scan nl-covid19-coronatester-app-backend.sln
+	* security-scan nl-covid19-coronacheck-app-backend.sln
 	
 We have several scripts which you can use to do this, just run them without arguments.
 

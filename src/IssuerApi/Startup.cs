@@ -4,14 +4,14 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi
 {
     public class Startup : StartupCommonBase<Startup>
     {

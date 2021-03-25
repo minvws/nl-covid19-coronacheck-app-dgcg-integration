@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.Primitives;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public interface IProofOfTestService
     {
