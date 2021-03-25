@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.Configuration;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public class RedisTestResultLogConfig : AppSettingsReader, IRedisTestResultLogConfig
     {

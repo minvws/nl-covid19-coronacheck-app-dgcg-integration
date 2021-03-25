@@ -4,7 +4,7 @@
 
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
 {
     public static class DateTimeExtensions
     {

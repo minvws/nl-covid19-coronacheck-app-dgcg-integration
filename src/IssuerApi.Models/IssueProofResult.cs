@@ -2,10 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
 {
     public class IssueProofResult
     {

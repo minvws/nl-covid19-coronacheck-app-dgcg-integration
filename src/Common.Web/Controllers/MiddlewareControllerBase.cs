@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.AspNetCore.Mvc;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Controllers
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers
 {
     public abstract class MiddlewareControllerBase : ControllerBase 
     {

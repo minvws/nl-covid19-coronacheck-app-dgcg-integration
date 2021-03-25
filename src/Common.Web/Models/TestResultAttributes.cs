@@ -5,7 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
     public class TestResultAttributes
     {

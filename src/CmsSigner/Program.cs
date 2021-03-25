@@ -5,8 +5,8 @@
 using CmsSigner.Certificates;
 using CmsSigner.Model;
 using CommandLine;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Signing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using System;
 using System.Collections.Generic;
 using System.IO;

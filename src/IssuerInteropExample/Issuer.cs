@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInteropExample
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample
 {
     public static class Issuer
     {

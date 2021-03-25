@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
 {
     public class Program
     {

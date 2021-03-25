@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class AssemblyKeyStore : IKeyStore
     {

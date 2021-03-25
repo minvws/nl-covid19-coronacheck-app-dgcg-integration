@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Common.Testing</AssemblyName>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing</RootNamespace>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

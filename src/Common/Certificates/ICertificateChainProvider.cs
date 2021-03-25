@@ -4,7 +4,7 @@
 
 using System.Security.Cryptography.X509Certificates;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
 {
     public interface ICertificateChainProvider
     {

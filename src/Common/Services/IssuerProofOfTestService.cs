@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class IssuerProofOfTestService : IProofOfTestService
     {

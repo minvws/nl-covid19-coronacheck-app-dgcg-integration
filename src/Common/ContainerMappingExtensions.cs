@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.DependencyInjection;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Certificates;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 {
     public static class ContainerMappingExtensions
     {

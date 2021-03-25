@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using System;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 {
     public class Issuer : IIssuerInterop
     {

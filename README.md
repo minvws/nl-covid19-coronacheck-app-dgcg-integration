@@ -56,7 +56,7 @@ In order to run the projects you will need to configure them.
 
 The backend relies on the CTCL issuer library for the crypto operations. We will include a small guide on building this libary here.
 
-The libary is available in the CTCL repository: https://github.com/minvws/nl-covid19-coronatester-ctcl-core
+The libary is available in the CTCL repository: https://github.com/minvws/nl-covid19-coronacheck-cl-core
 
 ### Prereqs
 
@@ -69,11 +69,11 @@ Install the version of these tools appropriate to your platform/cpu.
 
 ### Building the library
 
-* Ensure that you've checked out `nl-covid19-coronatester-ctcl-core`.
+* Ensure that you've checked out `nl-covid19-coronacheck-cl-core`.
 * Move to the directory `issuer/cinterface`.
 * Build the libray: `go build -buildmode=c-shared -o issuer.dll`
 
-You can then copy `issuer.dll` and `issuer.h` from `nl-covid19-coronatester-ctcl-core/issuer/cinterface` to the folder `src/IssuerInterop` in `nl-covid19-coronatester-app-backend-private`.
+You can then copy `issuer.dll` and `issuer.h` from `nl-covid19-coronacheck-cl-core/issuer/cinterface` to the folder `src/IssuerInterop` in `nl-covid19-coronacheck-app-backend`.
 
 ## Installing Redis
 
@@ -188,7 +188,7 @@ Prereqs:
 0. Save this in a file called ext.cnf:
 
     ```
-    [ tester_signing_key ]
+    [ signing_key ]
     nsComment = For testing only and no this is not the real thing. Duh.
     keyUsage = nonRepudiation, digitalSignature, keyEncipherment
     subjectKeyIdentifier=hash
@@ -199,7 +199,7 @@ Prereqs:
 1. Create an x509 certificate
 
     ```
-    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaCheck/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions tester_signing_key -req -signkey sign.key -out sign.pub
+    openssl req -new -keyout sign.key -nodes -subj "/C=NL/O=Test/OU=CoronaCheck/CN=Signing cert" | openssl x509 -extfile ext.cnf --extensions signing_key -req -signkey sign.key -out sign.pub
     ```
 
 2. Create a pkcs12 from the x509 keypair with the password '123456'

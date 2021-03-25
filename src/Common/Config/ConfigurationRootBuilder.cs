@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     public static class ConfigurationRootBuilder
     {

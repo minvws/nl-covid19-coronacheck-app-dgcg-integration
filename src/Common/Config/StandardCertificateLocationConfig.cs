@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     public class StandardCertificateLocationConfig : AppSettingsReader, ICertificateLocationConfig
     {

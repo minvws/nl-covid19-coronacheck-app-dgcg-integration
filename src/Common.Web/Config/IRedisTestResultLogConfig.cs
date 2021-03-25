@@ -2,7 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public interface IRedisTestResultLogConfig
     {

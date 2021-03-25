@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class KeyStore : IKeyStore
     {

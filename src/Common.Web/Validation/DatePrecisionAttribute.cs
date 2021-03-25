@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 #nullable enable
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 {
     public class DatePrecisionAttribute : ValidationAttribute
     {

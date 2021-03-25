@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 {
     public static class GoHelpers
     {

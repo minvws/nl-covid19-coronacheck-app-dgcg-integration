@@ -2,14 +2,14 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 {
     public class IssuerApiClient : IIssuerApiClient
     {

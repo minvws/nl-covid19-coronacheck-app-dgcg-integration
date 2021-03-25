@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 {
     public static class ContainerMappingExtensions
     {

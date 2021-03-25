@@ -4,7 +4,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
 {
     public class GenerateNonceResult
     {

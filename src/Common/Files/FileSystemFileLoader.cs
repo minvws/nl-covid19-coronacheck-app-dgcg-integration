@@ -1,4 +1,4 @@
-﻿namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Files
+﻿namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Files
 {
     public class FileSystemFileLoader : IFileLoader
     {

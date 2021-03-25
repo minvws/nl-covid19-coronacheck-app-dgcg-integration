@@ -4,22 +4,22 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Controllers;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
-using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi.Controllers
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
 {
     [ApiController]
     [AllowAnonymous]

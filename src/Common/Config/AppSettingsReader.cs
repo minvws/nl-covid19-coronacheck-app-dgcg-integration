@@ -5,7 +5,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     public abstract class AppSettingsReader
     {

@@ -13,7 +13,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 {
     public abstract class StartupCommonBase<T>
     {

@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client</RootNamespace>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

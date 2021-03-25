@@ -5,7 +5,7 @@
 using System;
 using System.Text.Json;
 
-namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class StandardJsonSerializer : IJsonSerializer
     {

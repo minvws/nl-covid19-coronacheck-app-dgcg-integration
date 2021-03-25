@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</AssemblyName>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests</AssemblyName>
 
-    <RootNamespace>NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApiTests</RootNamespace>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

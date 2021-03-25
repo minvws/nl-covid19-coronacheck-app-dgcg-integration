@@ -1,4 +1,4 @@
-﻿namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop
+﻿namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 {
     public class GoIssuerException : IssuerException
     {
