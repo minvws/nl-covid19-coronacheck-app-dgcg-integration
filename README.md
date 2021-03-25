@@ -13,7 +13,6 @@ This repository contains the <platform> implementation of the Dutch COVID-19 <pr
 * Dotnet 5 SDK (https://dotnet.microsoft.com/download/dotnet/5.0)
 * Go issuer C library built for your platform (see [Issuer library](#issuer-library))  
 * Redis is required for the ProofOfTestApi, for a small guide to installing it see [Installing Redis](#installing-redis))  
-* Postgres 13+ is required to run `VerifierAppApi` and `HolderAppApi`
 
 ### Nice to have
 
@@ -48,10 +47,6 @@ This solution contains three API projects which can all be deployed seperatly:
 * StaticProofApi: Middleware provides an API for external b2b systems to talk to.
 * IssuerApi: Contains the crypto services, this is an internal microservice called by ProofOfTestApi
 * ProofOfTestApi: Contains the crypto services called by Holder app.
-* HolderAppApi: Contains the non-crypto services called by the Holder app.
-* VerifierAppApi: Contains the service called by the Verifier app.
-
-The services in HolderAppApi and VerifierAppApi are designed to be used behind a CDN, the services they contain produce results which do not change very often.
 
 You can run the projects locally, one at a time, using the Docker images provided in each project.
 
@@ -118,16 +113,6 @@ Redis will now be running on `localhost:6379`.
 
 The configuration is stored in the standard .Net Core appsettings.json format. For local development you can make an `appsettings.development.json` file in the project and put your settings there. Some of the project use a database so this step is required.
 
-### Configuration: database
-
-Both the `VerifierAppApi` and `HolderAppApi` use a Postgres database. Create a database for this project, run the scripts in `db/schema` to create the schema, run the scripts in `db/data` to add the data then update the connection string in the configuration the APIs can access the database:
-
-```
-  "ConnectionStrings": {
-    "tester": "host=your_database_server_host_name;database=your_datbaase_name;user id=your_user_id;password=your_password;"
-  },
-```
-
 ### Configuration: Issuer keys
 
 The issuer uses two certificates - a public and provide key. We currently ship two methods to load these files - from the filesystem or embedded in the assembly. For development you can use the test certificates which are embedded into the assembly using this configuration:
@@ -186,7 +171,10 @@ We currently build the test CMS certificate into the assembly, if you want to us
 
 ### Configuration: redis
 
-TODO
+Redis is used to to store the test result identifers and also as a session cache for the nonces. It is used by `ProofOfTestApi` and `StaticProofApi`.
+
+
+
 
 ## Creating a CMS Certificate
 
