@@ -8,10 +8,12 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Commands;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.VerifierAppApi.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("verifier")]
     public class VerifierController : ControllerBase
     {

@@ -16,11 +16,13 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.StaticProofApi.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("staticproof")]
     public class StaticProofController : MiddlewareControllerBase
     {

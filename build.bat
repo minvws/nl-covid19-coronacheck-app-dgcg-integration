@@ -1,7 +1,11 @@
 dotnet build src/ProofOfTestApi/ProofOfTestApi.csproj
-dotnet build src/IssuerApi/IssuerApi.csproj
-dotnet build src/StaticProofApi/StaticProofApi.csproj
-dotnet build src/CmsSigner/CmsSigner.csproj
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-REM dotnet build src/HolderAppApi/HolderAppApi.csproj
-REM dotnet build src/VerifierAppApi/VerifierAppApi.csproj
+dotnet build src/IssuerApi/IssuerApi.csproj
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+dotnet build src/StaticProofApi/StaticProofApi.csproj
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+dotnet build src/CmsSigner/CmsSigner.csproj
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%

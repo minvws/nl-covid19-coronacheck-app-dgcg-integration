@@ -12,10 +12,12 @@ using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models;
 using NL.Rijksoverheid.CoronaTester.BackEnd.IssuerInterop;
 using System;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("proof")]
     public class IssuerController : ControllerBase
     {
