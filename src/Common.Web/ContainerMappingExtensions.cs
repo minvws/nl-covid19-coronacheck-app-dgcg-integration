@@ -18,7 +18,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web
     {
         public static void AddResponseSigner(this IServiceCollection services)
         {
-            // Response signer
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<IContentSigner, CmsSignerSimple>();
             services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();

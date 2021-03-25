@@ -13,6 +13,3 @@ rm -r publish/StaticProofApi
 dotnet publish src/CmsSigner/CmsSigner.csproj -o publish/Tools/CmsSigner
 tar -czvf publish/CmsSigner.tar.gz publish/Tools/CmsSigner
 rm -r publish/Tools/CmsSigner
-
-#dotnet publish src/HolderAppApi/HolderAppApi.csproj -o publish/HolderAppApi
-#dotnet publish src/VerifierAppApi/VerifierAppApi.csproj -o publish/VerifierAppApi
