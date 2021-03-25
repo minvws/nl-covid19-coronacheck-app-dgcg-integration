@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
+    <ProjectReference Include="..\IssuerApi.Client\IssuerApi.Client.csproj" />
     <ProjectReference Include="..\IssuerApi.Models\IssuerApi.Models.csproj" />
   </ItemGroup>
 

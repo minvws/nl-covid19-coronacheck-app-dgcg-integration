@@ -5,5 +5,7 @@
         string GenerateNonce(string publicKeyId);
 
         string IssueProof(string publicKeyId, string publicKey, string privateKey, string nonce, string commitments, string attributes);
+
+        string IssueStaticDisclosureQr(string publicKeyId, string publicKey, string privateKey, string attributes);
     }
 }

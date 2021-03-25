@@ -2,13 +2,13 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Signatures;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
-using NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi.Models
 {

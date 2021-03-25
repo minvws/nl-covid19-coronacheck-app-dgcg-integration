@@ -11,8 +11,6 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApi.Models
 {
     public class IssueProofRequest
     {
-        // TODO move the attributes to.. an attribute
-
         [Required]
         [JsonPropertyName("attributes")]
         public Attributes Attributes { get; set; }

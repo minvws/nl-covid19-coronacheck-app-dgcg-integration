@@ -44,6 +44,9 @@ Before you run the scripts, you need to replace the Go library - `src/IssuerInte
 
 This solution contains three API projects which can all be deployed seperatly:
 
+* ProofOfTestApi: Middleware, handles sessions and provides an API for the app to talk to.
+* StaticProofApi: Middleware provides an API for external b2b systems to talk to.
+* IssuerApi: Contains the crypto services, this is an internal microservice called by ProofOfTestApi
 * ProofOfTestApi: Contains the crypto services called by Holder app.
 * HolderAppApi: Contains the non-crypto services called by the Holder app.
 * VerifierAppApi: Contains the service called by the Verifier app.

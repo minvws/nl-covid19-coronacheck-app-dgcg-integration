@@ -2,6 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using Microsoft.Extensions.Primitives;
+
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
 {
     public interface IProofOfTestService
@@ -20,5 +22,12 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services
         /// </summary>
         /// <returns></returns>
         string GenerateNonce();
+        
+        /// <summary>
+        /// Generates a static QR for the given attributes
+        /// </summary>
+        /// <param name="proofOfTestAttributes">Attributes supported by the PoT service, see type</param>
+        /// <returns>Base64 string containing the QR as a PNG</returns>
+        string GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes);
     }
 }

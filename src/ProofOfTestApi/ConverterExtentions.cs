@@ -18,7 +18,7 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.ProofOfTestApi
                 Nonce = nonce,
                 Attributes = new Attributes
                 {
-                    SampleTime = request.Test.Result.SampleDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    SampleTime = request.Test.Result.SampleDate,
                     TestType = request.Test.Result.TestType,
                     BirthDay = request.Test.Result.Holder.BirthDay,
                     BirthMonth = request.Test.Result.Holder.BirthMonth,

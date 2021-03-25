@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Testing;
@@ -11,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Services;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
@@ -58,12 +60,25 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.IssuerApiTests.Controllers
         public async Task Post_Proof_Issue_returns_proof()
         {
             // Arrange
+            var json = new StandardJsonSerializer();
             var client = Factory.CreateClient();
-            var requestJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
+            
+            // Arrange: get a Nonce
+            var requestContentNonce = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var resultNonce = await client.PostAsync("proof/nonce", requestContentNonce);
+            var responseBodyNonce = await resultNonce.Content.ReadAsStringAsync();
+            var typedResultNonce = Unwrap<GenerateNonceResult>(responseBodyNonce);
+            Assert.NotEmpty(typedResultNonce.Nonce);
+
+            // Arrange: the request
+            var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
+            var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
+            requestObject.Nonce = typedResultNonce.Nonce;
+            requestObject.Attributes.SampleTime = DateTime.UtcNow.ToHourPrecision();
+            var requestJson = json.Serialize(requestObject); 
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act
-
             var result = await client.PostAsync("proof/issue", requestContent);
 
             // Assert: result OK

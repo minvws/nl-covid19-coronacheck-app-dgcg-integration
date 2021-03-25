@@ -2,6 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Validation;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
@@ -9,14 +12,17 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
     public class Attributes
     {
         /// <summary>
-        /// Unix timestamp of when the test was taken.
+        /// Date/time when the same .
         /// </summary>
+        [Required]
         [JsonPropertyName("sampleTime")]
-        public string SampleTime { get; set; }
+        [DatePrecision(Precision = PrecisionLevel.Hour)]
+        public DateTime SampleTime { get; set; }
 
         /// <summary>
         /// UUID of the test type
         /// </summary>
+        [Required]
         [JsonPropertyName("testType")]
         public string TestType { get; set; }
         
@@ -44,5 +50,10 @@ namespace NL.Rijksoverheid.CoronaTester.BackEnd.Common.Web.Models
         [JsonPropertyName("birthMonth")]
         public string BirthMonth { get; set; }
 
+        /// <summary>
+        /// Flag to show whether it's a specimen ("1") or not ("0")
+        /// </summary>
+        [JsonPropertyName("isSpecimen")]
+        public bool IsSpecimen { get; set; }
     }
 }
