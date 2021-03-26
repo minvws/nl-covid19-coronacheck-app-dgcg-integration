@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Shared.props" />
+
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests</AssemblyName>
-
     <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests</RootNamespace>
   </PropertyGroup>
 

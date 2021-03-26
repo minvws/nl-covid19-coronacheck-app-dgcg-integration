@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Shared.props" />
+
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExampleTests</AssemblyName>
     <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExampleTests</RootNamespace>
   </PropertyGroup>
