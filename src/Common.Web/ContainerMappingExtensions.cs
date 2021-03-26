@@ -38,13 +38,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
                 return instance;
             });
         }
-        
+
         public static void AddTestResultLog(this IServiceCollection services)
         {
             services.AddScoped<ITestResultLog, RedisTestResultLog>();
             services.AddScoped<IRedisTestResultLogConfig, RedisTestResultLogConfig>();
         }
-        
+
         public static void AddRedisSessionStore(this IServiceCollection services)
         {
             services.AddScoped<ISessionDataStore, RedisSessionStore>();

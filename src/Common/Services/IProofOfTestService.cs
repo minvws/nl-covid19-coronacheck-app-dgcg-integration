@@ -2,14 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Microsoft.Extensions.Primitives;
-
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public interface IProofOfTestService
     {
         /// <summary>
-        /// Signs the given proofOfTestAttributes and returns the signature wrapped as base64 encoded string
+        ///     Signs the given proofOfTestAttributes and returns the signature wrapped as base64 encoded string
         /// </summary>
         /// <param name="proofOfTestAttributes">Attributes supported by the PoT service, see type</param>
         /// <param name="nonce">Nonce bytes in b64 format</param>
@@ -18,13 +16,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
         string GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments);
 
         /// <summary>
-        /// Generates a nonce and returns the value as a base64 string
+        ///     Generates a nonce and returns the value as a base64 string
         /// </summary>
         /// <returns></returns>
         string GenerateNonce();
-        
+
         /// <summary>
-        /// Generates a static QR for the given attributes
+        ///     Generates a static QR for the given attributes
         /// </summary>
         /// <param name="proofOfTestAttributes">Attributes supported by the PoT service, see type</param>
         /// <returns>Base64 string containing the QR as a PNG</returns>

@@ -12,7 +12,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
         public RedisSessionStoreConfig(IConfiguration config) : base(config, "RedisSessionStore")
         {
         }
-        
+
         public string InstanceName => GetConfigValue<string>(nameof(InstanceName));
 
         public string Configuration => GetConfigValue<string>(nameof(Configuration));

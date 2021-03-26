@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models;
-using IssueProofRequest = NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models.IssueProofRequest;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
+using GenerateNonceResult = NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models.GenerateNonceResult;
+using IssueProofResult = NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models.IssueProofResult;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
 {
     public static class ConverterExtensions
     {
-        public static IssuerApi.Models.IssueProofRequest ToIssuerApiRequest(this ProofOfTestApi.Models.IssueProofRequest request, string nonce)
+        public static IssueProofRequest ToIssuerApiRequest(this Models.IssueProofRequest request, string nonce)
         {
             return new IssueProofRequest
             {
@@ -28,7 +29,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
             };
         }
 
-        public static ProofOfTestApi.Models.IssueProofResult ToProofOfTestApiResult(this IssuerApi.Models.IssueProofResult result)
+        public static IssueProofResult ToProofOfTestApiResult(this IssuerApi.Models.IssueProofResult result)
         {
             return new IssueProofResult
             {
@@ -45,7 +46,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
             };
         }
 
-        public static ProofOfTestApi.Models.GenerateNonceResult ToProofOfTestApiResult(this IssuerApi.Models.GenerateNonceResult result, string sessionToken)
+        public static GenerateNonceResult ToProofOfTestApiResult(this IssuerApi.Models.GenerateNonceResult result, string sessionToken)
         {
             return new GenerateNonceResult
             {

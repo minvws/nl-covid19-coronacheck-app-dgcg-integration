@@ -3,22 +3,22 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
 {
     /// <summary>
-    /// Tests operating on the HTTP/REST interface and running in a web-server
+    ///     Tests operating on the HTTP/REST interface and running in a web-server
     /// </summary>
     public class IssuerControllerTests : TesterWebApplicationFactory<Startup>
     {
@@ -62,7 +62,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             // Arrange
             var json = new StandardJsonSerializer();
             var client = Factory.CreateClient();
-            
+
             // Arrange: get a Nonce
             var requestContentNonce = new StringContent(string.Empty, Encoding.UTF8, "application/json");
             var resultNonce = await client.PostAsync("proof/nonce", requestContentNonce);
@@ -75,7 +75,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
             requestObject.Nonce = typedResultNonce.Nonce;
             requestObject.Attributes.SampleTime = DateTime.UtcNow.ToHourPrecision();
-            var requestJson = json.Serialize(requestObject); 
+            var requestJson = json.Serialize(requestObject);
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act

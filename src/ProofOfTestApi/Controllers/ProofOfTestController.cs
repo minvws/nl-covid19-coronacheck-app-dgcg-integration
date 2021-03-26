@@ -2,8 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
@@ -13,9 +15,6 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
 {
@@ -24,17 +23,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
     [Route("test")]
     public class ProofOfTestController : MiddlewareControllerBase
     {
-        private readonly ITestResultLog _testResultLog;
         private readonly IIssuerApiClient _issuerApiClient;
         private readonly ISessionDataStore _sessionData;
-        private readonly ILogger<ProofOfTestController> _logger;
         private readonly ITestProviderSignatureValidator _signatureValidator;
+        private readonly ITestResultLog _testResultLog;
 
         public ProofOfTestController(
             ITestResultLog testResultLog,
             IIssuerApiClient issuerApiClient,
             ISessionDataStore sessionData,
-            ILogger<ProofOfTestController> logger,
             IJsonSerializer jsonSerializer,
             ISignedDataResponseBuilder signedDataResponseBuilder,
             ITestProviderSignatureValidator signatureValidator,
@@ -44,7 +41,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
             _testResultLog = testResultLog ?? throw new ArgumentNullException(nameof(testResultLog));
             _issuerApiClient = issuerApiClient ?? throw new ArgumentNullException(nameof(_issuerApiClient));
             _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));
         }
 
@@ -69,7 +65,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
 
             if (await _testResultLog.Contains(request.Test.Result.Unique, request.Test.ProviderIdentifier))
                 return BadRequest("Duplicate test result");
-            
+
             var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken);
 
             if (!nonceFound)
@@ -79,7 +75,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
 
             var resultAdded = await _testResultLog.Add(request.Test.Result.Unique, request.Test.ProviderIdentifier);
 
-            if(!resultAdded)
+            if (!resultAdded)
                 return BadRequest("Duplicate test result");
 
             await _sessionData.RemoveNonce(request.SessionToken);

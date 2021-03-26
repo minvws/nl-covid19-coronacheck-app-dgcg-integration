@@ -2,10 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
 {
@@ -14,9 +14,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         [Required]
         [JsonPropertyName("attributes")]
         public Attributes Attributes { get; set; }
-        
+
         /// <summary>
-        /// Nonce bytes formatted as a base64 string.
+        ///     Nonce bytes formatted as a base64 string.
         /// </summary>
         [Required]
         [JsonPropertyName("nonce")]
@@ -24,7 +24,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         public string Nonce { get; set; }
 
         /// <summary>
-        /// Commitments bytes formatted as a base64 string.
+        ///     Commitments bytes formatted as a base64 string.
         /// </summary>
         [Required]
         [Base64String]

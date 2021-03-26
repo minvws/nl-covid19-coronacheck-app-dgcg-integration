@@ -2,6 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -9,9 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 {
@@ -23,10 +23,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = ServiceName, Version = "v1" });
-            });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = ServiceName, Version = "v1"}); });
 
             services.AddControllers();
             services.AddCommon();
@@ -36,6 +33,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
             _services = services;
         }
 
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once VirtualMemberNeverOverridden.Global
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<T> logger)
         {
             if (app == null) throw new ArgumentNullException(nameof(app));
@@ -73,12 +72,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
-        
+
         private void LogInitializationBanner(IWebHostEnvironment env, ILogger<T> logger)
         {
             if (env == null) throw new ArgumentNullException(nameof(env));
@@ -91,10 +87,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
             message.AppendLine("Service Registration information");
             message.AppendLine($"The following {_services.Count} services have been registered.");
             foreach (var service in _services)
-            {
                 message.AppendLine(
                     $"{service.ServiceType.Name} > {service.ImplementationType?.Name} [{service.Lifetime}]");
-            }
             logger.LogInformation(message.ToString());
 
             message.Clear();

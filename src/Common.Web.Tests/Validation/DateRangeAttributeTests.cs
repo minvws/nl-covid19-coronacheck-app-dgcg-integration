@@ -2,13 +2,13 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Moq;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using Moq;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
@@ -24,7 +24,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
             var dateNow = DateTime.Parse(nowDateString, CultureInfo.InvariantCulture).ToUniversalTime();
             var dateTimeProvider = new TestUtcDateTimeProvider(dateNow);
             var mockProvider = new Mock<IServiceProvider>();
-            mockProvider.Setup(x => x.GetService(It.IsAny<System.Type>())).Returns(dateTimeProvider);
+            mockProvider.Setup(x => x.GetService(It.IsAny<Type>())).Returns(dateTimeProvider);
             var serviceProvider = mockProvider.Object;
 
             // Assemble: model to validate
@@ -47,7 +47,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
 
     public class TestModel
     {
-        [DateRangeAttribute(72)]
-        public DateTime Test { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        [DateRangeAttribute(72)] public DateTime Test { get; set; }
     }
 }
