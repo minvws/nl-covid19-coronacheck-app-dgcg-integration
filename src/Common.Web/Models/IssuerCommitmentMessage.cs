@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class IssuerCommitmentMessage
     {
         [JsonPropertyName("n_2")]

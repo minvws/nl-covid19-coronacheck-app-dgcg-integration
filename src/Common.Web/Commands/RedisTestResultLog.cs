@@ -33,6 +33,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
         public async Task<bool> Add(string unique, string providerId)
         {
+            if (string.IsNullOrWhiteSpace(unique)) throw new ArgumentException(nameof(unique));
+            if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(providerId));
+
             var key = CreateUniqueKey(unique, providerId);
 
             var db = _redis.GetDatabase();
@@ -55,6 +58,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
         public async Task<bool> Contains(string unique, string providerId)
         {
+            if (string.IsNullOrWhiteSpace(unique)) throw new ArgumentException(nameof(unique));
+            if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(providerId));
+
             var key = CreateUniqueKey(unique, providerId);
             var db = _redis.GetDatabase();
 
@@ -68,6 +74,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
         private string CreateUniqueKey(string unique, string providerId)
         {
+            if (string.IsNullOrWhiteSpace(unique)) throw new ArgumentException(nameof(unique));
+            if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(providerId));
+
             var key = $"{unique}.{providerId}";
 
             var hmacKeyBytes = Encoding.UTF8.GetBytes(_config.Salt);

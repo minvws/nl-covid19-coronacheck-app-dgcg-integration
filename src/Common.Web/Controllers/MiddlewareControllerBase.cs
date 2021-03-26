@@ -28,8 +28,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers
             _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
         }
 
-        protected OkObjectResult OkWrapped<T>(T result)
+        protected OkObjectResult OkWrapped<T>(T result) where T : class
         {
+            if (result == null) throw new ArgumentNullException(nameof(result));
+
             return Ok(_srb.Build(result));
         }
 

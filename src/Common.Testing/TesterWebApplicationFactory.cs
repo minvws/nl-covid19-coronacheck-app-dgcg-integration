@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
             JsonSerializer = new StandardJsonSerializer();
         }
 
-        protected T Unwrap<T>(string content)
+        protected T Unwrap<T>(string content) where T : class
         {
             if (string.IsNullOrWhiteSpace(content)) throw new ArgumentNullException(nameof(content));
 
