@@ -8,8 +8,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
     public class Proof
     {
-        [JsonPropertyName("c")] public string C { get; set; }
+        [JsonPropertyName("c")] public string? C { get; set; }
 
-        [JsonPropertyName("e_response")] public string ErrorResponse { get; set; }
+        [JsonPropertyName("e_response")] public string? ErrorResponse { get; set; }
     }
 }

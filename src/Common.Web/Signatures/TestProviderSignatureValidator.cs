@@ -15,14 +15,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures
 {
     public class TestProviderSignatureValidator : ITestProviderSignatureValidator
     {
+        private readonly IDictionary<string, X509Certificate2> _certs = new Dictionary<string, X509Certificate2>();
         private readonly ITestProviderSignatureValidatorConfig _config;
         private readonly IFileLoader _fileLoader;
         private readonly ILogger<TestProviderSignatureValidator> _log;
-
-        private readonly IDictionary<string, X509Certificate2> _certs = new Dictionary<string, X509Certificate2>();
         private bool _initialized;
 
-        public TestProviderSignatureValidator(ITestProviderSignatureValidatorConfig config, IFileLoader fileLoader, ILogger<TestProviderSignatureValidator> log)
+        public TestProviderSignatureValidator(ITestProviderSignatureValidatorConfig? config, IFileLoader? fileLoader,
+                                              ILogger<TestProviderSignatureValidator>? log)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _fileLoader = fileLoader ?? throw new ArgumentNullException(nameof(fileLoader));

@@ -2,53 +2,38 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text;
 using CmsSigner.Certificates;
 using CmsSigner.Model;
 using CommandLine;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using static System.Convert;
 
+// ReSharper disable ClassNeverInstantiated.Local
+// ReSharper disable ClassNeverInstantiated.Global
 namespace CmsSigner
 {
     internal class Program
     {
-        public class Options
-        {
-            [Option('i', "inputFile", Required = true, HelpText = "File to sign (Validate=False) | File containing json wrapper with payload/signature to validate (Validate=True")]
-            public string InputFile { get; set; }
-
-            [Option('s', "signingCertFile", Required = true, HelpText = "Certificate (pfx, including private key) used to sign the input file")]
-            public string SigningCertificateFile { get; set; }
-
-            [Option('p', "password", Required = true, HelpText = "Password for the private key associated with the signing certificate")]
-            public string Password { get; set; }
-
-            [Option('c', "certChainFile", Required = true, HelpText = "Certificate chain (p7b) for the signing certificate")]
-            public string CertificateChainFile { get; set; }
-
-            [Option('v', "validate", Required = false, HelpText = "Instead of signing inputFile, instead check the signature in signatureFile matches that from inputFile.")]
-            public bool Validate { get; set; }
-        }
-
-
         private static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(Run)
-                .WithNotParsed(HandleParseError);
+                  .WithParsed(Run)
+                  .WithNotParsed(HandleParseError);
         }
 
         private static void Run(Options options)
         {
-            var inputFile = Load(options.InputFile);
-            var certFile = Load(options.SigningCertificateFile);
-            var chainFile = Load(options.CertificateChainFile);
+            var inputFile = Load(options.InputFile!);
+            var certFile = Load(options.SigningCertificateFile!);
+            var chainFile = Load(options.CertificateChainFile!);
 
-            var certProvider = new CertProvider(CertificateHelpers.Load(certFile, options.Password));
+            var certProvider = new CertProvider(CertificateHelpers.Load(certFile, options.Password!));
             var chainProvider = new ChainProvider(CertificateHelpers.LoadAll(chainFile));
             var signer = new CmsSignerEnhanced(certProvider, chainProvider, new StandardUtcDateTimeProvider());
             var serializer = new StandardJsonSerializer();
@@ -56,10 +41,10 @@ namespace CmsSigner
             if (options.Validate)
             {
                 var validator = new CmsValidatorEnhanced(certProvider, chainProvider);
-                var json = System.Text.Encoding.UTF8.GetString(inputFile);
+                var json = Encoding.UTF8.GetString(inputFile);
                 var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
-                var signatureBytes = FromBase64String(signedDataResponse.Signature);
-                var payloadBytes = FromBase64String(signedDataResponse.Payload);
+                var signatureBytes = FromBase64String(signedDataResponse.Signature!);
+                var payloadBytes = FromBase64String(signedDataResponse.Payload!);
 
                 var valid = validator.Validate(payloadBytes, signatureBytes);
 
@@ -79,7 +64,7 @@ namespace CmsSigner
             Console.Write(resultJson);
         }
 
-        public static void HandleParseError(IEnumerable<Error> errs)
+        private static void HandleParseError(IEnumerable<Error> errs)
         {
             Console.WriteLine("Error parsing input, please check your call and try again.");
 
@@ -104,28 +89,25 @@ namespace CmsSigner
             return null;
         }
 
-        //private static bool Validate(ICmsValidator signer, byte[] file)
-        //{
-        //    var serializer = new StandardJsonSerializer();
-        //    var json = System.Text.Encoding.UTF8.GetString(file);
-        //    var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
-        //    var signatureBytes = FromBase64String(signedDataResponse.Signature);
-        //    var payloadBytes = FromBase64String(signedDataResponse.Payload);
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+        private class Options
+        {
+            [Option('i', "inputFile", Required = true,
+                    HelpText = "File to sign (Validate=False) | File containing json wrapper with payload/signature to validate (Validate=True")]
+            public string? InputFile { get; set; }
 
-        //    return signer.Validate(payloadBytes, signatureBytes);
+            [Option('s', "signingCertFile", Required = true, HelpText = "Certificate (pfx, including private key) used to sign the input file")]
+            public string? SigningCertificateFile { get; set; }
 
-        //    //try
-        //    //{
-        //    //    var contentInfo = new ContentInfo(payloadBytes);
-        //    //    var cms = new SignedCms(contentInfo, true);
-        //    //    cms.Decode(signatureBytes);
-        //    //    cms.CheckSignature(true);
-        //    //}
-        //    //catch (CryptographicException)
-        //    //{
-        //    //    return false;
-        //    //}
-        //    //return true;
-        //}
+            [Option('p', "password", Required = true, HelpText = "Password for the private key associated with the signing certificate")]
+            public string? Password { get; set; }
+
+            [Option('c', "certChainFile", Required = true, HelpText = "Certificate chain (p7b) for the signing certificate")]
+            public string? CertificateChainFile { get; set; }
+
+            [Option('v', "validate", Required = false,
+                    HelpText = "Instead of signing inputFile, instead check the signature in signatureFile matches that from inputFile.")]
+            public bool Validate { get; set; }
+        }
     }
 }

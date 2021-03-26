@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config;
-using StackExchange.Redis;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config;
+using StackExchange.Redis;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
@@ -26,6 +26,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             _redis = ConnectionMultiplexer.Connect(_config.Configuration);
         }
 
+        public void Dispose()
+        {
+            _redis.Dispose();
+        }
+
         public async Task<bool> Add(string unique, string providerId)
         {
             var key = CreateUniqueKey(unique, providerId);
@@ -38,12 +43,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             // cannot be issued twice.
             var tran = db.CreateTransaction();
             tran.AddCondition(Condition.KeyNotExists(key));
-#pragma warning disable 4014
+            #pragma warning disable 4014
             // Note: you cannot await here because the transaction is executed in one go. So the warning is disabled for now.
             // See post from the library author himself:
             // https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
             tran.StringSetAsync(key, key, TimeSpan.FromHours(_config.Duration));
-#pragma warning restore 4014
+            #pragma warning restore 4014
 
             return await tran.ExecuteAsync();
         }
@@ -73,11 +78,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             var hashBytes = hmac.ComputeHash(valueBytes);
 
             return Encoding.UTF8.GetString(hashBytes);
-        }
-
-        public void Dispose()
-        {
-            _redis?.Dispose();
         }
     }
 }

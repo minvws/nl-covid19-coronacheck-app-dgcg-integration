@@ -13,10 +13,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [JsonPropertyName("n_2")]
         [Base64String]
         [Required]
-        public string N2 { get; set; }
+        public string? N2 { get; set; }
 
         [JsonPropertyName("combinedProofs")]
         [Required]
-        public CombinedProof CombinedProofs { get; set; }
+        public CombinedProof? CombinedProofs { get; set; }
     }
 }

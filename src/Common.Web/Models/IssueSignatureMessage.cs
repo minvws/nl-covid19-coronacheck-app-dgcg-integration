@@ -8,7 +8,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
     public class IssueSignatureMessage
     {
-        [JsonPropertyName("proof")] public Proof Proof { get; set; }
-        [JsonPropertyName("signature")] public object Signature { get; set; }
+        [JsonPropertyName("proof")] public Proof? Proof { get; set; }
+
+        [JsonPropertyName("signature")] public object? Signature { get; set; }
     }
 }

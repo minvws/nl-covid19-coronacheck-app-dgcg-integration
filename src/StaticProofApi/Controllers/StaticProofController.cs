@@ -47,16 +47,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
         [Route("paper")]
         public async Task<IActionResult> Paper(SignedDataWrapper<TestResult> wrappedRequest)
         {
+            if (wrappedRequest == null) throw new ArgumentNullException(nameof(wrappedRequest));
+
             if (!ModelState.IsValid)
                 return ValidationProblem();
 
-            var payload = Base64.Decode(wrappedRequest.Payload);
+            // NOTE: The model state validators ensure that the model properties aren't null
+
+            var payload = Base64.Decode(wrappedRequest.Payload!);
 
             // Deserialize wrappedRequest
             var request = JsonSerializer.Deserialize<TestResult>(payload);
 
             // Validate signature
-            if (!IsTestSignatureValid(request.ProviderIdentifier, wrappedRequest))
+            if (!IsTestSignatureValid(request.ProviderIdentifier!, wrappedRequest))
                 return BadRequest("Test result signature is invalid");
 
             // Validate TestResult (1/3)
@@ -64,11 +68,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                 return ValidationProblem();
 
             // Validate TestResult (2/3)
-            if (!request.Result.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
+            if (!request.Result!.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
                 return BadRequest("");
 
             // Validate TestResult (3/3)
-            if (await _testResultLog.Contains(request.Result.Unique, request.ProviderIdentifier))
+            if (await _testResultLog.Contains(request.Result.Unique!, request.ProviderIdentifier!))
                 return BadRequest("Duplicate test result");
 
             // Call Issuer
@@ -76,7 +80,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             {
                 Attributes = new Attributes
                 {
-                    BirthMonth = request.Result.Holder.BirthMonth,
+                    BirthMonth = request.Result.Holder!.BirthMonth,
                     BirthDay = request.Result.Holder.BirthDay,
                     FirstNameInitial = request.Result.Holder.FirstNameInitial,
                     LastNameInitial = request.Result.Holder.LastNameInitial,
@@ -86,7 +90,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                 }
             });
 
-            var resultAdded = await _testResultLog.Add(request.Result.Unique, request.ProviderIdentifier);
+            var resultAdded = await _testResultLog.Add(request.Result.Unique!, request.ProviderIdentifier!);
 
             if (!resultAdded)
                 return BadRequest("Duplicate test result");
@@ -98,8 +102,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
 
         private bool IsTestSignatureValid(string providerId, SignedDataWrapper<TestResult> wrappedRequest)
         {
-            var signatureBytes = Convert.FromBase64String(wrappedRequest.Signature);
-            var payloadBytes = Convert.FromBase64String(wrappedRequest.Payload);
+            if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(wrappedRequest));
+            if (wrappedRequest == null) throw new ArgumentNullException(nameof(wrappedRequest));
+
+            var signatureBytes = Convert.FromBase64String(wrappedRequest.Signature!);
+            var payloadBytes = Convert.FromBase64String(wrappedRequest.Payload!);
             return _signatureValidator.Validate(providerId, payloadBytes, signatureBytes);
         }
     }

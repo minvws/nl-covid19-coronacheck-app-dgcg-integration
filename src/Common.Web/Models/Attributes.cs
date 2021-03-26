@@ -24,31 +24,31 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         /// </summary>
         [Required]
         [JsonPropertyName("testType")]
-        public string TestType { get; set; }
+        public string? TestType { get; set; }
 
         /// <summary>
         ///     First letter of the first name (titles etc ignored)
         /// </summary>
         [JsonPropertyName("firstNameInitial")]
-        public string FirstNameInitial { get; set; }
+        public string? FirstNameInitial { get; set; }
 
         /// <summary>
         ///     First letter of the Surname (tussenvoegsels ignored)
         /// </summary>
         [JsonPropertyName("lastNameInitial")]
-        public string LastNameInitial { get; set; }
+        public string? LastNameInitial { get; set; }
 
         /// <summary>
         ///     Date from DateOfBirth (integer 1-31) or "x"
         /// </summary>
         [JsonPropertyName("birthDay")]
-        public string BirthDay { get; set; }
+        public string? BirthDay { get; set; }
 
         /// <summary>
         ///     Month from DateOfBirth (integer 1-12) or "x"
         /// </summary>
         [JsonPropertyName("birthMonth")]
-        public string BirthMonth { get; set; }
+        public string? BirthMonth { get; set; }
 
         /// <summary>
         ///     Flag to show whether it's a specimen ("1") or not ("0")

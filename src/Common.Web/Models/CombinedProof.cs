@@ -13,21 +13,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [JsonPropertyName("U")]
         [Base64String]
         [Required]
-        public string U { get; set; }
+        public string? U { get; set; }
 
         [JsonPropertyName("c")]
         [Base64String]
         [Required]
-        public string C { get; set; }
+        public string? C { get; set; }
 
         [JsonPropertyName("v_prime_response")]
         [Base64String]
         [Required]
-        public string VPrimeResponse { get; set; }
+        public string? VPrimeResponse { get; set; }
 
         [JsonPropertyName("s_response")]
         [Base64String]
         [Required]
-        public string SResponse { get; set; }
+        public string? SResponse { get; set; }
     }
 }

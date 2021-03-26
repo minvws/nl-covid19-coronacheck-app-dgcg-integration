@@ -8,7 +8,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
 {
     public class GenerateNonceResult
     {
-        [JsonPropertyName("nonce")] public string Nonce { get; set; }
-        [JsonPropertyName("stoken")] public string SessionToken { get; set; }
+        [JsonPropertyName("nonce")] public string? Nonce { get; set; }
+        [JsonPropertyName("stoken")] public string? SessionToken { get; set; }
     }
 }

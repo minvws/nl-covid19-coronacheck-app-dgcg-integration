@@ -56,7 +56,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<ProofOfTestApi.Models.GenerateNonceResult>(responseBody);
             Assert.Equal(nonce, typedResult.Nonce);
-            Assert.NotEmpty(typedResult.SessionToken);
+            Assert.NotNull(typedResult);
+            Assert.NotNull(typedResult.SessionToken);
+            Assert.NotEmpty(typedResult.SessionToken!);
         }
 
         [Fact]
@@ -106,9 +108,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<IssueProofResult>(responseBody);
+            Assert.NotNull(typedResult);
             Assert.NotNull(typedResult.Attributes);
             Assert.NotNull(typedResult.Ism);
-            Assert.Equal(9, typedResult.Attributes.Length);
+            Assert.Equal(9, typedResult.Attributes!.Length);
         }
 
         private string CreateIssueProofRequest(string sessionToken)
@@ -178,7 +181,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<ProofOfTestApi.Models.GenerateNonceResult>(responseBody);
 
-            return typedResult.SessionToken;
+            Assert.NotNull(typedResult);
+            Assert.NotNull(typedResult.SessionToken);
+
+            return typedResult.SessionToken!;
         }
 
         protected override IHost CreateHost(IHostBuilder builder)

@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
         public void Dispose()
         {
-            _redis?.Dispose();
+            _redis.Dispose();
         }
 
         public async Task<string> AddNonce(string nonce)

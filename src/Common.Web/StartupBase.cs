@@ -17,7 +17,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 {
     public abstract class StartupCommonBase<T>
     {
-        private IServiceCollection _services;
+        private IServiceCollection? _services;
 
         protected abstract string ServiceName { get; }
 
@@ -79,6 +79,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
         {
             if (env == null) throw new ArgumentNullException(nameof(env));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
+            if (_services == null) throw new InvalidOperationException($"{nameof(_services)} has not been initialized");
 
             var message = new StringBuilder();
 

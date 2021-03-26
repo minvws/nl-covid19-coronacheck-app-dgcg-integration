@@ -9,10 +9,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample
 {
     public static class Issuer
     {
-        private const string LibraryName = "issuer.dll";
-
-
-        // ReSharper disable InconsistentNaming
+        private const string LibraryName = "issuer.dll"; // ReSharper disable InconsistentNaming
         // ReSharper disable NotAccessedField.Local
 
         // typedef struct { const char *p; ptrdiff_t n; } _GoString_;
@@ -30,11 +27,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample
             public long cap;
         }
 
-
-
         // ReSharper enable InconsistentNaming
         // ReSharper enable NotAccessedField.Local
-
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         private static extern IntPtr GenerateIssuerNonceB64();
 
@@ -43,7 +37,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample
 
         public static string GenerateNonce()
         {
-            return Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
+            var result = Marshal.PtrToStringAnsi(GenerateIssuerNonceB64());
+
+            if (result == null) throw new Exception("Nonce generation failed");
+
+            return result;
         }
 
         public static string IssueProof(string issuerPkXml, string issuerSkXml, string issuerNonceB64, string commitmentsJson, string[] attributes)
@@ -54,9 +52,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropExample
             var commitmentsJsoGon = ToGoString(commitmentsJson);
             var attributesGo = ToGoSlice(attributes);
 
-            var result = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
+            var goIntPtr = Issue(issuerPkXmlGo, issuerSkXmlGo, issuerNonceB64Go, commitmentsJsoGon, attributesGo);
 
-            return Marshal.PtrToStringAnsi(result);
+            var result = Marshal.PtrToStringAnsi(goIntPtr);
+
+            if (result == null) throw new Exception("Issue Proof generation failed");
+
+            return result;
         }
 
         private static GoString ToGoString(string str)

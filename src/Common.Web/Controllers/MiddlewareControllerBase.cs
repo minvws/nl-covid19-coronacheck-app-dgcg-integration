@@ -35,6 +35,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers
 
         protected static bool IsValid<T>(T req)
         {
+            if (req == null) throw new ArgumentNullException(nameof(req));
+
             var context = new ValidationContext(req);
             var results = new List<ValidationResult>();
 

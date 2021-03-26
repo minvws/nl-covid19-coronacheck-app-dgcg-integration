@@ -2,15 +2,18 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Signature
     {
-        [JsonPropertyName("A")] public string A { get; set; }
-        [JsonPropertyName("e")] public string E { get; set; }
-        [JsonPropertyName("v")] public string V { get; set; }
-        [JsonPropertyName("KeyshareP")] public string Keyshare { get; set; }
+        [JsonPropertyName("A")] public string? A { get; set; }
+        [JsonPropertyName("e")] public string? E { get; set; }
+        [JsonPropertyName("v")] public string? V { get; set; }
+        [JsonPropertyName("KeyshareP")] public string? Keyshare { get; set; }
     }
 }

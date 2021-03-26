@@ -13,7 +13,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
     {
         [Required]
         [JsonPropertyName("attributes")]
-        public Attributes Attributes { get; set; }
+        public Attributes? Attributes { get; set; }
 
         /// <summary>
         ///     Nonce bytes formatted as a base64 string.
@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         [Required]
         [JsonPropertyName("nonce")]
         [Base64String]
-        public string Nonce { get; set; }
+        public string? Nonce { get; set; }
 
         /// <summary>
         ///     Commitments bytes formatted as a base64 string.
@@ -29,6 +29,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         [Required]
         [Base64String]
         [JsonPropertyName("commitments")]
-        public string Commitments { get; set; }
+        public string? Commitments { get; set; }
     }
 }
