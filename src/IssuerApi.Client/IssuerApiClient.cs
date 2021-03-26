@@ -33,6 +33,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 
         public async Task<IssueProofResult> IssueProof(IssueProofRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var client = _clientFactory.CreateClient();
             var requestJson = _jsonSerializer.Serialize(request);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
@@ -40,7 +42,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.PostAsync(IssueProofUrl, content);
 
             if (!response.IsSuccessStatusCode)
-                // TODO log & throw a proper error
                 throw new Exception("Error calling IssueProof service");
 
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -56,7 +57,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
-                // TODO log & throw a proper error
                 throw new Exception("Error calling GenerateNonce service");
 
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -66,6 +66,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 
         public async Task<string> IssueStaticProof(IssueStaticProofRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var client = _clientFactory.CreateClient();
             var requestJson = _jsonSerializer.Serialize(request);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
@@ -73,7 +75,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.PostAsync(IssueStaticProofUrl, content);
 
             if (!response.IsSuccessStatusCode)
-                // TODO log & throw a proper error
                 throw new Exception("Error calling IssueStaticProof service");
 
             var responseContent = await response.Content.ReadAsStringAsync();

@@ -36,7 +36,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             return str;
         }
 
-        //TODO This requires a length of 1 cos WrapString?
+        // TODO: TEST with string containing quotes.
+        // TODO This requires a length of 1 cos WrapString?
         public static GoString ToWrappedGoString(string str)
         {
             return ToGoString(WrapString(str));

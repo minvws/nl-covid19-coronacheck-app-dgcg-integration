@@ -61,6 +61,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
 
         public bool UnpackAll(IJsonSerializer serializer)
         {
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+
             if (TestResult == null) return false;
             if (Commitments == null) return false;
 

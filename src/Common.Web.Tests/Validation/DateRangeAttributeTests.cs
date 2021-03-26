@@ -33,7 +33,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
                 Test = DateTime.Parse(valueDateString, CultureInfo.InvariantCulture).ToUniversalTime()
             };
 
-            // Assemble: bananas
+            // Assemble: validator arguments
             var context = new ValidationContext(model, serviceProvider, null);
             var results = new List<ValidationResult>();
 
@@ -43,11 +43,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
             // Assert
             Assert.Equal(expectedResult, result);
         }
-    }
 
-    public class TestModel
-    {
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        [DateRangeAttribute(72)] public DateTime Test { get; set; }
+        private class TestModel
+        {
+            // ReSharper disable once UnusedAutoPropertyAccessor.Global
+            [DateRange(72)] public DateTime Test { get; set; }
+        }
     }
 }

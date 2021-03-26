@@ -56,6 +56,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
 
         public static GenerateNonceResult ToProofOfTestApiResult(this IssuerApi.Models.GenerateNonceResult result, string sessionToken)
         {
+            if (result == null) throw new ArgumentNullException(nameof(result));
+            if (string.IsNullOrWhiteSpace(sessionToken)) throw new ArgumentException(nameof(sessionToken));
+
             return new GenerateNonceResult
             {
                 Nonce = result.Nonce,
