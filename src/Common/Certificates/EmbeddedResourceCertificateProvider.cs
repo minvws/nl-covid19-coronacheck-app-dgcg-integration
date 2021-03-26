@@ -2,15 +2,15 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
 {
     /// <summary>
-    /// Loads a certificate in p12 format from 
+    ///     Loads a certificate in p12 format
     /// </summary>
     public class EmbeddedResourceCertificateProvider : ICertificateProvider
     {
@@ -24,8 +24,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
         public X509Certificate2 GetCertificate()
         {
             var cert = typeof(EmbeddedResourceCertificateProvider)
-                .Assembly
-                .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_config.Path}");
+                      .Assembly
+                      .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_config.Path}");
 
             return new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
         }

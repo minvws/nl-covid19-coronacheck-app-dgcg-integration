@@ -9,7 +9,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
     public static class DateTimeExtensions
     {
         /// <summary>
-        /// GO API string is based on ISO 8601 format but including only the hour (minutes/second are zeroed out) and is in UTC.
+        ///     GO API string is based on ISO 8601 format but including only the hour (minutes/second are zeroed out) and is in
+        ///     UTC.
         /// </summary>
         /// <example>2021-01-25T13:00:00Z</example>
         public static string ToGoApiString(this DateTime date)
@@ -18,9 +19,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
 
             return $"{utcDate:yyyy-MM-dd}T{utcDate:HH}:00:00Z";
         }
-        
+
         /// <summary>
-        /// Returns TRUE if [comparisionDate] - [nHours] &lt; [date] &lt; [comparisionDate]
+        ///     Returns TRUE if [comparisionDate] - [nHours] &lt; [date] &lt; [comparisionDate]
         /// </summary>
         public static bool LessThanNHoursBefore(this DateTime date, int nHours, DateTime comparisionDate)
         {
@@ -30,15 +31,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
         }
 
         /// <summary>
-        /// Returns TRUE if the date-time precision is to the hour
+        ///     Returns TRUE if the date-time precision is to the hour
         /// </summary>
         public static bool IsHourPrecision(this DateTime date)
         {
             return date.Minute == 0 && date.Second == 0 && date.Millisecond == 00;
         }
-        
+
         /// <summary>
-        /// Returns a new DateTime with hour precision using FLOOR()
+        ///     Returns a new DateTime with hour precision using FLOOR()
         /// </summary>
         public static DateTime ToHourPrecision(this DateTime date)
         {
@@ -46,7 +47,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
         }
 
         /// <summary>
-        /// Converts an UTC Date into the UnixTime.
+        ///     Converts an UTC Date into the UnixTime.
         /// </summary>
         public static long ToUnixTime(this DateTime value)
         {

@@ -2,10 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config;
-using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config;
+using StackExchange.Redis;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
@@ -24,13 +24,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             _redis = ConnectionMultiplexer.Connect(_config.Configuration);
         }
 
+        public void Dispose()
+        {
+            _redis?.Dispose();
+        }
+
         public async Task<string> AddNonce(string nonce)
         {
             var key = Guid.NewGuid().ToString();
-            
+
             var db = _redis.GetDatabase();
 
-            var result = await db.StringSetAsync(key, nonce, TimeSpan.FromHours(_config.Duration));
+            await db.StringSetAsync(key, nonce, TimeSpan.FromHours(_config.Duration));
 
             return key;
         }
@@ -39,7 +44,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
         {
             var db = _redis.GetDatabase();
 
-            var result = await db.KeyDeleteAsync(key);
+            await db.KeyDeleteAsync(key);
         }
 
         public async Task<(bool, string)> GetNonce(string key)
@@ -53,11 +58,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             // Source: https://github.com/StackExchange/StackExchange.Redis/blob/main/docs/KeysValues.md
 
             return (!value.IsNull, value.ToString());
-        }
-        
-        public void Dispose()
-        {
-            _redis?.Dispose();
         }
     }
 }

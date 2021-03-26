@@ -2,17 +2,17 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
     /// <summary>
-    /// Utility class which provides easy access to CMS 
+    ///     Utility class which provides easy access to CMS
     /// </summary>
     public static class Signer
     {
@@ -20,7 +20,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
         {
             var dtp = new StandardUtcDateTimeProvider();
 
-            var certificateBytes = System.IO.File.ReadAllBytes(certificatePath);
+            var certificateBytes = File.ReadAllBytes(certificatePath);
             var certificate = new X509Certificate2(certificateBytes, password, X509KeyStorageFlags.Exportable);
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
@@ -36,13 +36,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             signedCms.ComputeSignature(signer);
 
             return signedCms.Encode();
-        }
-
-        public static byte[] ComputeSignatureCms(string content, string certificatePath, string password, bool excludeCertificates = true)
-        {
-            var contentBytes = Encoding.UTF8.GetBytes(content);
-
-            return ComputeSignatureCms(contentBytes, certificatePath, password, excludeCertificates);
         }
     }
 }

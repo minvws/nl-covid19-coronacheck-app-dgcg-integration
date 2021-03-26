@@ -2,6 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
@@ -10,9 +13,6 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
-using System;
-using System.Net;
-using Microsoft.AspNetCore.Authorization;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 {
@@ -21,11 +21,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
     [Route("proof")]
     public class IssuerController : ControllerBase
     {
+        private readonly IApiSigningConfig _apiSigningConfig;
+        private readonly IJsonSerializer _jsonSerializer;
         private readonly ILogger<IssuerController> _logger;
         private readonly IProofOfTestService _potService;
-        private readonly IJsonSerializer _jsonSerializer;
         private readonly ISignedDataResponseBuilder _srb;
-        private readonly IApiSigningConfig _apiSigningConfig;
 
         public IssuerController(
             ILogger<IssuerController> logger,
@@ -42,7 +42,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         }
 
         /// <summary>
-        /// Issues the proof of (negative) test
+        ///     Issues the proof of (negative) test
         /// </summary>
         [HttpPost]
         [Route("issue")]
@@ -68,20 +68,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                 var commitmentsJson = Base64.Decode(request.Commitments);
                 var attributes = new ProofOfTestAttributes(
                     request.Attributes.SampleTime,
-                    request.Attributes.TestType, 
-                    request.Attributes.FirstNameInitial, 
-                    request.Attributes.LastNameInitial, 
-                    request.Attributes.BirthDay, 
+                    request.Attributes.TestType,
+                    request.Attributes.FirstNameInitial,
+                    request.Attributes.LastNameInitial,
+                    request.Attributes.BirthDay,
                     request.Attributes.BirthMonth,
                     false, // Always set to false for non-static
                     request.Attributes.IsSpecimen
-                    );
+                );
 
                 var proofResult =
                     _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
-                
+
                 var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
-                
+
                 //// TODO: CreateCredentialMessage
                 //var issueProofResult = new IssueProofResult
                 //{
@@ -107,18 +107,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             {
                 _logger.LogError("IssueProof: Error issuing proof.", e);
 
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
             catch (Exception e)
             {
                 _logger.LogError("IssueProof: Unexpected exception.", e);
 
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
         }
 
         /// <summary>
-        /// Generates and returns a random nonce
+        ///     Generates and returns a random nonce
         /// </summary>
         [HttpPost]
         [Route("nonce")]
@@ -129,7 +129,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             {
                 var nonce = _potService.GenerateNonce();
 
-                var result = new GenerateNonceResult { Nonce = nonce };
+                var result = new GenerateNonceResult {Nonce = nonce};
 
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(result))
@@ -139,12 +139,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             {
                 _logger.LogError("IssueProof: Error generating nonce.", e);
 
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
         }
 
         /// <summary>
-        /// Issues a static proof, returning QR in PNG format, base64 encoded in a string
+        ///     Issues a static proof, returning QR in PNG format, base64 encoded in a string
         /// </summary>
         [HttpPost]
         [Route("issue-static")]
@@ -178,7 +178,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     request.Attributes.IsSpecimen);
 
                 var qr = _potService.GetStaticProofQr(attributes);
-                
+
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(qr))
                     : Ok(qr);
@@ -193,13 +193,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             {
                 _logger.LogError("IssueProof: Error issuing proof.", e);
 
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
             catch (Exception e)
             {
                 _logger.LogError("IssueProof: Unexpected exception.", e);
 
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
         }
     }
