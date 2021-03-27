@@ -49,6 +49,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
         [ProducesResponseType(typeof(IssueProofResult), 200)]
         public async Task<IActionResult> IssueProof(IssueProofRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             if (!request.UnpackAll(JsonSerializer))
                 return BadRequest("Unable to unpack either commitments or test result");
 
@@ -56,29 +58,29 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
                 return ValidationProblem();
 
             // TODO remove once the custom model binder is written as this will be covered by the validation
-            if (!request.Test.Result.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
+            if (!request.Test!.Result!.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
                 return BadRequest("");
 
             // TODO remove once the custom model binder [and sig validation attr] are written as this will be covered by the validation
             if (!request.ValidateSignature(_signatureValidator))
                 return BadRequest("Test result signature is invalid");
 
-            if (await _testResultLog.Contains(request.Test.Result.Unique, request.Test.ProviderIdentifier))
+            if (await _testResultLog.Contains(request.Test.Result.Unique!, request.Test.ProviderIdentifier!))
                 return BadRequest("Duplicate test result");
 
-            var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken);
+            var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken!);
 
             if (!nonceFound)
                 return BadRequest("Invalid session");
 
             var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
 
-            var resultAdded = await _testResultLog.Add(request.Test.Result.Unique, request.Test.ProviderIdentifier);
+            var resultAdded = await _testResultLog.Add(request.Test.Result.Unique!, request.Test.ProviderIdentifier!);
 
             if (!resultAdded)
                 return BadRequest("Duplicate test result");
 
-            await _sessionData.RemoveNonce(request.SessionToken);
+            await _sessionData.RemoveNonce(request.SessionToken!);
 
             return ApiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result.ToProofOfTestApiResult())
@@ -92,7 +94,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
         {
             var result = await _issuerApiClient.GenerateNonce();
 
-            var sessionToken = await _sessionData.AddNonce(result.Nonce);
+            var sessionToken = await _sessionData.AddNonce(result.Nonce!);
 
             return ApiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result.ToProofOfTestApiResult(sessionToken))

@@ -56,42 +56,25 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                 return new BadRequestResult();
             }
 
-            if (request == null)
-            {
-                _logger.LogDebug("IssueProof: Empty request received.");
-
-                return new BadRequestResult();
-            }
-
             try
             {
-                var commitmentsJson = Base64.Decode(request.Commitments);
+                var commitmentsJson = Base64.Decode(request.Commitments!);
+
                 var attributes = new ProofOfTestAttributes(
-                    request.Attributes.SampleTime,
-                    request.Attributes.TestType,
-                    request.Attributes.FirstNameInitial,
-                    request.Attributes.LastNameInitial,
-                    request.Attributes.BirthDay,
-                    request.Attributes.BirthMonth,
+                    request.Attributes!.SampleTime,
+                    request.Attributes.TestType!,
+                    request.Attributes.FirstNameInitial!,
+                    request.Attributes.LastNameInitial!,
+                    request.Attributes.BirthDay!,
+                    request.Attributes.BirthMonth!,
                     false, // Always set to false for non-static
                     request.Attributes.IsSpecimen
                 );
 
                 var proofResult =
-                    _potService.GetProofOfTest(attributes, request.Nonce, commitmentsJson);
+                    _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson);
 
                 var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
-
-                //// TODO: CreateCredentialMessage
-                //var issueProofResult = new IssueProofResult
-                //{
-                //    Ism = issuerMessage,
-                //    Attributes = new Attributes
-                //    {
-                //        SampleTime = attributes.SampleTime,
-                //        TestType = attributes.TestType
-                //    }
-                //};
 
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(issueProofResult))
@@ -158,22 +141,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                 return new BadRequestResult();
             }
 
-            if (request == null)
-            {
-                _logger.LogDebug("IssueProof: Empty request received.");
-
-                return new BadRequestResult();
-            }
-
             try
             {
                 var attributes = new ProofOfTestAttributes(
-                    request.Attributes.SampleTime,
-                    request.Attributes.TestType,
-                    request.Attributes.FirstNameInitial,
-                    request.Attributes.LastNameInitial,
-                    request.Attributes.BirthDay,
-                    request.Attributes.BirthMonth,
+                    request.Attributes!.SampleTime,
+                    request.Attributes.TestType!,
+                    request.Attributes.FirstNameInitial!,
+                    request.Attributes.LastNameInitial!,
+                    request.Attributes.BirthDay!,
+                    request.Attributes.BirthMonth!,
                     true, // Always set to true for static!
                     request.Attributes.IsSpecimen);
 

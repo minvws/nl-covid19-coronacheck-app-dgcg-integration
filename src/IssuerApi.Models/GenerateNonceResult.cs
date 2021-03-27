@@ -8,6 +8,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
 {
     public class GenerateNonceResult
     {
-        [JsonPropertyName("nonce")] public string Nonce { get; set; }
+        [JsonPropertyName("nonce")] public string? Nonce { get; set; }
     }
 }

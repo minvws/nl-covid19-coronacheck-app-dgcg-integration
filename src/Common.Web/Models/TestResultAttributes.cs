@@ -12,21 +12,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [Required]
         [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("firstNameInitial")]
-        public string FirstNameInitial { get; set; }
+        public string? FirstNameInitial { get; set; }
 
         [Required]
         [RegularExpression("^[A-Z]{1}$")]
         [JsonPropertyName("lastNameInitial")]
-        public string LastNameInitial { get; set; }
+        public string? LastNameInitial { get; set; }
 
         [Required]
         [RegularExpression("^1[0-9]$|^2[0-9]$|^3[0-1]$|^[xX1-9]$")]
         [JsonPropertyName("birthDay")]
-        public string BirthDay { get; set; }
+        public string? BirthDay { get; set; }
 
         [Required]
         [RegularExpression("^1[0-2]$|^[xX1-9]$")]
         [JsonPropertyName("birthMonth")]
-        public string BirthMonth { get; set; }
+        public string? BirthMonth { get; set; }
     }
 }

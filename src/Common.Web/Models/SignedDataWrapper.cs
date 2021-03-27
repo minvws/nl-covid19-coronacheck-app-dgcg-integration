@@ -2,9 +2,11 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
-using System.Text.Json.Serialization;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
@@ -12,21 +14,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
     {
         [JsonPropertyName("payload")]
         [Base64String]
-        public string Payload { get; set; }
+        public string? Payload { get; set; }
 
         [JsonPropertyName("signature")]
         [Base64String]
-        public string Signature { get; set; }
+        public string? Signature { get; set; }
 
-        [JsonIgnore]
-        public byte[] PayloadBytes => System.Convert.FromBase64String(Payload);
+        [JsonIgnore] public byte[] PayloadBytes => Convert.FromBase64String(Payload ?? string.Empty);
 
-        [JsonIgnore]
-        public byte[] SignatureBytes => System.Convert.FromBase64String(Signature);
+        [JsonIgnore] public byte[] SignatureBytes => Convert.FromBase64String(Signature ?? string.Empty);
 
         /// <summary>
-        /// Unpacks Payload as T.
+        ///     Unpacks Payload as T.
         /// </summary>
+        [return: MaybeNull]
         public T Unpack(IJsonSerializer serializer)
         {
             if (string.IsNullOrWhiteSpace(Payload)) return default;

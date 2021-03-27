@@ -38,10 +38,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<GenerateNonceResult>(responseBody);
-            Assert.NotEmpty(typedResult.Nonce);
+
+            Assert.NotNull(typedResult);
+            Assert.NotNull(typedResult.Nonce);
+            Assert.NotEmpty(typedResult.Nonce!);
 
             // Assert: nonce is b64 string
-            var bytes = Base64.Decode(typedResult.Nonce);
+            var bytes = Base64.Decode(typedResult.Nonce!);
             Assert.NotEmpty(bytes);
         }
 
@@ -68,13 +71,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var resultNonce = await client.PostAsync("proof/nonce", requestContentNonce);
             var responseBodyNonce = await resultNonce.Content.ReadAsStringAsync();
             var typedResultNonce = Unwrap<GenerateNonceResult>(responseBodyNonce);
-            Assert.NotEmpty(typedResultNonce.Nonce);
+            Assert.NotNull(typedResultNonce);
+            Assert.NotNull(typedResultNonce.Nonce);
+            Assert.NotEmpty(typedResultNonce.Nonce!);
 
             // Arrange: the request
             var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
             requestObject.Nonce = typedResultNonce.Nonce;
-            requestObject.Attributes.SampleTime = DateTime.UtcNow.ToHourPrecision();
+            requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
             var requestJson = json.Serialize(requestObject);
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
@@ -89,7 +94,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var typedResult = Unwrap<IssueProofResult>(responseBody);
             Assert.NotNull(typedResult.Attributes);
             Assert.NotNull(typedResult.Ism);
-            Assert.NotNull(typedResult.Ism.Proof);
+            Assert.NotNull(typedResult.Ism!.Proof);
             Assert.NotNull(typedResult.Ism.Signature);
         }
 
