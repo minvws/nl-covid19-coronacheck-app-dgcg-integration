@@ -2,8 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Microsoft.Extensions.Configuration;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
@@ -13,7 +13,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
         private readonly string _prefix;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="config"></param>
         /// <param name="prefix">//NB should do a Regex.IsMatch(input, @"^[a-zA-Z0-9_]+$"); to avoid invalid characters</param>

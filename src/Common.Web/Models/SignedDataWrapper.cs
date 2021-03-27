@@ -34,7 +34,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 
             if (string.IsNullOrWhiteSpace(Payload)) return default;
 
-            var payloadString = Base64.Decode(Payload);
+            var payloadString = Base64.DecodeAsUtf8String(Payload);
 
             return serializer.Deserialize<T>(payloadString);
         }

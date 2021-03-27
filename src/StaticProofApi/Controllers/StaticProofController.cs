@@ -54,7 +54,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
 
             // NOTE: The model state validators ensure that the model properties aren't null
 
-            var payload = Base64.Decode(wrappedRequest.Payload!);
+            var payload = Base64.DecodeAsUtf8String(wrappedRequest.Payload!);
 
             // Deserialize wrappedRequest
             var request = JsonSerializer.Deserialize<TestResult>(payload);

@@ -2,9 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
@@ -23,10 +23,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
                 throw new InvalidOperationException($"No parent directory for {AppContext.BaseDirectory}");
 
             return new ConfigurationBuilder()
-                .SetBasePath(baseDirectory.FullName)
-                .AddJsonFile("appsettings.json", false)
-                .AddJsonFile($"appsettings.{environmentName}.json", true, true)
-                .Build();
+                  .SetBasePath(baseDirectory.FullName)
+                  .AddJsonFile("appsettings.json", false)
+                  .AddJsonFile($"appsettings.{environmentName}.json", true, true)
+                  .Build();
         }
     }
 }

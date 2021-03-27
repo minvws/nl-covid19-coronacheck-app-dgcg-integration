@@ -44,7 +44,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             Assert.NotEmpty(typedResult.Nonce!);
 
             // Assert: nonce is b64 string
-            var bytes = Base64.Decode(typedResult.Nonce!);
+            var bytes = Base64.DecodeAsUtf8String(typedResult.Nonce!);
             Assert.NotEmpty(bytes);
         }
 

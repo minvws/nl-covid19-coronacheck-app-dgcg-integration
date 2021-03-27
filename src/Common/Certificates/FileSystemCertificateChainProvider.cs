@@ -2,11 +2,11 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
 {
@@ -26,10 +26,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
             var result = new X509Certificate2Collection();
             result.Import(bytes);
             foreach (var c in result)
-            {
                 if (c.IssuerName.Name != c.SubjectName.Name)
                     certList.Add(c);
-            }
 
             return certList.ToArray();
         }

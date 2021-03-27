@@ -5,7 +5,7 @@
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     /// <summary>
-    /// Embedded resources or file system.
+    ///     Embedded resources or file system.
     /// </summary>
     public interface ICertificateLocationConfig
     {

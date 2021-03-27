@@ -12,26 +12,26 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
 {
     public abstract class TesterWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
     {
+        private readonly StandardJsonSerializer _jsonSerializer;
         protected readonly WebApplicationFactory<TEntryPoint> Factory;
-        protected readonly StandardJsonSerializer JsonSerializer;
 
         protected TesterWebApplicationFactory()
         {
             Factory = WithWebHostBuilder(builder => { builder.ConfigureTestServices(services => { }); });
-            JsonSerializer = new StandardJsonSerializer();
+            _jsonSerializer = new StandardJsonSerializer();
         }
 
         protected T Unwrap<T>(string content) where T : class
         {
             if (string.IsNullOrWhiteSpace(content)) throw new ArgumentNullException(nameof(content));
 
-            if (!content.Contains("payload")) return JsonSerializer.Deserialize<T>(content);
+            if (!content.Contains("payload")) return _jsonSerializer.Deserialize<T>(content);
 
-            var signingWrapperResult = JsonSerializer.Deserialize<SignedDataWrapper<T>>(content);
+            var signingWrapperResult = _jsonSerializer.Deserialize<SignedDataWrapper<T>>(content);
 
             if (signingWrapperResult.Payload == null || signingWrapperResult.Signature == null) throw new Exception("Payload or signature missing");
 
-            return JsonSerializer.Deserialize<T>(Base64.Decode(signingWrapperResult.Payload));
+            return _jsonSerializer.Deserialize<T>(Base64.DecodeAsUtf8String(signingWrapperResult.Payload));
         }
     }
 }

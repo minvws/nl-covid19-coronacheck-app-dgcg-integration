@@ -7,17 +7,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
     public interface IIssuerCertificateConfig
     {
         /// <summary>
-        /// TRUE to use the embedded resources, false to use the file system
+        ///     TRUE to use the embedded resources, false to use the file system
         /// </summary>
         bool UseEmbedded { get; }
 
         /// <summary>
-        /// Path to the public key XML
+        ///     Path to the public key XML
         /// </summary>
         string PathPublicKey { get; }
 
         /// <summary>
-        /// ath to the private key XML
+        ///     ath to the private key XML
         /// </summary>
         string PathPrivateKey { get; }
     }

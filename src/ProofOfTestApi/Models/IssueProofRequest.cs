@@ -71,7 +71,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
                 var testResult = TestResult.Unpack(serializer);
                 if (testResult == null) return false;
                 Test = testResult;
-                var icmString = Base64.Decode(Commitments);
+                var icmString = Base64.DecodeAsUtf8String(Commitments);
                 Icm = serializer.Deserialize<IssuerCommitmentMessage>(icmString);
             }
             catch

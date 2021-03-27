@@ -2,8 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using System;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
 {

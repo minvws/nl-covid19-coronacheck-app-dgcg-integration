@@ -12,8 +12,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
         {
         }
 
-        //TODO production is actually false?
-        public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), true);
+        public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), false);
         public string Path => GetConfigValue<string>(nameof(Path));
         public string Password => GetConfigValue<string>(nameof(Password));
     }

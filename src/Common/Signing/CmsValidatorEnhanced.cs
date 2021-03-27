@@ -2,17 +2,17 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
     public class CmsValidatorEnhanced : ICmsValidator
     {
-        private readonly ICertificateProvider _certificateProvider;
         private readonly ICertificateChainProvider _certificateChainProvider;
+        private readonly ICertificateProvider _certificateProvider;
 
         public CmsValidatorEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider)
         {
@@ -22,7 +22,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 
         public bool Validate(byte[] content, byte[] signature)
         {
-
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 

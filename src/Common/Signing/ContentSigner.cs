@@ -18,6 +18,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
     {
         public static byte[] ComputeSignatureCms(byte[] content, string certificatePath, string password, bool excludeCertificates = true)
         {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (string.IsNullOrWhiteSpace(certificatePath)) throw new ArgumentException(nameof(certificatePath));
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException(nameof(password));
+
             var dtp = new StandardUtcDateTimeProvider();
 
             var certificateBytes = File.ReadAllBytes(certificatePath);
