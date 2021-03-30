@@ -153,9 +153,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
         }
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void Test(GoString data, IntPtr resultBuffer, out long written, out bool error);
-
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern void GenerateIssuerNonceB64(GoString issuerPkId, IntPtr resultBuffer, out long written, out bool error);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
