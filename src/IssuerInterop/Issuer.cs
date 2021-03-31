@@ -30,7 +30,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             }
             catch
             {
-                throw new GoIssuerException();
+                throw new GoIssuerException("Error calling GenerateIssuerNonceB64 in GO");
             }
             finally
             {
@@ -74,7 +74,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             }
             catch
             {
-                throw new GoIssuerException();
+                throw new GoIssuerException("Error calling Issue in GO");
             }
             finally
             {
@@ -112,7 +112,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             }
             catch
             {
-                throw new GoIssuerException();
+                throw new GoIssuerException("Error calling IssueStaticDisclosureQr in GO");
             }
             finally
             {
@@ -131,7 +131,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             }
             catch
             {
-                throw new GoIssuerException();
+                throw new GoIssuerException("Error calling LoadIssuerKeypair in GO");
             }
             finally
             {
