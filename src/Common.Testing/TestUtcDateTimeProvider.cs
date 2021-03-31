@@ -14,11 +14,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing
             Snapshot = date.ToUniversalTime();
         }
 
-        public DateTime Now()
-        {
-            return Snapshot;
-        }
-
         public DateTime Snapshot { get; }
     }
 }
