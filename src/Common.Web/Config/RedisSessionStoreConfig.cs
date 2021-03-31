@@ -13,8 +13,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
         {
         }
 
-        public string InstanceName => GetConfigValue<string>(nameof(InstanceName));
-
         public string Configuration => GetConfigValue<string>(nameof(Configuration));
+
+        public int SessionTimeout => GetConfigValue(nameof(SessionTimeout), 30);
     }
 }

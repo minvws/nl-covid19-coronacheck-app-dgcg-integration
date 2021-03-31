@@ -11,10 +11,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
     public class RedisSessionStore : IDisposable, ISessionDataStore
     {
-        private readonly IRedisTestResultLogConfig _config;
+        private readonly IRedisSessionStoreConfig _config;
         private readonly ConnectionMultiplexer _redis;
 
-        public RedisSessionStore(IRedisTestResultLogConfig config)
+        public RedisSessionStore(IRedisSessionStoreConfig config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -37,7 +37,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
             var db = _redis.GetDatabase();
 
-            await db.StringSetAsync(key, nonce, TimeSpan.FromHours(_config.Duration));
+            await db.StringSetAsync(key, nonce, TimeSpan.FromSeconds(_config.SessionTimeout));
 
             return key;
         }
