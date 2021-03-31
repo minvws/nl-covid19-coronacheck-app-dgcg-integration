@@ -47,6 +47,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
         private class TestModel
         {
             // ReSharper disable once UnusedAutoPropertyAccessor.Global
+            // ReSharper disable once UnusedAutoPropertyAccessor.Local
             [DateRange(72)] public DateTime Test { get; set; }
         }
     }
