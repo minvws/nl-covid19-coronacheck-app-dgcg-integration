@@ -68,10 +68,10 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern char* LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml);
-extern char* GenerateIssuerNonceB64(GoString issuerPkId);
-extern char* Issue(GoString issuerKeyId, GoString issuerNonceMessageB64, GoString commitmentsJson, GoString attributesJson);
-extern char* IssueStaticDisclosureQR(GoString issuerKeyId, GoString attributesJson);
+extern void LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml, void* resultBuffer, GoInt bufferLength, GoInt* written, GoUint8* error);
+extern void GenerateIssuerNonceB64(GoString issuerPkId, void* resultBuffer, GoInt bufferLength, GoInt* written, GoUint8* error);
+extern void Issue(GoString issuerKeyId, GoString issuerNonceMessageB64, GoString commitmentsJson, GoString attributesJson, void* resultBuffer, GoInt bufferLength, GoInt* written, GoUint8* error);
+extern void IssueStaticDisclosureQR(GoString issuerKeyId, GoString attributesJson, void* resultBuffer, GoInt bufferLength, GoInt* written, GoUint8* error);
 
 #ifdef __cplusplus
 }
