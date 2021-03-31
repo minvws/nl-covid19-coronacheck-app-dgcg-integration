@@ -3,20 +3,21 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 #nullable enable
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 {
     /// <summary>
-    /// Validates that the string matches the structure of a base64 string
+    ///     Validates that the string matches the structure of a base64 string
     /// </summary>
     public class Base64StringAttribute : ValidationAttribute
     {
         private const string ValidationError = "Input is not a valid base64 string";
 
         /// <summary>
-        /// Matches the alphabet per page 6 of RFC 4648 (https://tools.ietf.org/html/rfc4648)
+        ///     Matches the alphabet per page 6 of RFC 4648 (https://tools.ietf.org/html/rfc4648)
         /// </summary>
         private const string Base64StringPattern = @"^[a-zA-Z0-9=\+\/]+$";
 
@@ -29,19 +30,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 
         protected override ValidationResult? IsValid(object? value, ValidationContext _)
         {
+            if (_ == null) throw new ArgumentNullException(nameof(_));
             if (value == null) return new ValidationResult(ValidationError);
 
-            var valueString = (string)value;
+            var valueString = (string) value;
 
             // Check length is divisible by 4
             if (valueString.Length % 4 != 0)
                 return new ValidationResult(ValidationError);
 
             // Check against the regex
-            if (!_expression.IsMatch(valueString))
-                return new ValidationResult(ValidationError);
-
-            return ValidationResult.Success;
+            return !_expression.IsMatch(valueString) ? new ValidationResult(ValidationError) : ValidationResult.Success;
         }
     }
 }

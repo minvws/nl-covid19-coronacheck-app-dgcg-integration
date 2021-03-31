@@ -6,7 +6,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public interface IRedisSessionStoreConfig
     {
-        string InstanceName { get; }
+        /// <summary>
+        ///     Redis configuration (required)
+        /// </summary>
         string Configuration { get; }
+
+        /// <summary>
+        ///     Session timeout in seconds (default: 30)
+        /// </summary>
+        int SessionTimeout { get; }
     }
 }

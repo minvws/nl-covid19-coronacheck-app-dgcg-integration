@@ -2,15 +2,15 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
 {
     /// <summary>
-    /// Loads a certificate in p12 format from the given path
+    ///     Loads a certificate in p12 format from the given path
     /// </summary>
     public class FileSystemCertificateProvider : ICertificateProvider
     {

@@ -61,6 +61,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures
 
         public bool Validate(string provider, byte[] content, byte[] signature)
         {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (string.IsNullOrWhiteSpace(provider)) throw new ArgumentException(nameof(signature));
+
             _certs.TryGetValue(provider, out var providerCertificate);
 
             if (providerCertificate == null)

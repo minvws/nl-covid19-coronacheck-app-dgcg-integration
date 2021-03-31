@@ -8,6 +8,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
 {
     public interface ISignedDataResponseBuilder
     {
-        SignedDataWrapper<T> Build<T>(T responseDto);
+        SignedDataWrapper<T> Build<T>(T responseDto) where T : class;
     }
 }

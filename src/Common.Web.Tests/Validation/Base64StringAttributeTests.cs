@@ -2,6 +2,11 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 using Xunit;
 
@@ -12,16 +17,37 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Tests.Validation
         [Theory]
         [InlineData("aGVsbG8gd29ybGQ=", true)]
         [InlineData("RnJpZW5kcywgUm9tYW5zLCBjb3VudHJ5bWVuLCBsZW5kIG1lIHlvdXIgZWFyczsgSSBjb21lIHRvIGJ1cnkgQ2Flc2FyLCBub3QgdG8gcHJhaXNlIGhpbS4=", true)]
-        [InlineData("WU9VIHdpbGwgcmVqb2ljZSB0byBoZWFyIHRoYXQgbm8gZGlzYXN0ZXIgaGFzIGFjY29tcGFuaWVkIHRoZSBjb21tZW5jZW1lbnQgb2YgYW4gZW50ZXJwcmlzZSB3aGljaCB5b3UgaGF2ZSByZWdhcmRlZCB3aXRoIHN1Y2ggZXZpbCBmb3JlYm9kaW5ncy4gSSBhcnJpdmVkIGhlcmUgeWVzdGVyZGF5OyBhbmQgbXkgZmlyc3QgdGFzayBpcyB0byBhc3N1cmUgbXkgZGVhciBzaXN0ZXIgb2YgbXkgd2VsZmFyZSwgYW5kIGluY3JlYXNpbmcgY29uZmlkZW5jZSBpbiB0aGUgc3VjY2VzcyBvZiBteSB1bmRlcnRha2luZy4=", true)]
+        [InlineData(
+            "WU9VIHdpbGwgcmVqb2ljZSB0byBoZWFyIHRoYXQgbm8gZGlzYXN0ZXIgaGFzIGFjY29tcGFuaWVkIHRoZSBjb21tZW5jZW1lbnQgb2YgYW4gZW50ZXJwcmlzZSB3aGljaCB5b3UgaGF2ZSByZWdhcmRlZCB3aXRoIHN1Y2ggZXZpbCBmb3JlYm9kaW5ncy4gSSBhcnJpdmVkIGhlcmUgeWVzdGVyZGF5OyBhbmQgbXkgZmlyc3QgdGFzayBpcyB0byBhc3N1cmUgbXkgZGVhciBzaXN0ZXIgb2YgbXkgd2VsZmFyZSwgYW5kIGluY3JlYXNpbmcgY29uZmlkZW5jZSBpbiB0aGUgc3VjY2VzcyBvZiBteSB1bmRlcnRha2luZy4=",
+            true)]
         [InlineData("aGVsbG8gd29ybGQ", false)]
         [InlineData("aaaGVsbG8gd29ybGQ", false)]
         [InlineData("aGVsb_G8gd29bGQ=", false)]
         [InlineData("aGVsbG%8gd29bGQ=", false)]
         public void ValidatesCorrectly(string base64String, bool expectedResult)
         {
-            var attribute = new Base64StringAttribute();
-            var result = attribute.IsValid(base64String);
+            // Assemble: model to validate
+            var model = new TestModel
+            {
+                Test = base64String
+            };
+
+            // Assemble: validator arguments
+            var mockProvider = new Mock<IServiceProvider>();
+            var context = new ValidationContext(model, mockProvider.Object, null);
+            var results = new List<ValidationResult>();
+
+            // Act
+            var result = Validator.TryValidateObject(model, context, results, true);
+
+            // Assert
             Assert.Equal(expectedResult, result);
+        }
+
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+        private class TestModel
+        {
+            [Base64String] public string? Test { get; set; }
         }
     }
 }

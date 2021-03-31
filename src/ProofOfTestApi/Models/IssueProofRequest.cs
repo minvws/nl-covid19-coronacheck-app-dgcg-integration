@@ -61,6 +61,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
 
         public bool UnpackAll(IJsonSerializer serializer)
         {
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+
             if (TestResult == null) return false;
             if (Commitments == null) return false;
 
@@ -69,7 +71,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
                 var testResult = TestResult.Unpack(serializer);
                 if (testResult == null) return false;
                 Test = testResult;
-                var icmString = Base64.Decode(Commitments);
+                var icmString = Base64.DecodeAsUtf8String(Commitments);
                 Icm = serializer.Deserialize<IssuerCommitmentMessage>(icmString);
             }
             catch

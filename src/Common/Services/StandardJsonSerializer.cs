@@ -13,18 +13,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 
         public StandardJsonSerializer()
         {
-            _serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            _serializerOptions = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
         }
 
         public string Serialize<TContent>(TContent input)
         {
-            return JsonSerializer.Serialize(input, _serializerOptions);
+            return input == null ? string.Empty : JsonSerializer.Serialize(input, _serializerOptions);
         }
 
         public TContent Deserialize<TContent>(string input)
         {
-            if (string.IsNullOrWhiteSpace(input)) throw new ArgumentException(nameof(input));
-
             return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
         }
     }

@@ -13,7 +13,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
     public static class AssemblyExtensions
     {
         /// <summary>
-        /// Extracts an embedded UTF-8 resource file from the given assembly
+        ///     Extracts an embedded UTF-8 resource file from the given assembly
         /// </summary>
         /// <param name="assembly">Assembly containing the embedded file</param>
         /// <param name="resourcePath">Path to resource relative to the root (i.e. excluding assembly name)</param>
@@ -24,10 +24,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
             if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
 
             using var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
-            if (stream == null)
-            {
-                throw new InvalidOperationException("Could not find resource.");
-            }
+            if (stream == null) throw new InvalidOperationException("Could not find resource.");
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
         }
@@ -38,10 +35,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
             if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
 
             var file = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
-            if (file == null)
-            {
-                throw new InvalidOperationException("Could not find resource.");
-            }
+            if (file == null) throw new InvalidOperationException("Could not find resource.");
             var buffer = new byte[file.Length];
             file.Read(buffer, 0, buffer.Length);
             return buffer;

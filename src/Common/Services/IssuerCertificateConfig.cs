@@ -14,7 +14,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
         }
 
         public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), false);
-        public string PathPublicKey => GetConfigValue(nameof(PathPublicKey), "MISSING CONFIG");
-        public string PathPrivateKey => GetConfigValue(nameof(PathPrivateKey), "MISSING CONFIG");
+        public string PathPublicKey => GetConfigValue<string>(nameof(PathPublicKey));
+        public string PathPrivateKey => GetConfigValue<string>(nameof(PathPrivateKey));
     }
 }

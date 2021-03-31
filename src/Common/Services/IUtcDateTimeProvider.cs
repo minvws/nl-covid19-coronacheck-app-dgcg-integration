@@ -8,9 +8,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public interface IUtcDateTimeProvider
     {
-        DateTime Now();
-
-        //TODO implementations used directly!
         DateTime Snapshot { get; }
     }
 }

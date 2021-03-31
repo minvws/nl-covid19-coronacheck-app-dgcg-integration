@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
@@ -10,6 +11,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
     {
         public static void AddIssuerApiClient(this IServiceCollection services)
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddScoped<IIssuerApiClient, IssuerApiClient>();
             services.AddSingleton<IIssuerApiClientConfig, IssuerApiClientConfig>();
         }

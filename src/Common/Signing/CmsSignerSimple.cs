@@ -2,12 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
@@ -22,8 +22,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        public string SignatureOid => "2.16.840.1.101.3.4.2.1";
-
         public byte[] GetSignature(byte[] content, bool excludeCertificates = false)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
@@ -31,7 +29,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             var certificate = _certificateProvider.GetCertificate();
 
             if (!certificate.HasPrivateKey)
-                throw new InvalidOperationException($"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
+                throw new InvalidOperationException(
+                    $"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
 
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);

@@ -40,7 +40,7 @@ namespace CmsSigner
 
             if (options.Validate)
             {
-                var validator = new CmsValidatorEnhanced(certProvider, chainProvider);
+                ICmsValidator validator = new CmsValidatorEnhanced(certProvider, chainProvider);
                 var json = Encoding.UTF8.GetString(inputFile);
                 var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
                 var signatureBytes = FromBase64String(signedDataResponse.Signature!);

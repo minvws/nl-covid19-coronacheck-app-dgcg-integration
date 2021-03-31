@@ -13,10 +13,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
             Snapshot = DateTime.UtcNow;
         }
 
-        public DateTime Now() => DateTime.UtcNow;
-
         /// <summary>
-        /// Time of start of transaction scope
+        ///     Time of start of transaction scope
         /// </summary>
         public DateTime Snapshot { get; }
     }

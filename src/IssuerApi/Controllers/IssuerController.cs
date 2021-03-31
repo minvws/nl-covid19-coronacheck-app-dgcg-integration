@@ -58,7 +58,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
             try
             {
-                var commitmentsJson = Base64.Decode(request.Commitments!);
+                var commitmentsJson = Base64.DecodeAsUtf8String(request.Commitments!);
 
                 var attributes = new ProofOfTestAttributes(
                     request.Attributes!.SampleTime,

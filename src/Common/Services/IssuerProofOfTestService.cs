@@ -9,10 +9,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
     public class IssuerProofOfTestService : IProofOfTestService
     {
+        private readonly IIssuerConfig _config;
+        private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
-        private readonly IIssuerInterop _issuer;
-        private readonly IIssuerConfig _config;
 
         public IssuerProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IIssuerConfig config)
         {
@@ -31,7 +31,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
             var serializedAttributes = _jsonSerializer.Serialize(proofOfTestAttributes);
 
             return _issuer
-                .IssueProof(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
+               .IssueProof(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
         }
 
         public string GenerateNonce()

@@ -23,6 +23,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = ServiceName, Version = "v1"}); });
 
             services.AddControllers();

@@ -2,9 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
-using System;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
 {
@@ -19,17 +19,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
         public string GetPrivateKey()
         {
-            _logger.LogInformation($"Loading private key from the assembly.");
+            _logger.LogInformation("Loading private key from the assembly.");
 
             return typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PrivateKeyPath);
         }
 
         public string GetPublicKey()
         {
-            _logger.LogInformation($"Loading private key from the assembly.");
+            _logger.LogInformation("Loading private key from the assembly.");
 
             return typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PublicKeyPath);
         }

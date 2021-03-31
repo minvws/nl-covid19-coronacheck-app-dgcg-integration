@@ -2,6 +2,12 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
@@ -13,18 +19,12 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi;
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
 {
     /// <summary>
-    /// Tests operating on the HTTP/REST interface and running in a web-server
+    ///     Tests operating on the HTTP/REST interface and running in a web-server
     /// </summary>
     public class StaticProofControllerTests : TesterWebApplicationFactory<Startup>
     {
@@ -38,14 +38,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             // Arrange: mock the IssuerClient and register it with the container
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
-                .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
-                .ReturnsAsync(staticProofResult);
+               .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
+               .ReturnsAsync(staticProofResult);
             var client = Factory
-                .WithWebHostBuilder(builder => builder.ConfigureServices(services =>
-                {
-                    services.AddScoped(provider => mockIssuerApi.Object);
-                }))
-                .CreateClient();
+                        .WithWebHostBuilder(builder => builder.ConfigureServices(services => { services.AddScoped(provider => mockIssuerApi.Object); }))
+                        .CreateClient();
 
             // Arrange: setup the request
             var requestJson = CreateRequest();
@@ -70,7 +67,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             var dtp = new StandardUtcDateTimeProvider();
 
             // TestResult
-            var testResult = new TestResult()
+            var testResult = new TestResult
             {
                 ProviderIdentifier = "TST001",
                 ProtocolVersion = "1.0",

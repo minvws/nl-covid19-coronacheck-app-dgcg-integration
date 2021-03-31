@@ -10,7 +10,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 {
-    public class SignedDataWrapper<T>
+    public class SignedDataWrapper<T> where T : class
     {
         [JsonPropertyName("payload")]
         [Base64String]
@@ -30,9 +30,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [return: MaybeNull]
         public T Unpack(IJsonSerializer serializer)
         {
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+
             if (string.IsNullOrWhiteSpace(Payload)) return default;
 
-            var payloadString = Base64.Decode(Payload);
+            var payloadString = Base64.DecodeAsUtf8String(Payload);
 
             return serializer.Deserialize<T>(payloadString);
         }

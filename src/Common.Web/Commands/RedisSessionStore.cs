@@ -11,10 +11,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
     public class RedisSessionStore : IDisposable, ISessionDataStore
     {
-        private readonly IRedisTestResultLogConfig _config;
+        private readonly IRedisSessionStoreConfig _config;
         private readonly ConnectionMultiplexer _redis;
 
-        public RedisSessionStore(IRedisTestResultLogConfig config)
+        public RedisSessionStore(IRedisSessionStoreConfig config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -31,27 +31,33 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
         public async Task<string> AddNonce(string nonce)
         {
+            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentException(nameof(nonce));
+
             var key = Guid.NewGuid().ToString();
 
             var db = _redis.GetDatabase();
 
-            await db.StringSetAsync(key, nonce, TimeSpan.FromHours(_config.Duration));
+            await db.StringSetAsync(key, nonce, TimeSpan.FromSeconds(_config.SessionTimeout));
 
             return key;
         }
 
-        public async Task RemoveNonce(string key)
+        public async Task RemoveNonce(string nonce)
         {
+            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentException(nameof(nonce));
+
             var db = _redis.GetDatabase();
 
-            await db.KeyDeleteAsync(key);
+            await db.KeyDeleteAsync(nonce);
         }
 
-        public async Task<(bool, string)> GetNonce(string key)
+        public async Task<(bool, string)> GetNonce(string nonce)
         {
+            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentException(nameof(nonce));
+
             var db = _redis.GetDatabase();
 
-            var value = await db.StringGetAsync(key);
+            var value = await db.StringGetAsync(nonce);
 
             // IsNull is TRUE when the key was not found; the documentation on StringGetAsync refers
             // to a special `nil` value but that appears to be mixing of lingo.

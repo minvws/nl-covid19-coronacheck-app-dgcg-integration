@@ -2,10 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-#nullable enable
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 {
@@ -17,9 +16,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Validation
 
         protected override ValidationResult? IsValid(object? value, ValidationContext _)
         {
+            if (_ == null) throw new ArgumentNullException(nameof(_));
             if (value == null) return new ValidationResult(ValidationError);
 
-            var date = (DateTime)value;
+            var date = (DateTime) value;
 
             return Precision switch
             {

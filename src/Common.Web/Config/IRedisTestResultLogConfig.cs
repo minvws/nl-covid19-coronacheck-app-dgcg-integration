@@ -6,7 +6,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public interface IRedisTestResultLogConfig
     {
-        string InstanceName { get; }
         string Configuration { get; }
         int Duration { get; }
         string Salt { get; }
