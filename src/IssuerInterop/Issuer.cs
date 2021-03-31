@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                GenerateIssuerNonceB64(issuerPkId, buffer, out var written, out var error);
+                GenerateIssuerNonceB64(issuerPkId, buffer, DefaultBufferSize, out var written, out var error);
                 return GetResult(buffer, written, error);
             }
             catch
@@ -69,7 +69,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                Issue(issuerPkId, issuerNonceB64Go, commitmentsJsonGo, attributesGo, buffer, out var written, out var error);
+                Issue(issuerPkId, issuerNonceB64Go, commitmentsJsonGo, attributesGo, buffer, DefaultBufferSize, out var written, out var error);
                 return GetResult(buffer, written, error);
             }
             catch
@@ -107,7 +107,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                IssueStaticDisclosureQR(issuerPkId, attributesGo, buffer, out var written, out var error);
+                IssueStaticDisclosureQR(issuerPkId, attributesGo, buffer, DefaultBufferSize, out var written, out var error);
                 return GetResult(buffer, written, error);
             }
             catch
@@ -126,7 +126,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 
             try
             {
-                LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, buffer, out var written, out var error);
+                LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, buffer, DefaultBufferSize, out var written, out var error);
                 GetResult(buffer, written, error);
             }
             catch
@@ -153,17 +153,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
         }
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void GenerateIssuerNonceB64(GoString issuerPkId, IntPtr resultBuffer, out long written, out bool error);
+        private static extern void GenerateIssuerNonceB64(GoString issuerPkId, IntPtr resultBuffer, long bufferLength, out long written, out bool error);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml, IntPtr resultBuffer, out long written,
-                                                     out bool error);
+        private static extern void LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml, IntPtr resultBuffer, long bufferLength,
+                                                     out long written, out bool error);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern void Issue(GoString issuerPkId, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes, IntPtr resultBuffer,
-                                         out long written, out bool error);
+                                         long bufferLength, out long written, out bool error);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void IssueStaticDisclosureQR(GoString issuerPkId, GoString attributes, IntPtr resultBuffer, out long written, out bool error);
+        private static extern void IssueStaticDisclosureQR(GoString issuerPkId, GoString attributes, IntPtr resultBuffer, long bufferLength, out long written,
+                                                           out bool error);
     }
 }
