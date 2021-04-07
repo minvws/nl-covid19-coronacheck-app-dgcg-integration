@@ -5,12 +5,13 @@
 using System;
 using System.Runtime.InteropServices;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go;
+using static NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go.Helpers;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 {
     public class Issuer : IIssuerInterop
     {
-        private const string LibraryName = "issuer.dll";
         private const int DefaultBufferSize = 65536; // 64kb
 
         /// <summary>
@@ -20,17 +21,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
         {
             if (string.IsNullOrWhiteSpace(publicKeyId)) throw new ArgumentNullException(nameof(publicKeyId));
 
-            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
+            var issuerPkId = ToGoString(publicKeyId);
 
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                GenerateIssuerNonceB64(issuerPkId, buffer, DefaultBufferSize, out var written, out var error);
-                return GetResult(buffer, written, error);
-            }
-            catch
-            {
-                throw new GoIssuerException("Error calling GenerateIssuerNonceB64 in GO");
+                IssuerInteropInterface.GenerateIssuerNonceB64(issuerPkId, buffer, DefaultBufferSize, out var written, out var error);
+                return Result(buffer, written, error);
             }
             finally
             {
@@ -57,24 +54,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             if (string.IsNullOrWhiteSpace(commitments)) throw new ArgumentNullException(nameof(commitments));
             if (string.IsNullOrWhiteSpace(attributes)) throw new ArgumentNullException(nameof(attributes));
 
-            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
-            var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
-            var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
-            var issuerNonceB64Go = GoHelpers.ToGoString(nonce);
-            var commitmentsJsonGo = GoHelpers.ToGoString(commitments);
-            var attributesGo = GoHelpers.ToGoString(attributes);
+            var issuerPkId = ToGoString(publicKeyId);
+            var issuerPkXmlGo = ToWrappedGoString(publicKey);
+            var issuerSkXmlGo = ToWrappedGoString(privateKey);
+            var issuerNonceB64Go = ToGoString(nonce);
+            var commitmentsJsonGo = ToGoString(commitments);
+            var attributesGo = ToGoString(attributes);
 
             LoadKeys(issuerPkId, issuerPkXmlGo, issuerSkXmlGo);
 
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                Issue(issuerPkId, issuerNonceB64Go, commitmentsJsonGo, attributesGo, buffer, DefaultBufferSize, out var written, out var error);
-                return GetResult(buffer, written, error);
-            }
-            catch
-            {
-                throw new GoIssuerException("Error calling Issue in GO");
+                IssuerInteropInterface.Issue(issuerPkId, issuerNonceB64Go, commitmentsJsonGo, attributesGo, buffer, DefaultBufferSize, out var written,
+                                             out var error);
+                return Result(buffer, written, error);
             }
             finally
             {
@@ -97,22 +91,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
             if (string.IsNullOrWhiteSpace(privateKey)) throw new ArgumentNullException(nameof(privateKey));
             if (string.IsNullOrWhiteSpace(attributes)) throw new ArgumentNullException(nameof(attributes));
 
-            var issuerPkId = GoHelpers.ToGoString(publicKeyId);
-            var attributesGo = GoHelpers.ToGoString(attributes);
-            var issuerPkXmlGo = GoHelpers.ToWrappedGoString(publicKey);
-            var issuerSkXmlGo = GoHelpers.ToWrappedGoString(privateKey);
+            var issuerPkId = ToGoString(publicKeyId);
+            var attributesGo = ToGoString(attributes);
+            var issuerPkXmlGo = ToWrappedGoString(publicKey);
+            var issuerSkXmlGo = ToWrappedGoString(privateKey);
 
             LoadKeys(issuerPkId, issuerPkXmlGo, issuerSkXmlGo);
 
             var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
             try
             {
-                IssueStaticDisclosureQR(issuerPkId, attributesGo, buffer, DefaultBufferSize, out var written, out var error);
-                return GetResult(buffer, written, error);
-            }
-            catch
-            {
-                throw new GoIssuerException("Error calling IssueStaticDisclosureQr in GO");
+                IssuerInteropInterface.IssueStaticDisclosureQR(issuerPkId, attributesGo, buffer, DefaultBufferSize, out var written, out var error);
+                return Result(buffer, written, error);
             }
             finally
             {
@@ -126,45 +116,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop
 
             try
             {
-                LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, buffer, DefaultBufferSize, out var written, out var error);
-                GetResult(buffer, written, error);
-            }
-            catch
-            {
-                throw new GoIssuerException("Error calling LoadIssuerKeypair in GO");
+                IssuerInteropInterface.LoadIssuerKeypair(issuerPkId, issuerPkXmlGo, issuerSkXmlGo, buffer, DefaultBufferSize, out var written, out var error);
+                Result(buffer, written, error);
             }
             finally
             {
                 Marshal.FreeHGlobal(buffer);
             }
         }
-
-        private string GetResult(IntPtr buffer, long written, bool error)
-        {
-            if (written > int.MaxValue) throw new GoIssuerException("Number of bytes written to the buffer exceed int.MaxValue");
-
-            // Marshal the used contents of the buffer to a string
-            var result = Marshal.PtrToStringUTF8(buffer, (int) written);
-
-            // Error
-            if (error) throw new GoIssuerException(result!);
-
-            return result!;
-        }
-
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void GenerateIssuerNonceB64(GoString issuerPkId, IntPtr resultBuffer, long bufferLength, out long written, out bool error);
-
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void LoadIssuerKeypair(GoString issuerKeyId, GoString issuerPkXml, GoString issuerSkXml, IntPtr resultBuffer, long bufferLength,
-                                                     out long written, out bool error);
-
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void Issue(GoString issuerPkId, GoString issuerNonceB64, GoString commitmentsJson, GoString attributes, IntPtr resultBuffer,
-                                         long bufferLength, out long written, out bool error);
-
-        [DllImport(LibraryName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern void IssueStaticDisclosureQR(GoString issuerPkId, GoString attributes, IntPtr resultBuffer, long bufferLength, out long written,
-                                                           out bool error);
     }
 }
