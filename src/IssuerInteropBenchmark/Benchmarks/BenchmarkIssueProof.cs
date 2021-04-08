@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
-using HolderInterop;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
@@ -22,7 +22,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
 
             Console.WriteLine("..Setting up the Holder..");
             var holder = new Holder();
-            holder.LoadIssuerPks(string.Empty);
+            holder.LoadIssuerPks(Keys.AnnotatedKeys());
             var holderSecretKey = holder.GenerateHolderSecretKey();
 
             Console.WriteLine("..Setting up the Issuer..");

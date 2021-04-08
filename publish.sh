@@ -13,3 +13,7 @@ rm -r publish/StaticProofApi
 dotnet publish src/CmsSigner/CmsSigner.csproj -o publish/Tools/CmsSigner
 tar -czvf publish/CmsSigner.tar.gz publish/Tools/CmsSigner
 rm -r publish/Tools/CmsSigner
+
+dotnet publish src/IssuerInteropBenchmark/IssuerInteropBenchmark.csproj -o publish/Tools/IssuerInteropBenchmark
+tar -czvf publish/IssuerInteropBenchmark.tar.gz publish/Tools/IssuerInteropBenchmark
+rm -r publish/Tools/IssuerInteropBenchmark

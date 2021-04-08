@@ -24,6 +24,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark
 
         private static void Run(Options options)
         {
+            if (options.Iterations < 0)
+            {
+                Console.WriteLine("ERROR Number of iterations must be a positive number!");
+
+                Environment.Exit(0);
+            }
+
             if (options.IssueProof) BenchmarkIssueProof.Execute(options.Iterations, PublicKeyId);
             if (options.GenerateNonce) BenchmarkGenerateNonce.Execute(options.Iterations, PublicKeyId);
         }

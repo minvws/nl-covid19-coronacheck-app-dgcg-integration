@@ -1,12 +1,12 @@
-﻿// // Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-// // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-// // SPDX-License-Identifier: EUPL-1.2
+﻿// Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
 
 using System;
 using System.Runtime.InteropServices;
 using static NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go.Helpers;
 
-namespace HolderInterop
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop
 {
     public class Holder
     {

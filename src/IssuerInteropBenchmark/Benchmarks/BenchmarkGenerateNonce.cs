@@ -12,7 +12,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
     {
         public static void Execute(int iterations, string publicKeyId)
         {
-            Console.WriteLine("Benchmarking: Execute()");
+            Console.WriteLine("Benchmarking: GenerateNonce()");
 
             Console.WriteLine("..Starting the timer..");
             var stopWatch = new Stopwatch();

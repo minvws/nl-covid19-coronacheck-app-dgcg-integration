@@ -11,13 +11,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     internal class Options
     {
-        [Option('i', "iterations", Default = 100, Min = 0, Max = 100000, HelpText = "Number of iterations to run.")]
+        [Option('i', "iterations", Default = 100, HelpText = "Number of iterations to run.", Required = false)]
         public int Iterations { get; set; }
 
-        [Option('n', "nonce", HelpText = "Runs the benchmark for GenerateNonce()")]
+        [Option('n', "nonce", HelpText = "Runs the benchmark for GenerateNonce()", Required = false, Default = true)]
         public bool GenerateNonce { get; set; }
 
-        [Option('p', "issueproof", HelpText = "Runs the benchmark for IssueProof()")]
+        [Option('p', "issueproof", HelpText = "Runs the benchmark for IssueProof()", Required = false, Default = true)]
         public bool IssueProof { get; set; }
     }
 }

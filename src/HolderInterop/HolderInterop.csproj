@@ -2,10 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Interop.Go\Common.Interop.Go.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

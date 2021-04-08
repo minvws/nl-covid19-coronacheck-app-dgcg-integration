@@ -9,3 +9,6 @@ IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
 dotnet build src/CmsSigner/CmsSigner.csproj
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+dotnet build src/IssuerInteropBenchmark/IssuerInteropBenchmark.csproj
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
