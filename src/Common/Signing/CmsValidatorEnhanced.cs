@@ -14,14 +14,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
     {
         private readonly ICertificateChainProvider _certificateChainProvider;
         private readonly ICertificateProvider _certificateProvider;
-        private readonly ILogger<CmsValidatorEnhanced> _logger;
+        private readonly ILogger<CmsValidatorEnhanced> _log;
 
         public CmsValidatorEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
-                                    ILogger<CmsValidatorEnhanced> logger)
+                                    ILogger<CmsValidatorEnhanced> log)
         {
             _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
             _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public bool Validate(byte[] content, byte[] signature)
@@ -48,7 +48,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             }
             catch (CryptographicException e)
             {
-                _logger.LogWarning("CMS signature did not validate due to a Cryptographic exception. See the exception for details.", e);
+                _log.LogWarning("CMS signature did not validate due to a Cryptographic exception. See the exception for details.", e);
 
                 return false;
             }
