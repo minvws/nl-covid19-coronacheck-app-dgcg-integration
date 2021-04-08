@@ -6,69 +6,48 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Text;
 using CmsSigner.Certificates;
-using CmsSigner.Model;
 using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
-using static System.Convert;
 
-// ReSharper disable ClassNeverInstantiated.Local
-// ReSharper disable ClassNeverInstantiated.Global
 namespace CmsSigner
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     internal class Program
     {
         private static void Main(string[] args)
         {
+            var services = new ServiceCollection();
+
             Parser.Default.ParseArguments<Options>(args)
-                  .WithParsed(Run)
+                  .WithParsed(opt => ConfigureContainer(services, opt))
                   .WithNotParsed(HandleParseError);
+
+            using var serviceProvider = services.BuildServiceProvider();
+            var app = serviceProvider.GetRequiredService<CmsSignerApp>();
+            var options = serviceProvider.GetRequiredService<Options>();
+            var inputFile = Load(options.InputFile!);
+            app.Run(inputFile, options.Validate);
         }
 
-        private static void Run(Options options)
+        private static void ConfigureContainer(ServiceCollection services, Options options)
         {
-            var inputFile = Load(options.InputFile!);
+            // This data must be loaded now as it's used by the classes injected into the DI container
             var certFile = Load(options.SigningCertificateFile!);
             var chainFile = Load(options.CertificateChainFile!);
 
-            var certProvider = new CertProvider(CertificateHelpers.Load(certFile, options.Password!));
-            var chainProvider = new ChainProvider(CertificateHelpers.LoadAll(chainFile));
-            var signer = new CmsSignerEnhanced(certProvider, chainProvider, new StandardUtcDateTimeProvider());
-            var serializer = new StandardJsonSerializer();
-
-            if (options.Validate)
-            {
-                ICmsValidator validator = new CmsValidatorEnhanced(certProvider, chainProvider);
-                var json = Encoding.UTF8.GetString(inputFile);
-                var signedDataResponse = serializer.Deserialize<SignedDataResponse>(json);
-                var signatureBytes = FromBase64String(signedDataResponse.Signature!);
-                var payloadBytes = FromBase64String(signedDataResponse.Payload!);
-
-                var valid = validator.Validate(payloadBytes, signatureBytes);
-
-                Console.WriteLine(valid ? "true" : "false");
-
-                Environment.Exit(0);
-            }
-
-            var result = new SignedDataResponse
-            {
-                Payload = ToBase64String(inputFile),
-                Signature = ToBase64String(signer.GetSignature(inputFile))
-            };
-
-            var resultJson = serializer.Serialize(result);
-
-            Console.Write(resultJson);
-        }
-
-        private static void HandleParseError(IEnumerable<Error> errs)
-        {
-            Console.WriteLine("Error parsing input, please check your call and try again.");
-
-            Environment.Exit(1);
+            services.AddLogging();
+            services.AddTransient<ICmsValidator, CmsValidatorEnhanced>();
+            services.AddTransient<IContentSigner, CmsSignerEnhanced>();
+            services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
+            services.AddTransient<IJsonSerializer, StandardJsonSerializer>();
+            services.AddTransient<ICertificateProvider, CertProvider>(provider => new CertProvider(CertificateHelpers.Load(certFile, options.Password!)));
+            services.AddTransient<ICertificateChainProvider, ChainProvider>(provider => new ChainProvider(CertificateHelpers.LoadAll(chainFile)));
+            services.AddTransient(provider => options);
+            services.AddTransient<CmsSignerApp>();
         }
 
         private static byte[] Load(string path)
@@ -89,25 +68,11 @@ namespace CmsSigner
             return null;
         }
 
-        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-        private class Options
+        private static void HandleParseError(IEnumerable<Error> errs)
         {
-            [Option('i', "inputFile", Required = true,
-                    HelpText = "File to sign (Validate=False) | File containing json wrapper with payload/signature to validate (Validate=True")]
-            public string? InputFile { get; set; }
+            Console.WriteLine("Error parsing input, please check your call and try again.");
 
-            [Option('s', "signingCertFile", Required = true, HelpText = "Certificate (pfx, including private key) used to sign the input file")]
-            public string? SigningCertificateFile { get; set; }
-
-            [Option('p', "password", Required = true, HelpText = "Password for the private key associated with the signing certificate")]
-            public string? Password { get; set; }
-
-            [Option('c', "certChainFile", Required = true, HelpText = "Certificate chain (p7b) for the signing certificate")]
-            public string? CertificateChainFile { get; set; }
-
-            [Option('v', "validate", Required = false,
-                    HelpText = "Instead of signing inputFile, instead check the signature in signatureFile matches that from inputFile.")]
-            public bool Validate { get; set; }
+            Environment.Exit(0);
         }
     }
 }
