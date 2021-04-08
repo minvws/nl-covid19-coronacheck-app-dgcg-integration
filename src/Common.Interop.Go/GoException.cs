@@ -6,6 +6,9 @@ using System;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go
 {
+    /// <summary>
+    ///     Unrecoverable and uncatchable exceptions; catch and log with the root exception handler
+    /// </summary>
     public class GoException : Exception
     {
         public GoException(string message) : base(message)
