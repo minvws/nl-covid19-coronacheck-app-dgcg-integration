@@ -12,7 +12,6 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 {
@@ -86,12 +85,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
                 return new BadRequestResult();
             }
-            catch (IssuerException e)
-            {
-                _logger.LogError("IssueProof: Error issuing proof.", e);
-
-                return StatusCode((int) HttpStatusCode.InternalServerError);
-            }
             catch (Exception e)
             {
                 _logger.LogError("IssueProof: Unexpected exception.", e);
@@ -118,7 +111,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     ? Ok(_srb.Build(result))
                     : Ok(result);
             }
-            catch (IssuerException e)
+            catch (Exception e)
             {
                 _logger.LogError("IssueProof: Error generating nonce.", e);
 
@@ -165,15 +158,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
                 return new BadRequestResult();
             }
-            catch (IssuerException e)
-            {
-                _logger.LogError("IssueProof: Error issuing proof.", e);
-
-                return StatusCode((int) HttpStatusCode.InternalServerError);
-            }
             catch (Exception e)
             {
-                _logger.LogError("IssueProof: Unexpected exception.", e);
+                _logger.LogError("IssueProof: Error issuing proof.", e);
 
                 return StatusCode((int) HttpStatusCode.InternalServerError);
             }

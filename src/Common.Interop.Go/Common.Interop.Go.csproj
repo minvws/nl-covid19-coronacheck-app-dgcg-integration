@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go</AssemblyName>
+    <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go</RootNamespace>
+  </PropertyGroup>
+
+</Project>
