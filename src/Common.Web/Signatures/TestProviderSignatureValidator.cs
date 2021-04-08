@@ -87,8 +87,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Signatures
 
                 return true;
             }
-            catch (CryptographicException)
+            catch (CryptographicException e)
             {
+                _log.LogWarning("CMS signature did not validate due to a Cryptographic exception. See the exception for details.", e);
+
                 return false;
             }
         }
