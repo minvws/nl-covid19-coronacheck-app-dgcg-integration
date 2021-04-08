@@ -5,6 +5,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
@@ -13,11 +14,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
     {
         private readonly ICertificateChainProvider _certificateChainProvider;
         private readonly ICertificateProvider _certificateProvider;
+        private readonly ILogger<CmsValidatorEnhanced> _logger;
 
-        public CmsValidatorEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider)
+        public CmsValidatorEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
+                                    ILogger<CmsValidatorEnhanced> logger)
         {
             _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
             _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public bool Validate(byte[] content, byte[] signature)
@@ -42,8 +46,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             {
                 signedCms.CheckSignature(true);
             }
-            catch (CryptographicException)
+            catch (CryptographicException e)
             {
+                _logger.LogWarning("CMS signature did not validate due to a Cryptographic exception. See the exception for details.", e);
+
                 return false;
             }
 
