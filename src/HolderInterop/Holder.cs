@@ -77,31 +77,5 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop
                 Marshal.FreeHGlobal(buffer);
             }
         }
-
-        // TODO:RB: This isn't actually needed for now
-        ///// <summary>
-        /////     Creates the credentials [TOMAS: this is the crypto in the QR, right?]
-        ///// </summary>
-        ///// <param name="holderSecretKey">Secret generated on the holder by GenerateHolderSecretKey()</param>
-        ///// <param name="ccm">Signed ProofOfTest returned from the Issuer.IssueProof()</param>
-        //public string CreateCredential(string holderSecretKey, string ccm)
-        //{
-        //    if (string.IsNullOrWhiteSpace(holderSecretKey)) throw new ArgumentNullException(nameof(holderSecretKey));
-
-        //    var privateKeyGo = ToGoString(holderSecretKey);
-        //    var ccmKeyGo = ToGoString(ccm);
-
-        //    var buffer = Marshal.AllocHGlobal(DefaultBufferSize);
-        //    try
-        //    {
-        //        HolderInteropInterface.CreateCredential(privateKeyGo, ccmKeyGo, buffer, DefaultBufferSize, out var written, out var error);
-
-        //        return Result(buffer, written, error);
-        //    }
-        //    finally
-        //    {
-        //        Marshal.FreeHGlobal(buffer);
-        //    }
-        //}
     }
 }
