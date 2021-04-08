@@ -42,13 +42,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go
 
         public static string Result(IntPtr buffer, long written, bool error)
         {
-            if (written > int.MaxValue) throw new Exception("Number of bytes written to the buffer exceed int.MaxValue");
+            if (written > int.MaxValue) throw new GoException("Number of bytes written to the buffer exceed int.MaxValue");
 
             // Marshal the used contents of the buffer to a string
             var result = Marshal.PtrToStringUTF8(buffer, (int) written);
 
             // Error
-            if (error) throw new Exception(result!);
+            if (error) throw new GoException(result!);
 
             return result!;
         }
@@ -57,12 +57,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go
         {
             if (!error) return;
 
-            if (written > int.MaxValue) throw new Exception("Number of bytes written to the buffer exceed int.MaxValue");
+            if (written > int.MaxValue) throw new GoException("Number of bytes written to the buffer exceed int.MaxValue");
 
             // Marshal the used contents of the buffer to a string
             var result = Marshal.PtrToStringUTF8(buffer, (int) written);
 
-            throw new Exception(result!);
+            throw new GoException(result);
         }
     }
 }
