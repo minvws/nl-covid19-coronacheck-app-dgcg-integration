@@ -10,18 +10,18 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
 {
-    public class SignedDataResponseBuilder : ISignedDataResponseBuilder
+    public class ResponseBuilder : IResponseBuilder
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IContentSigner _signer;
 
-        public SignedDataResponseBuilder(IJsonSerializer jsonSerializer, IContentSigner signer)
+        public ResponseBuilder(IJsonSerializer jsonSerializer, IContentSigner signer)
         {
             _signer = signer ?? throw new ArgumentNullException(nameof(signer));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
-        public SignedDataWrapper<T> Build<T>(T responseDto) where T : class
+        public object Build<T>(T responseDto) where T : class
         {
             if (responseDto == null) throw new ArgumentNullException(nameof(responseDto));
 
@@ -31,6 +31,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
                 Payload = Base64.Encode(jsonString),
                 Signature = GetSignatureB64(jsonString)
             };
+
             return response;
         }
 

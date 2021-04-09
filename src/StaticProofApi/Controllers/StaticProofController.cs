@@ -36,7 +36,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             IUtcDateTimeProvider utcDateTimeProvider,
             ITestResultLog testResultLog,
             IApiSigningConfig apiSigningConfig,
-            ISignedDataResponseBuilder signedDataResponseBuilder) : base(jsonSerializer, utcDateTimeProvider, signedDataResponseBuilder, apiSigningConfig)
+            IResponseBuilder responseBuilder) : base(jsonSerializer, utcDateTimeProvider, responseBuilder, apiSigningConfig)
         {
             _issuerApiClient = issuerApiClient ?? throw new ArgumentNullException(nameof(issuerApiClient));
             _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));

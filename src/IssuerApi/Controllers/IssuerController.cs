@@ -24,19 +24,19 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ILogger<IssuerController> _logger;
         private readonly IProofOfTestService _potService;
-        private readonly ISignedDataResponseBuilder _srb;
+        private readonly IResponseBuilder _srb;
 
         public IssuerController(
             ILogger<IssuerController> logger,
             IProofOfTestService potService,
             IJsonSerializer jsonSerializer,
-            ISignedDataResponseBuilder signedDataResponseBuilder,
+            IResponseBuilder responseBuilder,
             IApiSigningConfig apiSigningConfig)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _potService = potService ?? throw new ArgumentNullException(nameof(potService));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
-            _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _srb = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
             _apiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
         }
 
