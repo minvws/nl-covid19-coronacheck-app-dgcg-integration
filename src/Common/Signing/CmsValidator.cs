@@ -10,14 +10,14 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
-    public class CmsValidatorEnhanced : ICmsValidator
+    public class CmsValidator : ICmsValidator
     {
         private readonly ICertificateChainProvider _certificateChainProvider;
         private readonly ICertificateProvider _certificateProvider;
-        private readonly ILogger<CmsValidatorEnhanced> _log;
+        private readonly ILogger<CmsValidator> _log;
 
-        public CmsValidatorEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
-                                    ILogger<CmsValidatorEnhanced> log)
+        public CmsValidator(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
+                            ILogger<CmsValidator> log)
         {
             _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
             _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));

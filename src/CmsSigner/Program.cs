@@ -40,8 +40,8 @@ namespace CmsSigner
             var chainFile = Load(options.CertificateChainFile!);
 
             services.AddLogging();
-            services.AddTransient<ICmsValidator, CmsValidatorEnhanced>();
-            services.AddTransient<IContentSigner, CmsSignerEnhanced>();
+            services.AddTransient<ICmsValidator, CmsValidator>();
+            services.AddTransient<IContentSigner, NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing.CmsSigner>();
             services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddTransient<IJsonSerializer, StandardJsonSerializer>();
             services.AddTransient<ICertificateProvider, CertProvider>(provider => new CertProvider(CertificateHelpers.Load(certFile, options.Password!)));

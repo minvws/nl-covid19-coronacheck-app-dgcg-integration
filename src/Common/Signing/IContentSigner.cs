@@ -6,6 +6,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
     public interface IContentSigner
     {
-        byte[] GetSignature(byte[] content, bool excludeCertificates = false);
+        byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false);
     }
 }

@@ -42,7 +42,7 @@ namespace CmsSigner
             var result = new SignedDataResponse
             {
                 Payload = Convert.ToBase64String(inputFile),
-                Signature = Convert.ToBase64String(_signer.GetSignature(inputFile))
+                Signature = Convert.ToBase64String(_signer.GetSignature(inputFile, false))
             };
 
             var resultJson = _jsonSerializer.Serialize(result);

@@ -39,7 +39,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
             if (string.IsNullOrWhiteSpace(payload)) throw new ArgumentException(nameof(payload));
 
             var payloadBytes = Encoding.UTF8.GetBytes(payload);
-            var signatureBytes = _signer.GetSignature(payloadBytes);
+            var signatureBytes = _signer.GetSignature(payloadBytes, true);
             return Convert.ToBase64String(signatureBytes);
         }
     }
