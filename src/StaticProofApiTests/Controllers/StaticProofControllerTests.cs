@@ -13,7 +13,6 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client;

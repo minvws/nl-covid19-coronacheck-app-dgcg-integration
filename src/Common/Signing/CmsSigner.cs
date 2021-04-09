@@ -11,21 +11,21 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 {
-    public class CmsSignerEnhanced : IContentSigner
+    public class CmsSigner : IContentSigner
     {
         private readonly ICertificateChainProvider _certificateChainProvider;
         private readonly ICertificateProvider _certificateProvider;
         private readonly IUtcDateTimeProvider _dateTimeProvider;
 
-        public CmsSignerEnhanced(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
-                                 IUtcDateTimeProvider dateTimeProvider)
+        public CmsSigner(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
+                         IUtcDateTimeProvider dateTimeProvider)
         {
             _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
             _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        public byte[] GetSignature(byte[] content, bool excludeCertificates = false)
+        public byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
 
@@ -35,14 +35,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
                 throw new InvalidOperationException(
                     $"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
 
-            var certificateChain = _certificateChainProvider.GetCertificates();
-
             var contentInfo = new ContentInfo(content);
             var signedCms = new SignedCms(contentInfo, true);
 
-            signedCms.Certificates.AddRange(certificateChain);
+            if (includeChain)
+            {
+                var certificateChain = _certificateChainProvider.GetCertificates();
+                signedCms.Certificates.AddRange(certificateChain);
+            }
 
-            var signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
+            var signer = new System.Security.Cryptography.Pkcs.CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
             var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Snapshot);
             if (excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
 

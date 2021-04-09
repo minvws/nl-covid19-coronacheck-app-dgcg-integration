@@ -22,7 +22,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
-            services.AddScoped<IContentSigner, CmsSignerSimple>();
+            services.AddScoped<IContentSigner, CmsSigner>();
             services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
         }
