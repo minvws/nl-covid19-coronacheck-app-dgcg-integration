@@ -6,7 +6,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
     public class AssemblyKeyStore : IKeyStore
     {

@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
 {
@@ -20,7 +19,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
 
             for (var i = 0; i < iterations; i++)
             {
-                var issuer = new Issuer();
+                var issuer = new IssuerInterop.Issuer();
                 issuer.GenerateNonce(publicKeyId);
             }
 

@@ -3,18 +3,21 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
-    public class IssuerProofOfTestService : IProofOfTestService
+    public class ProofOfTestService : IProofOfTestService
     {
-        private readonly IIssuerConfig _config;
+        private readonly IProofOfTestServiceConfig _config;
         private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
 
-        public IssuerProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IIssuerConfig config)
+        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IProofOfTestServiceConfig config)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));

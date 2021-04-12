@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Issuer.Services\Issuer.Services.csproj" />
     <ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
   </ItemGroup>
 

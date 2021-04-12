@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes
 {
     public class RandomAttributesGenerator
     {
