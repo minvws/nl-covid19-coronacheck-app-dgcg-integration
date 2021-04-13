@@ -32,7 +32,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
             var serviceProvider = services.BuildServiceProvider();
             var signingConfig = serviceProvider.GetRequiredService<IApiSigningConfig>();
             if (signingConfig.WrapAndSignResult)
-                services.AddSingleton<IResponseBuilder, ResponseBuilder>();
+                services.AddSingleton<IResponseBuilder, SignedResponseBuilder>();
             else
                 services.AddSingleton<IResponseBuilder, StandardResponseBuilder>();
 
@@ -44,7 +44,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
             //    var serializer = sp.GetRequiredService<IJsonSerializer>();
             //    var signer = sp.GetRequiredService<IContentSigner>();
 
-            //    return new ResponseBuilder(serializer, signer);
+            //    return new SignedResponseBuilder(serializer, signer);
             //});
         }
 

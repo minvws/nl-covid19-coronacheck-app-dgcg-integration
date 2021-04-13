@@ -10,12 +10,12 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
 {
-    public class ResponseBuilder : IResponseBuilder
+    public class SignedResponseBuilder : IResponseBuilder
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IContentSigner _signer;
 
-        public ResponseBuilder(IJsonSerializer jsonSerializer, IContentSigner signer)
+        public SignedResponseBuilder(IJsonSerializer jsonSerializer, IContentSigner signer)
         {
             _signer = signer ?? throw new ArgumentNullException(nameof(signer));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));

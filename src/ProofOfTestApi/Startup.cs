@@ -25,8 +25,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
             services.AddRedisSessionStore();
 
             // Register the commands used in this project
-            services.AddTransient<HttpGenerateNonceCommand>();
-            services.AddTransient<HttpIssueProofCommand>();
+            services.AddScoped<HttpGenerateNonceCommand>();
+            services.AddScoped<HttpIssueProofCommand>();
 
             base.ConfigureServices(services);
         }
