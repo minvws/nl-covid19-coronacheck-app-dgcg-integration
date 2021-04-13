@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
@@ -36,12 +37,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
 
             var sampleTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(attributes.SampleTime)).UtcDateTime;
 
-            // Note: Neither of these two exceptions can happen without some serious changes to ProofOfTestAttributes.
+            // Note: These Neither of these two exceptions can happen without some serious changes to ProofOfTestAttributes.
             //       I'm leaving the checks in because it's not impossible.
-            var isPaperProof = attributes.IsPaperProof == "1" ||
-                               (attributes.IsPaperProof == "0" ? false : throw new InvalidOperationException("Invalid IsPaperProof value!"));
-            var isSpecimen = attributes.IsSpecimen == "1" ||
-                             (attributes.IsSpecimen == "0" ? false : throw new InvalidOperationException("Invalid IsSpecimen value!"));
+            var isPaperProof = attributes.IsPaperProof.ToBooleanFromIntegerExceptionOnFail();
+            var isSpecimen = attributes.IsSpecimen.ToBooleanFromIntegerExceptionOnFail();
 
             return new ProofOfTestAttributes(
                 sampleTime,

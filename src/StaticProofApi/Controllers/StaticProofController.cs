@@ -86,7 +86,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                     LastNameInitial = request.Result.Holder.LastNameInitial,
                     TestType = request.Result.TestType,
                     SampleTime = request.Result.SampleDate,
-                    IsSpecimen = false
+                    IsSpecimen = request.Result.Holder.IsSpecimen!.ToBooleanFromIntegerExceptionOnFail()
                 }
             });
 

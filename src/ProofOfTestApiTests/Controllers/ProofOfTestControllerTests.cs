@@ -113,7 +113,60 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             Assert.Equal(9, typedResult.Attributes!.Length);
         }
 
-        private string CreateIssueProofRequest(string sessionToken)
+        [Fact]
+        public async Task Post_Test_Proof_supports_specimens()
+        {
+            var nonce = "JuMeq5yIXCA6tpbjWoCS8Q==";
+
+            // Arrange: mock the IssuerClient and register it with the container
+            var mockIssuerApi = new Mock<IIssuerApiClient>();
+            mockIssuerApi
+               .Setup(x => x.IssueProof(It.IsAny<IssueProofRequest>()))
+               .ReturnsAsync(new IssueProofResult
+                    {
+                        Attributes = new[] {"MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ=="},
+                        Ism = new IssueSignatureMessage
+                        {
+                            Proof = new Proof
+                            {
+                                C = "",
+                                ErrorResponse = ""
+                            },
+                            Signature = ""
+                        }
+                    }
+                );
+            mockIssuerApi
+               .Setup(x => x.GenerateNonce())
+               .ReturnsAsync(new GenerateNonceResult {Nonce = nonce});
+            var client = Factory
+                        .WithWebHostBuilder(builder => builder.ConfigureServices(services => { services.AddScoped(provider => mockIssuerApi.Object); }))
+                        .CreateClient();
+
+            // Act: call the Nonce service to put the Nonce in the session
+            var session = await GetNonce(client);
+
+            // Arrange: setup the request
+            var requestJson = CreateIssueProofRequest(session, true);
+            var request = new HttpRequestMessage(HttpMethod.Post, "test/proof")
+            {
+                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+            };
+
+            // Act
+            var result = await client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var responseBody = await result.Content.ReadAsStringAsync();
+            var typedResult = Unwrap<IssueProofResult>(responseBody);
+            Assert.NotNull(typedResult);
+            Assert.NotNull(typedResult.Attributes);
+            Assert.NotNull(typedResult.Ism);
+            Assert.Equal(9, typedResult.Attributes!.Length);
+        }
+
+        private string CreateIssueProofRequest(string sessionToken, bool isSpecimen = false)
         {
             var json = new StandardJsonSerializer();
             var dtp = new StandardUtcDateTimeProvider();
@@ -144,7 +197,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
                         BirthDay = "1",
                         BirthMonth = "1",
                         FirstNameInitial = "A",
-                        LastNameInitial = "B"
+                        LastNameInitial = "B",
+                        IsSpecimen = isSpecimen ? "1" : "0"
                     },
                     NegativeResult = true,
                     SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),
@@ -153,6 +207,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
                 },
                 Status = "complete"
             };
+
             var testResultJson = json.Serialize(testResult);
             var testResultBytes = Encoding.UTF8.GetBytes(testResultJson);
             var testResultB64 = Convert.ToBase64String(testResultBytes);
