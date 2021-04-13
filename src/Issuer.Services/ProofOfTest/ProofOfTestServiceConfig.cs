@@ -3,12 +3,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using Microsoft.Extensions.Configuration;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
-    public class IssuerConfig : AppSettingsReader, IIssuerConfig
+    public class ProofOfTestServiceConfig : AppSettingsReader, IProofOfTestServiceConfig
     {
-        public IssuerConfig(IConfiguration config) : base(config, "Issuer")
+        public ProofOfTestServiceConfig(IConfiguration config) : base(config, "Issuer")
         {
         }
 

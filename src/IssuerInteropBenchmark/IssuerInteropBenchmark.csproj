@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\HolderInterop\HolderInterop.csproj" />
+    <ProjectReference Include="..\Issuer.Services\Issuer.Services.csproj" />
     <ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
   </ItemGroup>
 

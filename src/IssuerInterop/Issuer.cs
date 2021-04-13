@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go;
 using static NL.Rijksoverheid.CoronaCheck.BackEnd.Interop.Go.Helpers;
 

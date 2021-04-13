@@ -6,16 +6,16 @@ using System;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
     public class KeyStore : IKeyStore
     {
         private readonly IKeyStore _assemblyKeyStore;
-        private readonly IIssuerCertificateConfig _config;
+        private readonly IKeyStoreConfig _config;
         private readonly IKeyStore _fileKeyStore;
         private readonly ILogger<KeyStore> _logger;
 
-        public KeyStore(IIssuerCertificateConfig config, AssemblyKeyStore assemblyKeyStore,
+        public KeyStore(IKeyStoreConfig config, AssemblyKeyStore assemblyKeyStore,
                         FileSystemKeyStore fileKeyStore, ILogger<KeyStore> logger)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));

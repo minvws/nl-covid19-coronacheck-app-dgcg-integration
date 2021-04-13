@@ -3,23 +3,30 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
-    public class IssuerProofOfTestService : IProofOfTestService
+    public class ProofOfTestService : IProofOfTestService
     {
-        private readonly IIssuerConfig _config;
+        private readonly IProofOfTestServiceConfig _config;
         private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
+        private readonly IPartialDisclosureService _partialDisclosureService;
 
-        public IssuerProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IIssuerConfig config)
+        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IProofOfTestServiceConfig config,
+                                  IPartialDisclosureService partialDisclosureService)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            _partialDisclosureService = partialDisclosureService ?? throw new ArgumentNullException(nameof(partialDisclosureService));
         }
 
         public string GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments)
@@ -28,7 +35,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
             if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentNullException(nameof(nonce));
             if (string.IsNullOrWhiteSpace(commitments)) throw new ArgumentNullException(nameof(commitments));
 
-            var serializedAttributes = _jsonSerializer.Serialize(proofOfTestAttributes);
+            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
+
+            var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
             return _issuer
                .IssueProof(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
@@ -42,7 +51,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
         public string GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes)
         {
             if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
-            var serializedAttributes = _jsonSerializer.Serialize(proofOfTestAttributes);
+
+            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
+
+            var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
             return _issuer.IssueStaticDisclosureQr(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), serializedAttributes);
         }

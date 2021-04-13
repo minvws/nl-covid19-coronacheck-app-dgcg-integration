@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Issuer.Services\Issuer.Services.csproj" />
     <ProjectReference Include="..\IssuerApi.Models\IssuerApi.Models.csproj" />
   <ProjectReference Include="..\IssuerInterop\IssuerInterop.csproj" />
   </ItemGroup>

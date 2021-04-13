@@ -2,9 +2,9 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
-    public interface IIssuerCertificateConfig
+    public interface IKeyStoreConfig
     {
         /// <summary>
         ///     TRUE to use the embedded resources, false to use the file system

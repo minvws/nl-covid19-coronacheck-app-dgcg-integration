@@ -8,9 +8,9 @@ using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.HolderInterop;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
 {
@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
             var holderSecretKey = holder.GenerateHolderSecretKey();
 
             Console.WriteLine("..Setting up the Issuer..");
-            var issuer = new Issuer();
+            var issuer = new IssuerInterop.Issuer();
             var keystore = new AssemblyKeyStore(new Mock<ILogger<AssemblyKeyStore>>().Object);
             var issuerPkXml = keystore.GetPublicKey();
             var issuerSkXml = keystore.GetPrivateKey();

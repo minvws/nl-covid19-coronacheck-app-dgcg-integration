@@ -5,11 +5,9 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi
 {
@@ -27,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi
 
             // Issuer
             services.AddProofOfTestService();
-            services.AddScoped<IIssuerInterop, Issuer>();
+            services.AddPartialDisclosure();
 
             base.ConfigureServices(services);
         }

@@ -2,19 +2,19 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
     public class FileSystemKeyStore : IKeyStore
     {
-        private readonly IIssuerCertificateConfig _config;
+        private readonly IKeyStoreConfig _config;
         private readonly ILogger<FileSystemKeyStore> _logger;
 
-        public FileSystemKeyStore(IIssuerCertificateConfig config, ILogger<FileSystemKeyStore> logger)
+        public FileSystemKeyStore(IKeyStoreConfig config, ILogger<FileSystemKeyStore> logger)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

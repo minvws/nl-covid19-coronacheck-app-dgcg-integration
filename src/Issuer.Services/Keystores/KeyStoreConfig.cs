@@ -5,11 +5,11 @@
 using Microsoft.Extensions.Configuration;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
-    public class IssuerCertificateConfig : AppSettingsReader, IIssuerCertificateConfig
+    public class KeyStoreConfig : AppSettingsReader, IKeyStoreConfig
     {
-        public IssuerCertificateConfig(IConfiguration config) : base(config, "IssuerCertificates")
+        public KeyStoreConfig(IConfiguration config) : base(config, "IssuerCertificates")
         {
         }
 

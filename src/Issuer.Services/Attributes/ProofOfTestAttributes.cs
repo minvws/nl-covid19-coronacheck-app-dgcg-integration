@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes
 {
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]

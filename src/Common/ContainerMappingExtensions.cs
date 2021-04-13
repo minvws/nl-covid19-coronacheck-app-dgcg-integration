@@ -5,7 +5,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
@@ -47,18 +46,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 
             services.AddSingleton<IJsonSerializer, StandardJsonSerializer>();
             services.AddSingleton<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-        }
-
-        public static void AddProofOfTestService(this IServiceCollection services)
-        {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-
-            services.AddScoped<IProofOfTestService, IssuerProofOfTestService>();
-            services.AddSingleton<IKeyStore, KeyStore>();
-            services.AddSingleton<AssemblyKeyStore, AssemblyKeyStore>();
-            services.AddSingleton<FileSystemKeyStore, FileSystemKeyStore>();
-            services.AddSingleton<IIssuerCertificateConfig, IssuerCertificateConfig>();
-            services.AddSingleton<IIssuerConfig, IssuerConfig>();
         }
     }
 }

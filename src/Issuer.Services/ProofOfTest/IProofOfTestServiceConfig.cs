@@ -2,11 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
-    public interface IKeyStore
+    public interface IProofOfTestServiceConfig
     {
-        string GetPrivateKey();
-        string GetPublicKey();
+        string PublicKeyIdentifier { get; }
     }
 }

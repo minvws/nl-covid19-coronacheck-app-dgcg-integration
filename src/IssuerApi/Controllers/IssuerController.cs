@@ -11,6 +11,8 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
