@@ -21,10 +21,31 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<ISignedDataResponseBuilder, SignedDataResponseBuilder>();
             services.AddScoped<IContentSigner, CmsSigner>();
             services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddSingleton<IApiSigningConfig, ApiSigningConfig>();
+
+            //
+            // The configuration decides how responses are packaged
+            //
+
+            var serviceProvider = services.BuildServiceProvider();
+            var signingConfig = serviceProvider.GetRequiredService<IApiSigningConfig>();
+            if (signingConfig.WrapAndSignResult)
+                services.AddSingleton<IResponseBuilder, SignedResponseBuilder>();
+            else
+                services.AddSingleton<IResponseBuilder, StandardResponseBuilder>();
+
+            //// Decide via the factory call
+            //services.AddScoped<IResponseBuilder>(sp =>
+            //{
+            //    var config = sp.GetRequiredService<IApiSigningConfig>();
+            //    if (!config.WrapAndSignResult) return new StandardResponseBuilder();
+            //    var serializer = sp.GetRequiredService<IJsonSerializer>();
+            //    var signer = sp.GetRequiredService<IContentSigner>();
+
+            //    return new SignedResponseBuilder(serializer, signer);
+            //});
         }
 
         public static void AddTestProviderSignatureValidation(this IServiceCollection services)

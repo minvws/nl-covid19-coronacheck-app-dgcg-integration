@@ -14,18 +14,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers
 {
     public abstract class MiddlewareControllerBase : ControllerBase
     {
-        private readonly ISignedDataResponseBuilder _srb;
+        private readonly IResponseBuilder _srb;
         protected readonly IApiSigningConfig ApiSigningConfig;
         protected readonly IJsonSerializer JsonSerializer;
         protected readonly IUtcDateTimeProvider UtcDateTimeProvider;
 
         protected MiddlewareControllerBase(IJsonSerializer jsonSerializer, IUtcDateTimeProvider utcDateTimeProvider,
-                                           ISignedDataResponseBuilder signedDataResponseBuilder, IApiSigningConfig apiSigningConfig)
+                                           IResponseBuilder responseBuilder, IApiSigningConfig apiSigningConfig)
         {
             JsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             UtcDateTimeProvider = utcDateTimeProvider ?? throw new ArgumentNullException(nameof(utcDateTimeProvider));
             ApiSigningConfig = apiSigningConfig ?? throw new ArgumentNullException(nameof(apiSigningConfig));
-            _srb = signedDataResponseBuilder ?? throw new ArgumentNullException(nameof(signedDataResponseBuilder));
+            _srb = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
         }
 
         protected OkObjectResult OkWrapped<T>(T result) where T : class
