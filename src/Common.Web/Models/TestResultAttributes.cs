@@ -28,5 +28,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [RegularExpression("^1[0-2]$|^[xX1-9]$")]
         [JsonPropertyName("birthMonth")]
         public string? BirthMonth { get; set; }
+
+        [Required]
+        [RegularExpression("^[01]{1}$")]
+        [JsonPropertyName("isSpecimen")]
+        public string? IsSpecimen { get; set; }
     }
 }

@@ -60,7 +60,38 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal(staticProofResult, responseBody);
         }
 
-        private string CreateRequest()
+        [Fact]
+        public async Task Post_Test_Proof_supports_specimens()
+        {
+            var staticProofResult = "successful";
+
+            // Arrange: mock the IssuerClient and register it with the container
+            var mockIssuerApi = new Mock<IIssuerApiClient>();
+            mockIssuerApi
+               .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
+               .ReturnsAsync(staticProofResult);
+            var client = Factory
+                        .WithWebHostBuilder(builder => builder.ConfigureServices(services => { services.AddScoped(provider => mockIssuerApi.Object); }))
+                        .CreateClient();
+
+            // Arrange: setup the request
+            var requestJson = CreateRequest(true);
+            var request = new HttpRequestMessage(HttpMethod.Post, "staticproof/paper")
+            {
+                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+            };
+
+            // Act
+            var result = await client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var responseBody = await result.Content.ReadAsStringAsync();
+            Assert.NotEmpty(responseBody);
+            Assert.Equal(staticProofResult, responseBody);
+        }
+
+        private string CreateRequest(bool isSpecimen = false)
         {
             var json = new StandardJsonSerializer();
             var dtp = new StandardUtcDateTimeProvider();
@@ -77,7 +108,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                         BirthDay = "1",
                         BirthMonth = "1",
                         FirstNameInitial = "A",
-                        LastNameInitial = "B"
+                        LastNameInitial = "B",
+                        IsSpecimen = isSpecimen ? "1" : "0"
                     },
                     NegativeResult = true,
                     SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),
