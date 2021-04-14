@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -91,34 +92,76 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal(staticProofResult, responseBody);
         }
 
-        private string CreateRequest(bool isSpecimen = false)
+        [Fact]
+        public async Task Post_Test_Proof_supports_optional_specimin()
+        {
+            var staticProofResult = "successful";
+
+            // Arrange: mock the IssuerClient and register it with the container
+            var mockIssuerApi = new Mock<IIssuerApiClient>();
+            mockIssuerApi
+               .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
+               .ReturnsAsync(staticProofResult);
+            var client = Factory
+                        .WithWebHostBuilder(builder => builder.ConfigureServices(services => { services.AddScoped(provider => mockIssuerApi.Object); }))
+                        .CreateClient();
+
+            // Arrange: setup the request
+            var requestJson = CreateRequest(true, true);
+            var request = new HttpRequestMessage(HttpMethod.Post, "staticproof/paper")
+            {
+                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+            };
+
+            // Act
+            var result = await client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var responseBody = await result.Content.ReadAsStringAsync();
+            Assert.NotEmpty(responseBody);
+            Assert.Equal(staticProofResult, responseBody);
+        }
+
+        private string CreateRequest(bool isSpecimen = false, bool excludeIsSpecimen = false)
         {
             var json = new StandardJsonSerializer();
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true
+            };
+
             var dtp = new StandardUtcDateTimeProvider();
+
+            // TestResultQueries
+            var testResultDetails = new TestResultDetails
+            {
+                Holder = new TestResultAttributes
+                {
+                    BirthDay = "1",
+                    BirthMonth = "1",
+                    FirstNameInitial = "A",
+                    LastNameInitial = "B"
+                },
+                IsSpecimen = isSpecimen,
+                NegativeResult = true,
+                SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),
+                TestType = "PCR",
+                Unique = Guid.NewGuid().ToString()
+            };
+            if (!excludeIsSpecimen) testResultDetails.IsSpecimen = isSpecimen;
 
             // TestResult
             var testResult = new TestResult
             {
                 ProviderIdentifier = "TST001",
                 ProtocolVersion = "1.0",
-                Result = new TestResultDetails
-                {
-                    Holder = new TestResultAttributes
-                    {
-                        BirthDay = "1",
-                        BirthMonth = "1",
-                        FirstNameInitial = "A",
-                        LastNameInitial = "B",
-                        IsSpecimen = isSpecimen ? "1" : "0"
-                    },
-                    NegativeResult = true,
-                    SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),
-                    TestType = "PCR",
-                    Unique = Guid.NewGuid().ToString()
-                },
+                Result = testResultDetails,
                 Status = "complete"
             };
-            var testResultJson = json.Serialize(testResult);
+            var testResultJson = JsonSerializer.Serialize(testResult, jsonOptions);
             var testResultBytes = Encoding.UTF8.GetBytes(testResultJson);
             var testResultB64 = Convert.ToBase64String(testResultBytes);
             var testResultSignature = Signer.ComputeSignatureCms(testResultBytes, $"{CertDir}\\TST001.pfx", "123456");
