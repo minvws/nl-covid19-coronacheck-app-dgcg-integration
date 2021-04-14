@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using GenerateNonceResult = NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models.GenerateNonceResult;
@@ -31,7 +30,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
                     BirthMonth = request.Test.Result.Holder.BirthMonth,
                     FirstNameInitial = request.Test.Result.Holder.FirstNameInitial,
                     LastNameInitial = request.Test.Result.Holder.LastNameInitial,
-                    IsSpecimen = request.Test.Result.Holder.IsSpecimen!.ToBooleanFromIntegerExceptionOnFail()
+                    IsSpecimen = request.Test.Result.IsSpecimen ?? false
                 }
             };
         }

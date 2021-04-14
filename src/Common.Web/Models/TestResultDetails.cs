@@ -34,5 +34,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
         [Required]
         [JsonPropertyName("holder")]
         public TestResultAttributes? Holder { get; set; }
+
+        [JsonPropertyName("isSpecimen")] public bool? IsSpecimen { get; set; }
     }
 }
