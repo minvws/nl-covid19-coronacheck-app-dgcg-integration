@@ -119,6 +119,23 @@ Private fields are in *Camal Case* and prefixed with an underscore
 		private readonly _myField = 100;
 	}
 
+## Exception handling
+
+In the general case we follow Microsoft's best practises, because they are solid engineering practise.
+
+https://docs.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions
+
+Our strategy is to only handle recoverable exceptions close to the point they occur, and recover them. Otherwise exceptions will bubble up to the general exception handler of the process. That handler must log the exception. There are of course a small number of occasions where you may need to catch an exception in order to provide logging (i.e where you would otherwise miss state) or where you're using APIs which explicitly require it. In those cases the exceptions should be caught, your logging made, and then the exception **correctly** re-thrown.
+
+So:
+
+* Avoid exceptions where possible.
+* Never throw exceptions which should only be thrown by the framework, such as: `IndexOutOfRangeException`, `NullReferenceException` or `Exception`.
+* Handle exceptions in the execution context's root handler.
+* NEVER include sensitive information in the exception message (or the logs)
+* COMMENT any exceptions to the rule.
+* Use custom exceptions sparingly.
+
 
 # PR Process
 
