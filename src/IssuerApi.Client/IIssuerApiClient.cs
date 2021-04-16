@@ -11,6 +11,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
     {
         Task<IssueProofResult> IssueProof(IssueProofRequest request);
         Task<GenerateNonceResult> GenerateNonce();
-        Task<string> IssueStaticProof(IssueStaticProofRequest request);
+        Task<IssueProofResult> IssueStaticProof(IssueStaticProofRequest request);
     }
 }

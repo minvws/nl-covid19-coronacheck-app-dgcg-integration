@@ -37,13 +37,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes
 
         public ProofOfTestAttributes Generate()
         {
-            var firstName = _initials[_rng.Next(0, _initials.Count - 1)];
-            var lastName = _initials[_rng.Next(0, _initials.Count - 1)];
-            var birthDay = _birthDays[_rng.Next(0, _birthDays.Count - 1)];
-            var birthMonth = _birthMonths[_rng.Next(0, _birthMonths.Count - 1)];
-            var sampleDate = DateTime.UtcNow.AddHours(-1 * _rng.Next(0, 71)).ToHourPrecision();
-
-            return new ProofOfTestAttributes(sampleDate, "PCR", firstName, lastName, birthDay, birthMonth);
+            return new ProofOfTestAttributes
+            {
+                BirthMonth = _birthMonths[_rng.Next(0, _birthMonths.Count - 1)],
+                BirthDay = _birthDays[_rng.Next(0, _birthDays.Count - 1)],
+                FirstNameInitial = _initials[_rng.Next(0, _initials.Count - 1)],
+                LastNameInitial = _initials[_rng.Next(0, _initials.Count - 1)],
+                SampleTime = DateTime.UtcNow.AddHours(-1 * _rng.Next(0, 71)).ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "PCR"
+            };
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
             {
                 Commitments = request.Commitments,
                 Nonce = nonce,
-                Attributes = new Attributes
+                Attributes = new IssuerAttributes
                 {
                     SampleTime = request.Test.Result!.SampleDate,
                     TestType = request.Test.Result.TestType,

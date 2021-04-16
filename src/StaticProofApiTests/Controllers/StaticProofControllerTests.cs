@@ -33,9 +33,28 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
         [Fact]
         public async Task Post_Test_Proof_returns_proof_from_IssuerApi()
         {
-            var staticProofResult = "successful";
+            var jsonSerializer = new StandardJsonSerializer();
 
             // Arrange: mock the IssuerClient and register it with the container
+            var staticProofResult = new IssueProofResult
+            {
+                Attributes = new[] {""},
+                Ism = new IssueSignatureMessage
+                {
+                    Proof = new Proof
+                    {
+                        C = Guid.NewGuid().ToString() // <- this is used to check the result
+                    },
+                    Signature = "ZZZ"
+                },
+                AttributesIssued = new IssuerAttributes
+                {
+                    BirthMonth = "A",
+                    BirthDay = "B",
+                    FirstNameInitial = "C",
+                    LastNameInitial = "D"
+                }
+            };
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
@@ -58,15 +77,36 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var responseBody = await result.Content.ReadAsStringAsync();
             Assert.NotEmpty(responseBody);
-            Assert.Equal(staticProofResult, responseBody);
+            var responseObject = jsonSerializer.Deserialize<IssueProofResult>(responseBody);
+            Assert.NotNull(responseObject);
+            Assert.Equal(responseObject.Ism!.Proof!.C!, staticProofResult.Ism.Proof.C);
         }
 
         [Fact]
         public async Task Post_Test_Proof_supports_specimens()
         {
-            var staticProofResult = "successful";
+            var jsonSerializer = new StandardJsonSerializer();
 
             // Arrange: mock the IssuerClient and register it with the container
+            var staticProofResult = new IssueProofResult
+            {
+                Attributes = new[] {""},
+                Ism = new IssueSignatureMessage
+                {
+                    Proof = new Proof
+                    {
+                        C = Guid.NewGuid().ToString() // <- this is used to check the result
+                    },
+                    Signature = "ZZZ"
+                },
+                AttributesIssued = new IssuerAttributes
+                {
+                    BirthMonth = "A",
+                    BirthDay = "B",
+                    FirstNameInitial = "C",
+                    LastNameInitial = "D"
+                }
+            };
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
@@ -89,15 +129,36 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var responseBody = await result.Content.ReadAsStringAsync();
             Assert.NotEmpty(responseBody);
-            Assert.Equal(staticProofResult, responseBody);
+            var responseObject = jsonSerializer.Deserialize<IssueProofResult>(responseBody);
+            Assert.NotNull(responseObject);
+            Assert.Equal(responseObject.Ism!.Proof!.C!, staticProofResult.Ism.Proof.C);
         }
 
         [Fact]
         public async Task Post_Test_Proof_supports_optional_specimin()
         {
-            var staticProofResult = "successful";
+            var jsonSerializer = new StandardJsonSerializer();
 
             // Arrange: mock the IssuerClient and register it with the container
+            var staticProofResult = new IssueProofResult
+            {
+                Attributes = new[] {""},
+                Ism = new IssueSignatureMessage
+                {
+                    Proof = new Proof
+                    {
+                        C = Guid.NewGuid().ToString() // <- this is used to check the result
+                    },
+                    Signature = "ZZZ"
+                },
+                AttributesIssued = new IssuerAttributes
+                {
+                    BirthMonth = "A",
+                    BirthDay = "B",
+                    FirstNameInitial = "C",
+                    LastNameInitial = "D"
+                }
+            };
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueStaticProof(It.IsAny<IssueStaticProofRequest>()))
@@ -120,7 +181,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var responseBody = await result.Content.ReadAsStringAsync();
             Assert.NotEmpty(responseBody);
-            Assert.Equal(staticProofResult, responseBody);
+            var responseObject = jsonSerializer.Deserialize<IssueProofResult>(responseBody);
+            Assert.NotNull(responseObject);
+            Assert.Equal(responseObject.Ism!.Proof!.C!, staticProofResult.Ism.Proof.C);
         }
 
         private string CreateRequest(bool isSpecimen = false, bool excludeIsSpecimen = false)

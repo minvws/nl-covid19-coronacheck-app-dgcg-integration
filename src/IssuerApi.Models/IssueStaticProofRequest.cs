@@ -12,6 +12,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
     {
         [Required]
         [JsonPropertyName("attributes")]
-        public Attributes? Attributes { get; set; }
+        public IssuerAttributes Attributes { get; set; } = default!;
     }
 }

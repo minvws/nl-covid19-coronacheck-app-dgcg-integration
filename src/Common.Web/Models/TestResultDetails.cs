@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 
         [Required]
         [JsonPropertyName("testType")]
-        public string? TestType { get; set; }
+        public string TestType { get; set; } = string.Empty;
 
         [Required]
         [JsonPropertyName("negativeResult")]

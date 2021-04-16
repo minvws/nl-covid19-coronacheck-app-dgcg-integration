@@ -4,6 +4,7 @@
 
 using System;
 using System.Text.Json;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
@@ -27,8 +28,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests
         {
             var issuer = new IssuerInterop.Issuer();
             var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
-
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "PCR", "A", "A", "1", "1");
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "PCR",
+                FirstNameInitial = "A",
+                LastNameInitial = "A",
+                BirthMonth = "1",
+                BirthDay = "1",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
 
             var issuerPkId = "testPk";
             var issuerPkXml = keystore.GetPublicKey();
@@ -53,7 +63,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests
             var issuer = new IssuerInterop.Issuer();
             var keystore = new AssemblyKeyStore(new TestLogger<AssemblyKeyStore>());
 
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "PCR", "A", "A", "1", "1");
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "PCR",
+                FirstNameInitial = "A",
+                LastNameInitial = "A",
+                BirthMonth = "1",
+                BirthDay = "1",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
 
             var issuerPkId = "testPk";
             var issuerPkXml = keystore.GetPublicKey();

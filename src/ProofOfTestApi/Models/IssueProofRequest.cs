@@ -21,14 +21,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
         [Required]
         [Base64String]
         [JsonPropertyName("icm")]
-        public string? Commitments { get; set; }
+        public string Commitments { get; set; } = string.Empty;
 
         /// <summary>
         ///     SessionToken.
         /// </summary>
         [Required]
         [JsonPropertyName("stoken")]
-        public string? SessionToken { get; set; }
+        public string SessionToken { get; set; } = string.Empty;
 
         /// <summary>
         ///     Test result received from the test provider.
@@ -64,7 +64,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             if (TestResult == null) return false;
-            if (Commitments == null) return false;
+            if (string.IsNullOrWhiteSpace(Commitments)) return false;
 
             try
             {
