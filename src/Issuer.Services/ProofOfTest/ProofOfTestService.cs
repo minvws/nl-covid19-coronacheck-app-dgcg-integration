@@ -29,7 +29,25 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
             _partialDisclosureService = partialDisclosureService ?? throw new ArgumentNullException(nameof(partialDisclosureService));
         }
 
-        public string GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments)
+        public string GenerateNonce()
+        {
+            return _issuer.GenerateNonce(_config.PublicKeyIdentifier);
+        }
+
+        public (string, ProofOfTestAttributes) GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes)
+        {
+            if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
+
+            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
+
+            var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
+
+            var proof = _issuer.IssueStaticDisclosureQr(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), serializedAttributes);
+
+            return (proof, filteredAttributes);
+        }
+
+        public (string, ProofOfTestAttributes) GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments)
         {
             if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
             if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentNullException(nameof(nonce));
@@ -39,24 +57,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
-            return _issuer
+            var proof = _issuer
                .IssueProof(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
-        }
 
-        public string GenerateNonce()
-        {
-            return _issuer.GenerateNonce(_config.PublicKeyIdentifier);
-        }
-
-        public string GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes)
-        {
-            if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
-
-            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
-
-            var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
-
-            return _issuer.IssueStaticDisclosureQr(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), serializedAttributes);
+            return (proof, filteredAttributes);
         }
     }
 }

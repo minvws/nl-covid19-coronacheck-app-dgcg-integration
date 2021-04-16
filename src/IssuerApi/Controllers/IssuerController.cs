@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
@@ -61,21 +63,28 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             {
                 var commitmentsJson = Base64.DecodeAsUtf8String(request.Commitments!);
 
-                var attributes = new ProofOfTestAttributes(
-                    request.Attributes!.SampleTime,
-                    request.Attributes.TestType!,
-                    request.Attributes.FirstNameInitial!,
-                    request.Attributes.LastNameInitial!,
-                    request.Attributes.BirthDay!,
-                    request.Attributes.BirthMonth!,
-                    false, // Always set to false for non-static
-                    request.Attributes.IsSpecimen
-                );
+                var attributes = new ProofOfTestAttributes
+                {
+                    SampleTime = request.Attributes.SampleTime.ToGoApiString(),
+                    TestType = request.Attributes.TestType,
+                    FirstNameInitial = request.Attributes.FirstNameInitial,
+                    LastNameInitial = request.Attributes.LastNameInitial,
+                    BirthMonth = request.Attributes.BirthMonth,
+                    BirthDay = request.Attributes.BirthDay,
+                    IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0",
+                    IsPaperProof = "0"
+                };
 
-                var proofResult =
-                    _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson);
+                var (proofResult, attributesIssued) = _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson);
 
                 var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
+                issueProofResult.AttributesIssued = new IssuerAttributes
+                {
+                    BirthMonth = attributesIssued.BirthMonth,
+                    BirthDay = attributesIssued.BirthDay,
+                    FirstNameInitial = attributesIssued.FirstNameInitial,
+                    LastNameInitial = attributesIssued.LastNameInitial
+                };
 
                 return _apiSigningConfig.WrapAndSignResult
                     ? Ok(_srb.Build(issueProofResult))
@@ -126,7 +135,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         /// </summary>
         [HttpPost]
         [Route("issue-static")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(IssueStaticProofResult), 200)]
         public IActionResult IssueStaticProof(IssueStaticProofRequest request)
         {
             if (!ModelState.IsValid)
@@ -138,21 +147,35 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
             try
             {
-                var attributes = new ProofOfTestAttributes(
-                    request.Attributes!.SampleTime,
-                    request.Attributes.TestType!,
-                    request.Attributes.FirstNameInitial!,
-                    request.Attributes.LastNameInitial!,
-                    request.Attributes.BirthDay!,
-                    request.Attributes.BirthMonth!,
-                    true, // Always set to true for static!
-                    request.Attributes.IsSpecimen);
+                var attributes = new ProofOfTestAttributes
+                {
+                    SampleTime = request.Attributes.SampleTime.ToUnixTime().ToString(),
+                    TestType = request.Attributes.TestType,
+                    FirstNameInitial = request.Attributes.FirstNameInitial,
+                    LastNameInitial = request.Attributes.LastNameInitial,
+                    BirthDay = request.Attributes.BirthDay,
+                    BirthMonth = request.Attributes.BirthMonth,
+                    IsPaperProof = "0",
+                    IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0"
+                };
 
-                var qr = _potService.GetStaticProofQr(attributes);
+                var (qr, attributesIssued) = _potService.GetStaticProofQr(attributes);
+
+                var result = new IssueStaticProofResult
+                {
+                    Qr = qr,
+                    AttributesIssued = new IssuerAttributes
+                    {
+                        BirthMonth = attributesIssued.BirthMonth,
+                        BirthDay = attributesIssued.BirthDay,
+                        FirstNameInitial = attributesIssued.FirstNameInitial,
+                        LastNameInitial = attributesIssued.LastNameInitial
+                    }
+                };
 
                 return _apiSigningConfig.WrapAndSignResult
-                    ? Ok(_srb.Build(qr))
-                    : Ok(qr);
+                    ? Ok(_srb.Build(result))
+                    : Ok(result);
             }
             catch (FormatException e)
             {
@@ -168,4 +191,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             }
         }
     }
+
+    //public class IssueStaticProofResponse
+    //{
+    //    public string Alice { get; set; } = string.Empty;
+    //    public string Bob { get; set; } = string.Empty;
+    //}
 }

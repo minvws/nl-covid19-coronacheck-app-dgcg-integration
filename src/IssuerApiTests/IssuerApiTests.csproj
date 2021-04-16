@@ -9,10 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="EmbeddedResources\Post_Proof_IssueStatic_returns_proof.json" />
     <None Remove="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\Post_Proof_IssueStatic_returns_proof.json" />
     <EmbeddedResource Include="EmbeddedResources\Post_Proof_Issue_returns_proof_request.json" />
   </ItemGroup>
 

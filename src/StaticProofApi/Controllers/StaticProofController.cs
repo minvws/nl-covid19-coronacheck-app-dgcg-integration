@@ -78,7 +78,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             // Call Issuer
             var result = await _issuerApiClient.IssueStaticProof(new IssueStaticProofRequest
             {
-                Attributes = new Attributes
+                Attributes = new IssuerAttributes
                 {
                     BirthMonth = request.Result.Holder!.BirthMonth,
                     BirthDay = request.Result.Holder.BirthDay,

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Moq;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
 using Xunit;
@@ -23,7 +24,17 @@ namespace Issuer.Services.Tests.PartialDisclosure
             var service = new PartialDisclosureService(provider.Object);
 
             // Act
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "ZXY", "A", "B", "2", "1", true, true);
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "ZXY",
+                FirstNameInitial = "A",
+                LastNameInitial = "B",
+                BirthMonth = "2",
+                BirthDay = "1",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
             var result = service.Apply(attributes);
 
             // Assert
@@ -45,7 +56,17 @@ namespace Issuer.Services.Tests.PartialDisclosure
             var service = new PartialDisclosureService(provider.Object);
 
             // Act
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "ZXY", "A", "B", "2", "1", true, true);
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "ZXY",
+                FirstNameInitial = "A",
+                LastNameInitial = "B",
+                BirthMonth = "2",
+                BirthDay = "1",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
             var result = service.Apply(attributes);
 
             // Assert
@@ -83,7 +104,17 @@ namespace Issuer.Services.Tests.PartialDisclosure
             var service = new PartialDisclosureService(provider.Object);
 
             // Act
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "ZXY", "A", "B", "2", "1", true, true);
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "ZXY",
+                FirstNameInitial = "A",
+                LastNameInitial = "B",
+                BirthMonth = "1",
+                BirthDay = "2",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
             var result = service.Apply(attributes);
 
             // Assert
@@ -111,7 +142,17 @@ namespace Issuer.Services.Tests.PartialDisclosure
             var service = new PartialDisclosureService(provider.Object);
 
             // Act
-            var attributes = new ProofOfTestAttributes(DateTime.UtcNow, "ZXY", "A", "B", "2", "1", true, true);
+            var attributes = new ProofOfTestAttributes
+            {
+                SampleTime = DateTime.UtcNow.ToHourPrecision().ToUnixTime().ToString(),
+                TestType = "ZXY",
+                FirstNameInitial = "A",
+                LastNameInitial = "B",
+                BirthMonth = "1",
+                BirthDay = "2",
+                IsSpecimen = "1",
+                IsPaperProof = "1"
+            };
             var result = service.Apply(attributes);
 
             // Assert

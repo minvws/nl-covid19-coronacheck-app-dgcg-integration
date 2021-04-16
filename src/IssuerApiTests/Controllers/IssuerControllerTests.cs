@@ -78,7 +78,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             // Arrange: the request
             var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
-            requestObject.Nonce = typedResultNonce.Nonce;
+            requestObject.Nonce = typedResultNonce.Nonce!;
             requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
             var requestJson = json.Serialize(requestObject);
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
@@ -96,6 +96,40 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             Assert.NotNull(typedResult.Ism);
             Assert.NotNull(typedResult.Ism!.Proof);
             Assert.NotNull(typedResult.Ism.Signature);
+        }
+
+        [Fact]
+        public async Task Post_Proof_IssueStatic_returns_proof()
+        {
+            // Arrange
+            var json = new StandardJsonSerializer();
+            var client = Factory.CreateClient();
+
+            // Arrange: the request
+            var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_IssueStatic_returns_proof.json");
+            var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
+            requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
+            var requestJson = json.Serialize(requestObject);
+            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            // Act
+            var result = await client.PostAsync("proof/issue-static", requestContent);
+
+            // Assert: result OK
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
+            // IssueStaticProofResult
+
+            // Assert: result type sent
+            //var responseBody = await result.Content.ReadAsStringAsync();
+            //Assert.NotEmpty(responseBody);
+
+            // Assert: result type sent
+            var responseBody = await result.Content.ReadAsStringAsync();
+            var typedResult = Unwrap<IssueStaticProofResult>(responseBody);
+            Assert.NotNull(typedResult);
+            Assert.NotEmpty(typedResult.Qr);
+            Assert.NotNull(typedResult.AttributesIssued);
         }
 
         private async Task<GenerateNonceResult> GetNonce()

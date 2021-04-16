@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
@@ -35,22 +34,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
 
             var stopFilter = _list[search];
 
-            var sampleTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(attributes.SampleTime)).UtcDateTime;
-
-            // Note: These Neither of these two exceptions can happen without some serious changes to ProofOfTestAttributes.
-            //       I'm leaving the checks in because it's not impossible.
-            var isPaperProof = attributes.IsPaperProof.ToBooleanFromIntegerExceptionOnFail();
-            var isSpecimen = attributes.IsSpecimen.ToBooleanFromIntegerExceptionOnFail();
-
-            return new ProofOfTestAttributes(
-                sampleTime,
-                attributes.TestType,
-                stopFilter.DiscloseFirstInitial ? attributes.FirstNameInitial : string.Empty,
-                stopFilter.DiscloseLastInitial ? attributes.LastNameInitial : string.Empty,
-                stopFilter.DiscloseDay ? attributes.BirthDay : string.Empty,
-                stopFilter.DiscloseMonth ? attributes.BirthMonth : string.Empty,
-                isPaperProof,
-                isSpecimen);
+            return new ProofOfTestAttributes
+            {
+                SampleTime = attributes.SampleTime,
+                TestType = attributes.TestType,
+                FirstNameInitial = stopFilter.DiscloseFirstInitial ? attributes.FirstNameInitial : string.Empty,
+                LastNameInitial = stopFilter.DiscloseLastInitial ? attributes.LastNameInitial : string.Empty,
+                BirthMonth = stopFilter.DiscloseMonth ? attributes.BirthMonth : string.Empty,
+                BirthDay = stopFilter.DiscloseDay ? attributes.BirthDay : string.Empty,
+                IsPaperProof = attributes.IsPaperProof,
+                IsSpecimen = attributes.IsSpecimen
+            };
         }
     }
 }

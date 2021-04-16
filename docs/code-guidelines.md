@@ -4,7 +4,19 @@ Welcome to the Corona Check backend! If you'd like to contribute to the project 
 
 During development we use an IDE (Visual Studio and Rider) along with ReShaper to help write good code. You can use Visual Studio Code but a full IDE is strongly recommended.
 
-# Defensive programming
+# General
+
+## Object-oriented design
+
+We strive to factor our system using the best modern OO practises.
+
+* Small units with a single responsibility
+* Use dependency injection using the constructor pattern
+* Prefer composition over inheritance
+* Prefer side-effects free functions over hidden state
+* Miminmize magic
+
+## Defensive programming
 
 We apply a defensive programming strategy. This means that we assume that whatever can go wrong, will go wrong. All user input is hostile or just plain wrong and that all code is written by coked-up seat-of-the-underpants brogrammers. Finally, that we ourselves are fallible, writing code under extreme time constraints while having little sleep.
 
@@ -20,6 +32,48 @@ Some of the tools and practises we use:
 * Review code with "what would Sauron do" mindset.
 * Automated testing.
 * Fuzz testing [note: at time of writing this is in the planning].
+
+## Argument checking
+
+Also known as guard clauses. In this project we make consistant use of them. For all functions - including private - arguments must be checked. In most cases this is for nulls. Throw either a NullArgumentException or an ArgumentException. This also applies to constructors.
+
+## Nulls
+
+This project uses Nullable Reference Types. This feature was introduced in C# X and goes a long way to reducing issues caused by nulls. However it is not always handy, so we do a couple of things to make it work well for us.
+
+For DTOs (Data Transfer Objects) such as request/response models in ASP.Net, we use the null forgiving operator combined property initializers for properties[1] when that improves the API:
+
+	public Foo MyFoo { get; set; } = default!;
+
+	public string MyString { get; set; } = string.Empty;
+
+There are two important caveats here:
+
+* When consuming web requests (or response objects it's important to use the [Required] attribute and validate the model state to ensure correct behaviour.
+* When consuming web responses you must validate the model. This is important when using JSON because the serializer we use does not support the [Required] property[2].
+
+
+[1] As recommended by the EF team; https://docs.microsoft.com/en-us/ef/core/miscellaneous/nullable-reference-types#non-nullable-properties-and-initialization 
+
+[2] https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-migrate-from-newtonsoft-how-to?pivots=dotnet-5-0#required-properties
+
+## Exception handling
+
+In the general case we follow Microsoft's best practises, because they are solid engineering practise.
+
+https://docs.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions
+
+Our strategy is to only handle recoverable exceptions close to the point they occur, and recover them. Otherwise exceptions will bubble up to the general exception handler of the process. That handler must log the exception. There are of course a small number of occasions where you may need to catch an exception in order to provide logging (i.e where you would otherwise miss state) or where you're using APIs which explicitly require it. In those cases the exceptions should be caught, your logging made, and then the exception **correctly** re-thrown.
+
+So:
+
+* Avoid exceptions where possible.
+* Never throw exceptions which should only be thrown by the framework, such as: `IndexOutOfRangeException`, `NullReferenceException` or `Exception`.
+* Handle exceptions in the execution context's root handler.
+* NEVER include sensitive information in the exception message (or the logs)
+* COMMENT any exceptions to the rule.
+* Use custom exceptions sparingly.
+
 
 # Code style
 
@@ -118,24 +172,6 @@ Private fields are in *Camal Case* and prefixed with an underscore
 	{
 		private readonly _myField = 100;
 	}
-
-## Exception handling
-
-In the general case we follow Microsoft's best practises, because they are solid engineering practise.
-
-https://docs.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions
-
-Our strategy is to only handle recoverable exceptions close to the point they occur, and recover them. Otherwise exceptions will bubble up to the general exception handler of the process. That handler must log the exception. There are of course a small number of occasions where you may need to catch an exception in order to provide logging (i.e where you would otherwise miss state) or where you're using APIs which explicitly require it. In those cases the exceptions should be caught, your logging made, and then the exception **correctly** re-thrown.
-
-So:
-
-* Avoid exceptions where possible.
-* Never throw exceptions which should only be thrown by the framework, such as: `IndexOutOfRangeException`, `NullReferenceException` or `Exception`.
-* Handle exceptions in the execution context's root handler.
-* NEVER include sensitive information in the exception message (or the logs)
-* COMMENT any exceptions to the rule.
-* Use custom exceptions sparingly.
-
 
 # PR Process
 
