@@ -23,6 +23,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
             services.AddTestProviderSignatureValidation();
             services.AddIssuerApiClient();
             services.AddRedisSessionStore();
+            services.AddApiVersioning();
 
             // Register the commands used in this project
             services.AddScoped<HttpGenerateNonceCommand>();

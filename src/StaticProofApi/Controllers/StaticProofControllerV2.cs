@@ -22,14 +22,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
 {
     [ApiController]
     [AllowAnonymous]
-    [Route("staticproof")]
-    public class StaticProofController : MiddlewareControllerBase
+    [Route("v{version:apiVersion}/staticproof")]
+    [ApiVersion("2")]
+    public class StaticProofControllerV2 : MiddlewareControllerBase
     {
         private readonly IIssuerApiClient _issuerApiClient;
         private readonly ITestProviderSignatureValidator _signatureValidator;
         private readonly ITestResultLog _testResultLog;
 
-        public StaticProofController(
+        public StaticProofControllerV2(
             IIssuerApiClient issuerApiClient,
             IJsonSerializer jsonSerializer,
             ITestProviderSignatureValidator signatureValidator,
@@ -80,10 +81,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             {
                 Attributes = new IssuerAttributes
                 {
-                    BirthMonth = request.Result.Holder!.BirthMonth,
-                    BirthDay = request.Result.Holder.BirthDay,
-                    FirstNameInitial = request.Result.Holder.FirstNameInitial,
-                    LastNameInitial = request.Result.Holder.LastNameInitial,
+                    BirthMonth = "",
+                    BirthDay = "",
+                    FirstNameInitial = "",
+                    LastNameInitial = "",
                     TestType = request.Result.TestType,
                     SampleTime = request.Result.SampleDate,
                     IsSpecimen = request.Result.IsSpecimen ?? false

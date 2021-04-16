@@ -27,7 +27,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
     /// <summary>
     ///     Tests operating on the HTTP/REST interface and running in a web-server
     /// </summary>
-    public class ProofOfTestControllerTests : TesterWebApplicationFactory<Startup>
+    public class ProofOfTestControllerV2Tests : TesterWebApplicationFactory<Startup>
     {
         private const string CertDir = @"..\..\..\..\..\test\test-certificates";
 
@@ -46,7 +46,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
                         .CreateClient();
 
             // Arrange: setup the request
-            var request = new HttpRequestMessage(HttpMethod.Post, "test/nonce");
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/nonce");
 
             // Act
             var result = await client.SendAsync(request);
@@ -70,20 +70,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueProof(It.IsAny<IssueProofRequest>()))
-               .ReturnsAsync(new IssueProofResult
-                    {
-                        Attributes = new[] {"MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ=="},
-                        Ism = new IssueSignatureMessage
-                        {
-                            Proof = new Proof
-                            {
-                                C = "",
-                                ErrorResponse = ""
-                            },
-                            Signature = ""
-                        }
-                    }
-                );
+               .ReturnsAsync(CreateIssueProofResult());
             mockIssuerApi
                .Setup(x => x.GenerateNonce())
                .ReturnsAsync(new GenerateNonceResult {Nonce = nonce});
@@ -96,7 +83,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
 
             // Arrange: setup the request
             var requestJson = CreateIssueProofRequest(session);
-            var request = new HttpRequestMessage(HttpMethod.Post, "test/proof")
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/proof")
             {
                 Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
             };
@@ -123,20 +110,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueProof(It.IsAny<IssueProofRequest>()))
-               .ReturnsAsync(new IssueProofResult
-                    {
-                        Attributes = new[] {"MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ=="},
-                        Ism = new IssueSignatureMessage
-                        {
-                            Proof = new Proof
-                            {
-                                C = "",
-                                ErrorResponse = ""
-                            },
-                            Signature = ""
-                        }
-                    }
-                );
+               .ReturnsAsync(CreateIssueProofResult());
             mockIssuerApi
                .Setup(x => x.GenerateNonce())
                .ReturnsAsync(new GenerateNonceResult {Nonce = nonce});
@@ -149,7 +123,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
 
             // Arrange: setup the request
             var requestJson = CreateIssueProofRequest(session, true);
-            var request = new HttpRequestMessage(HttpMethod.Post, "test/proof")
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/proof")
             {
                 Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
             };
@@ -176,20 +150,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             var mockIssuerApi = new Mock<IIssuerApiClient>();
             mockIssuerApi
                .Setup(x => x.IssueProof(It.IsAny<IssueProofRequest>()))
-               .ReturnsAsync(new IssueProofResult
-                    {
-                        Attributes = new[] {"MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ=="},
-                        Ism = new IssueSignatureMessage
-                        {
-                            Proof = new Proof
-                            {
-                                C = "",
-                                ErrorResponse = ""
-                            },
-                            Signature = ""
-                        }
-                    }
-                );
+               .ReturnsAsync(CreateIssueProofResult());
             mockIssuerApi
                .Setup(x => x.GenerateNonce())
                .ReturnsAsync(new GenerateNonceResult {Nonce = nonce});
@@ -202,7 +163,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
 
             // Arrange: setup the request
             var requestJson = CreateIssueProofRequest(session, true, true);
-            var request = new HttpRequestMessage(HttpMethod.Post, "test/proof")
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/proof")
             {
                 Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
             };
@@ -218,6 +179,47 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             Assert.NotNull(typedResult.Attributes);
             Assert.NotNull(typedResult.Ism);
             Assert.Equal(9, typedResult.Attributes!.Length);
+        }
+
+        [Fact]
+        public async Task Post_Test_Proof_strikes_all_attributes_sent_to_issuer()
+        {
+            var nonce = "JuMeq5yIXCA6tpbjWoCS8Q==";
+
+            // Arrange: mock the IssuerClient
+            IssuerAttributes? attributesRequested = null;
+            var mockIssuerApi = new Mock<IIssuerApiClient>();
+            mockIssuerApi
+               .Setup(x => x.IssueProof(It.IsAny<IssueProofRequest>()))
+               .Callback((IssueProofRequest req) => attributesRequested = req.Attributes)
+               .ReturnsAsync(CreateIssueProofResult());
+            mockIssuerApi
+               .Setup(x => x.GenerateNonce())
+               .ReturnsAsync(new GenerateNonceResult {Nonce = nonce});
+            var client = Factory
+                        .WithWebHostBuilder(builder => builder.ConfigureServices(services => { services.AddScoped(provider => mockIssuerApi.Object); }))
+                        .CreateClient();
+
+            // Act: call the Nonce service to put the Nonce in the session
+            var session = await GetNonce(client);
+
+            // Arrange: setup the request
+            var requestJson = CreateIssueProofRequest(session, true, true);
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/proof")
+            {
+                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+            };
+
+            // Act
+            var result = await client.SendAsync(request);
+
+            // Assert: Initials received by the IssuerClient are empty
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(attributesRequested);
+            Assert.Equal(string.Empty, attributesRequested!.FirstNameInitial);
+            Assert.Equal(string.Empty, attributesRequested!.LastNameInitial);
+            Assert.Equal(string.Empty, attributesRequested!.BirthDay);
+            Assert.Equal(string.Empty, attributesRequested!.BirthMonth);
         }
 
         private string CreateIssueProofRequest(string sessionToken, bool isSpecimen = false, bool excludeIsSpecimen = false)
@@ -293,7 +295,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
 
         private async Task<string> GetNonce(HttpClient client)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "test/nonce");
+            var request = new HttpRequestMessage(HttpMethod.Post, "v2/test/nonce");
             var result = await client.SendAsync(request);
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<ProofOfTestApi.Models.GenerateNonceResult>(responseBody);
@@ -302,6 +304,23 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             Assert.NotNull(typedResult.SessionToken);
 
             return typedResult.SessionToken!;
+        }
+
+        private IssueProofResult CreateIssueProofResult()
+        {
+            return new IssueProofResult
+            {
+                Attributes = new[] {"MAsEAQETBnRlc3RQaw==", "MA==", "MA==", "YWFhYWFh", "MTYxMzU2NjQwOA==", "QQ==", "QQ==", "MQ==", "MQ=="},
+                Ism = new IssueSignatureMessage
+                {
+                    Proof = new Proof
+                    {
+                        C = "",
+                        ErrorResponse = ""
+                    },
+                    Signature = ""
+                }
+            };
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
