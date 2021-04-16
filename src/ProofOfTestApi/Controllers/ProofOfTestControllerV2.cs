@@ -14,12 +14,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
 {
     [ApiController]
     [AllowAnonymous]
-    [Route("test")]
-    public class ProofOfTestController : ControllerBase
+    [Route("v{version:apiVersion}/test")]
+    [ApiVersion("2")]
+    public class ProofOfTestControllerV2 : ControllerBase
     {
         private readonly IJsonSerializer _jsonSerializer;
 
-        public ProofOfTestController(IJsonSerializer jsonSerializer)
+        public ProofOfTestControllerV2(IJsonSerializer jsonSerializer)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
@@ -38,6 +39,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
 
             if (!ModelState.IsValid)
                 return ValidationProblem();
+
+            // Automatically strike all of the attributes
+            request!.Test!.Result!.Holder!.BirthMonth = string.Empty;
+            request!.Test!.Result!.Holder.BirthDay = string.Empty;
+            request!.Test!.Result!.Holder.FirstNameInitial = string.Empty;
+            request!.Test!.Result!.Holder.LastNameInitial = string.Empty;
 
             var result = await command.Execute(request);
 
