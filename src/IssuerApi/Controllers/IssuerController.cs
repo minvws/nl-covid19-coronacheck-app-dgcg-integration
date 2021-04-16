@@ -163,13 +163,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
                 var result = new IssueStaticProofResult
                 {
-                    Qr = qr,
-                    AttributesIssued = new IssuerAttributes
+                    Qr = new IssueStaticProofResultQr
                     {
-                        BirthMonth = attributesIssued.BirthMonth,
-                        BirthDay = attributesIssued.BirthDay,
-                        FirstNameInitial = attributesIssued.FirstNameInitial,
-                        LastNameInitial = attributesIssued.LastNameInitial
+                        Data = qr,
+                        AttributesIssued = new IssueStaticProofResultAttributes
+                        {
+                            //attributesIssued
+                            BirthMonth = attributesIssued.BirthMonth,
+                            BirthDay = attributesIssued.BirthDay,
+                            FirstNameInitial = attributesIssued.FirstNameInitial,
+                            LastNameInitial = attributesIssued.LastNameInitial,
+                            IsSpecimen = attributesIssued.IsSpecimen,
+                            IsPaperProof = "1", // ALWAYS true because paper proof = static proof
+                            TestType = attributesIssued.TestType,
+                            SampleTime = attributesIssued.SampleTime
+                        }
                     }
                 };
 
@@ -191,10 +199,4 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             }
         }
     }
-
-    //public class IssueStaticProofResponse
-    //{
-    //    public string Alice { get; set; } = string.Empty;
-    //    public string Bob { get; set; } = string.Empty;
-    //}
 }

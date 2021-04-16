@@ -46,6 +46,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
 
         [HttpPost]
         [Route("paper")]
+        [ProducesResponseType(typeof(IssueStaticProofResult), 200)]
         public async Task<IActionResult> Paper(SignedDataWrapper<TestResult> wrappedRequest)
         {
             if (wrappedRequest == null) throw new ArgumentNullException(nameof(wrappedRequest));

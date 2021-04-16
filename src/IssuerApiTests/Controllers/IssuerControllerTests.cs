@@ -118,18 +118,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             // Assert: result OK
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
-            // IssueStaticProofResult
-
-            // Assert: result type sent
-            //var responseBody = await result.Content.ReadAsStringAsync();
-            //Assert.NotEmpty(responseBody);
-
             // Assert: result type sent
             var responseBody = await result.Content.ReadAsStringAsync();
             var typedResult = Unwrap<IssueStaticProofResult>(responseBody);
+            Assert.NotNull(typedResult.Qr);
             Assert.NotNull(typedResult);
-            Assert.NotEmpty(typedResult.Qr);
-            Assert.NotNull(typedResult.AttributesIssued);
+            Assert.NotEmpty(typedResult.Qr.Data);
+            Assert.NotNull(typedResult.Qr.AttributesIssued);
+            Assert.Equal("1", typedResult.Qr.AttributesIssued.IsSpecimen);
+            Assert.Equal("1", typedResult.Qr.AttributesIssued.IsPaperProof);
+            Assert.Equal("aaaaaa", typedResult.Qr.AttributesIssued.TestType);
+            Assert.Equal("1", typedResult.Qr.AttributesIssued.BirthMonth);
+            Assert.Equal("", typedResult.Qr.AttributesIssued.BirthDay); // Should be removed by partial issuance
+            Assert.Equal("", typedResult.Qr.AttributesIssued.FirstNameInitial); // Should be removed by partial issuance
+            Assert.Equal("A", typedResult.Qr.AttributesIssued.LastNameInitial);
+            Assert.Equal(requestObject.Attributes!.SampleTime.ToUnixTime().ToString(), typedResult.Qr.AttributesIssued.SampleTime);
         }
 
         private async Task<GenerateNonceResult> GetNonce()
