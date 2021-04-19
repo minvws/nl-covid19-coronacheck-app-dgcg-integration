@@ -65,7 +65,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
 
                 var attributes = new ProofOfTestAttributes
                 {
-                    SampleTime = request.Attributes.SampleTime.ToGoApiString(),
+                    SampleTime = request.Attributes.SampleTime.ToUnixTime().ToString(),
                     TestType = request.Attributes.TestType,
                     FirstNameInitial = request.Attributes.FirstNameInitial,
                     LastNameInitial = request.Attributes.LastNameInitial,
