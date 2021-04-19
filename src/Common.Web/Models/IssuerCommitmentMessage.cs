@@ -19,6 +19,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 
         [JsonPropertyName("combinedProofs")]
         [Required]
-        public CombinedProof? CombinedProofs { get; set; }
+        public CombinedProof[]? CombinedProofs { get; set; }
     }
 }

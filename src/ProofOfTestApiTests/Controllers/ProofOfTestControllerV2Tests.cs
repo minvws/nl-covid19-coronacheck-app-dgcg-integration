@@ -235,12 +235,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             // Commitments
             var icm = new IssuerCommitmentMessage
             {
-                CombinedProofs = new CombinedProof
+                CombinedProofs = new CombinedProof[1]
                 {
-                    C = Base64.Encode("xxx"),
-                    SResponse = Base64.Encode("xxx"),
-                    U = Base64.Encode("xxx"),
-                    VPrimeResponse = Base64.Encode("xxx")
+                    new CombinedProof
+                    {
+                        C = Base64.Encode("xxx"),
+                        SResponse = Base64.Encode("xxx"),
+                        U = Base64.Encode("xxx"),
+                        VPrimeResponse = Base64.Encode("xxx")
+                    }
                 },
                 N2 = Base64.Encode("xxx")
             };
