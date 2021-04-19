@@ -44,7 +44,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.PostAsync(IssueProofUrl, content);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception("Error calling IssueProof service");
+                throw new Exception($"Error calling IssueProof service, failed with the status code {response.StatusCode}");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -59,7 +59,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception("Error calling GenerateNonce service");
+                throw new Exception($"Error calling GenerateNonce service, failed with the status code {response.StatusCode}");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -77,7 +77,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var response = await client.PostAsync(IssueStaticProofUrl, content);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception("Error calling IssueStaticProof service");
+                throw new Exception($"Error calling IssueStaticProof service, failed with the status code {response.StatusCode}");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
