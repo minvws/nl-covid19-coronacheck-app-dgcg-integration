@@ -47,14 +47,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             // Script adapted from https://stackoverflow.com/questions/34871567/redis-distributed-increment-with-locking/34875132#34875132
             // Increments the key: if the key is new then set the expire, if limit is reached then fail
             var result = (int) await db.ScriptEvaluateAsync(@"
-            local result = redis.call('incr', KEYS[1])    
-            IF result == 1
-                redis.call('expire', ARGV[2])
-            END
-            IF result > tonumber(ARGV[1]) THEN
+            local result = redis.call('incr', KEYS[1])
+            if result == 1 then
+                redis.call('expire', KEYS[1], ARGV[2])
+            end
+            if result > tonumber(ARGV[1]) then
                 result = 0
-            END
-            RETURN result", new RedisKey[] {key}, new RedisValue[] {_config.Limit - 1, _config.Duration});
+            end
+            return result", new RedisKey[] {key}, new RedisValue[] {_config.Limit, _config.Duration});
 
             return result > 0;
         }
