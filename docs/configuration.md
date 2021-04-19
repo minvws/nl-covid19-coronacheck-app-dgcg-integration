@@ -48,11 +48,13 @@ The Session Store is responsible for storing the a hash of the identifier of the
 	"RedisTestResultLog": {
 		"Configuration": "localhost:6379",
 		"Duration": 72,
-		"Salt": "abcdefg"
+		"Salt": "abcdefg",
+		"Limit": 5
 	}
 
 * Configuration: provide a valid Redis configuration string, the format of the configuration string is documentated here: https://stackexchange.github.io/StackExchange.Redis/Configuration.html
 * Duration: number of hours that the hash will be stored. Positive 32bit integer.
+* Limit: number of times the test result may be issued.
 * Salt: salt used for the hash function. This can be any valid JSON string. **This is security sensative data**.
 
 ### Issuer API client
