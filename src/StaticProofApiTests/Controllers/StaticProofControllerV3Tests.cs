@@ -46,10 +46,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                         .CreateClient();
 
             // Arrange: setup the request
-            var requestJson = CreateRequest();
             var request = new HttpRequestMessage(HttpMethod.Post, "v3/staticproof/paper")
             {
-                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+                Content = new StringContent(WrapRequest(CreateRequest()), Encoding.UTF8, "application/json")
             };
 
             // Act
@@ -80,10 +79,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                         .CreateClient();
 
             // Arrange: setup the request
-            var requestJson = CreateRequest(true);
+            var requestDto = CreateRequest();
+            requestDto.Result.IsSpecimen = true;
             var request = new HttpRequestMessage(HttpMethod.Post, "v3/staticproof/paper")
             {
-                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+                Content = new StringContent(WrapRequest(requestDto), Encoding.UTF8, "application/json")
             };
 
             // Act
@@ -114,10 +114,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                         .CreateClient();
 
             // Arrange: setup the request
-            var requestJson = CreateRequest(true, true);
+            var requestDto = CreateRequest();
+            requestDto.Result.IsSpecimen = null;
             var request = new HttpRequestMessage(HttpMethod.Post, "v3/staticproof/paper")
             {
-                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+                Content = new StringContent(WrapRequest(requestDto), Encoding.UTF8, "application/json")
             };
 
             // Act
@@ -147,10 +148,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                         .CreateClient();
 
             // Arrange: setup the request
-            var requestJson = CreateRequest();
             var request = new HttpRequestMessage(HttpMethod.Post, "v3/staticproof/paper")
             {
-                Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+                Content = new StringContent(WrapRequest(CreateRequest()), Encoding.UTF8, "application/json")
             };
 
             // Act
@@ -164,16 +164,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
             Assert.Equal("1", attributesRequested!.BirthMonth);
         }
 
-        private string CreateRequest(bool isSpecimen = false, bool excludeIsSpecimen = false)
+        private static TestResult CreateRequest()
         {
-            var json = new StandardJsonSerializer();
-
-            var jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true
-            };
-
             var dtp = new StandardUtcDateTimeProvider();
 
             // TestResultQueries
@@ -186,35 +178,43 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                     FirstNameInitial = "A",
                     LastNameInitial = "B"
                 },
-                IsSpecimen = isSpecimen,
+                IsSpecimen = false,
                 NegativeResult = true,
                 SampleDate = dtp.Snapshot.AddDays(-1).ToHourPrecision(),
                 TestType = "PCR",
                 Unique = Guid.NewGuid().ToString()
             };
-            if (!excludeIsSpecimen) testResultDetails.IsSpecimen = isSpecimen;
 
-            // TestResult
-            var testResult = new TestResult
+            return new TestResult
             {
                 ProviderIdentifier = "TST001",
                 ProtocolVersion = "1.0",
                 Result = testResultDetails,
                 Status = "complete"
             };
-            var testResultJson = JsonSerializer.Serialize(testResult, jsonOptions);
+        }
+
+        private static string WrapRequest(TestResult request)
+        {
+            var json = new StandardJsonSerializer();
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true
+            };
+
+            var testResultJson = JsonSerializer.Serialize(request, jsonOptions);
             var testResultBytes = Encoding.UTF8.GetBytes(testResultJson);
             var testResultB64 = Convert.ToBase64String(testResultBytes);
             var testResultSignature = Signer.ComputeSignatureCms(testResultBytes, $"{CertDir}\\TST001.pfx", "123456");
             var testResultSignatureB64 = Convert.ToBase64String(testResultSignature);
 
-            var request = new SignedDataWrapper<TestResult>
+            return json.Serialize(new SignedDataWrapper<TestResult>
             {
                 Payload = testResultB64,
                 Signature = testResultSignatureB64
-            };
-
-            return json.Serialize(request);
+            });
         }
 
         private IssueStaticProofResult CreateIssueStaticProofResult()

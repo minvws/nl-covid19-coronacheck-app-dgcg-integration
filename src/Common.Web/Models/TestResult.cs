@@ -28,12 +28,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
 
         [Required]
         [JsonPropertyName("result")]
-        public TestResultDetails? Result { get; set; }
+        public TestResultDetails Result { get; set; } = default!;
 
         private static class Expr
         {
             public const string ProtocolVersion = "^[0-9]+\\.[0-9]+$";
-            public const string ProviderIdentifier = "^[a-zA-Z_-]+$";
+            public const string ProviderIdentifier = "^[a-zA-Z0-9_-]+$";
             public const string Status = "^(complete){1}$";
         }
     }

@@ -66,7 +66,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                 return BadRequest("Test result signature is invalid");
 
             // Validate TestResult (1/3)
-            if (!IsValid(request))
+            if (!TryValidateModel(request))
                 return ValidationProblem();
 
             // Validate TestResult (2/3)
