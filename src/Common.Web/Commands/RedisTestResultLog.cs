@@ -86,7 +86,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
             var hashBytes = hmac.ComputeHash(valueBytes);
 
-            return Encoding.UTF8.GetString(hashBytes);
+            return "sign_test:" + System.BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
             var db = _redis.GetDatabase();
 
-            await db.StringSetAsync(key, nonce, TimeSpan.FromSeconds(_config.SessionTimeout));
+            await db.StringSetAsync("session:" + key, nonce, TimeSpan.FromSeconds(_config.SessionTimeout));
 
             return key;
         }
@@ -51,13 +51,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             await db.KeyDeleteAsync(nonce);
         }
 
-        public async Task<(bool, string)> GetNonce(string nonce)
+        public async Task<(bool, string)> GetNonce(string stoken)
         {
-            if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentException(nameof(nonce));
+            if (string.IsNullOrWhiteSpace(stoken)) throw new ArgumentException(nameof(stoken));
 
             var db = _redis.GetDatabase();
 
-            var value = await db.StringGetAsync(nonce);
+            var value = await db.StringGetAsync("session:" + stoken);
 
             // IsNull is TRUE when the key was not found; the documentation on StringGetAsync refers
             // to a special `nil` value but that appears to be mixing of lingo.
