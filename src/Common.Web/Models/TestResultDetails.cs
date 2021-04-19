@@ -14,7 +14,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
     public class TestResultDetails
     {
         [Required]
-        [DatePrecision(Precision = PrecisionLevel.Hour)]
         [DateRange(72)]
         [JsonPropertyName("sampleDate")]
         public DateTime SampleDate { get; set; }

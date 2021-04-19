@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models;
 using GenerateNonceResult = NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models.GenerateNonceResult;
@@ -24,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi
                 Nonce = nonce,
                 Attributes = new IssuerAttributes
                 {
-                    SampleTime = request.Test.Result!.SampleDate,
+                    SampleTime = request.Test.Result!.SampleDate.ToHourPrecision(),
                     TestType = request.Test.Result.TestType,
                     BirthDay = request.Test.Result.Holder!.BirthDay,
                     BirthMonth = request.Test.Result.Holder.BirthMonth,
