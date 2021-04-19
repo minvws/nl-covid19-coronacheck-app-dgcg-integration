@@ -64,7 +64,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             return _jsonSerializer.Deserialize<GenerateNonceResult>(responseContent);
         }
 
-        public async Task<IssueProofResult> IssueStaticProof(IssueStaticProofRequest request)
+        public async Task<IssueStaticProofResult> IssueStaticProof(IssueStaticProofRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -79,7 +79,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            var responseObject = _jsonSerializer.Deserialize<IssueProofResult>(responseContent);
+            var responseObject = _jsonSerializer.Deserialize<IssueStaticProofResult>(responseContent);
 
             return responseObject!;
         }
