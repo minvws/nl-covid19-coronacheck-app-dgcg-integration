@@ -2,23 +2,14 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Collections.Generic;
+
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
     public interface IKeyStoreConfig
     {
-        /// <summary>
-        ///     TRUE to use the embedded resources, false to use the file system
-        /// </summary>
+        Dictionary<string, KeySetConfig> KeySets { get; }
+
         bool UseEmbedded { get; }
-
-        /// <summary>
-        ///     Path to the public key XML
-        /// </summary>
-        string PathPublicKey { get; }
-
-        /// <summary>
-        ///     ath to the private key XML
-        /// </summary>
-        string PathPrivateKey { get; }
     }
 }

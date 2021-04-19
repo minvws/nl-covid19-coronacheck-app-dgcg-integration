@@ -28,8 +28,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
             Console.WriteLine("..Setting up the Issuer..");
             var issuer = new IssuerInterop.Issuer();
             var keystore = new AssemblyKeyStore(new Mock<ILogger<AssemblyKeyStore>>().Object);
-            var issuerPkXml = keystore.GetPublicKey();
-            var issuerSkXml = keystore.GetPrivateKey();
+            var keys = keystore.GetKeys("Default");
             var attributeGenerator = new RandomAttributesGenerator();
 
             Console.WriteLine($"..Generating {iterations} test cases.. this may take some time..");
@@ -52,7 +51,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropBenchmark.Benchmarks
             stopWatch.Start();
 
             Console.WriteLine("..Issuing {iterations} proof");
-            foreach (var (nonce, commitments, attributes) in cases) issuer.IssueProof(publicKeyId, issuerPkXml, issuerSkXml, nonce, commitments, attributes);
+            foreach (var (nonce, commitments, attributes) in cases)
+                issuer.IssueProof(publicKeyId, keys.PublicKey, keys.PrivateKey, nonce, commitments, attributes);
 
             stopWatch.Stop();
             Console.WriteLine($"Completed {iterations} iterations in {stopWatch.ElapsedMilliseconds / 1000} seconds.");

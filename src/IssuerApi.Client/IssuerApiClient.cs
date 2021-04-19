@@ -36,6 +36,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
         public async Task<IssueProofResult> IssueProof(IssueProofRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
+            request.Key = _config.KeyName;
 
             var client = _clientFactory.CreateClient(_httpClientConfigName);
             var requestJson = _jsonSerializer.Serialize(request);
@@ -51,24 +52,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             return _jsonSerializer.Deserialize<IssueProofResult>(responseContent);
         }
 
-        public async Task<GenerateNonceResult> GenerateNonce()
-        {
-            var client = _clientFactory.CreateClient(_httpClientConfigName);
-            var request = new HttpRequestMessage(HttpMethod.Post, GenerateNonceUrl);
-
-            var response = await client.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Error calling GenerateNonce service, failed with the status code {response.StatusCode}");
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            return _jsonSerializer.Deserialize<GenerateNonceResult>(responseContent);
-        }
-
         public async Task<IssueStaticProofResult> IssueStaticProof(IssueStaticProofRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
+            request.Key = _config.KeyName;
 
             var client = _clientFactory.CreateClient(_httpClientConfigName);
             var requestJson = _jsonSerializer.Serialize(request);
@@ -84,6 +71,27 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var responseObject = _jsonSerializer.Deserialize<IssueStaticProofResult>(responseContent);
 
             return responseObject!;
+        }
+
+        public async Task<GenerateNonceResult> GenerateNonce()
+        {
+            var request = new GenerateNonceRequest
+            {
+                Key = _config.KeyName
+            };
+
+            var client = _clientFactory.CreateClient(_httpClientConfigName);
+            var requestJson = _jsonSerializer.Serialize(request);
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(GenerateNonceUrl, content);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error calling GenerateNonce service, failed with the status code {response.StatusCode}");
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            return _jsonSerializer.Deserialize<GenerateNonceResult>(responseContent);
         }
     }
 }

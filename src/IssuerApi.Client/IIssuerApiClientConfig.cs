@@ -7,5 +7,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
     public interface IIssuerApiClientConfig
     {
         string BaseUrl { get; }
+        string KeyName { get; }
     }
 }

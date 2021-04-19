@@ -26,14 +26,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
             InitLog();
         }
 
-        public string GetPrivateKey()
+        public KeySet GetKeys(string name)
         {
-            return _config.UseEmbedded ? _assemblyKeyStore.GetPrivateKey() : _fileKeyStore.GetPrivateKey();
-        }
-
-        public string GetPublicKey()
-        {
-            return _config.UseEmbedded ? _assemblyKeyStore.GetPublicKey() : _fileKeyStore.GetPublicKey();
+            return _config.UseEmbedded ? _assemblyKeyStore.GetKeys(name) : _fileKeyStore.GetKeys(name);
         }
 
         private void InitLog()
@@ -48,8 +43,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
                 var msg = new StringBuilder();
 
                 msg.AppendLine("Using file-system certificates for the crypto library.");
-                msg.AppendLine($"Private key: {_config.PathPrivateKey}.");
-                msg.AppendLine($"Public key: {_config.PathPublicKey}.");
 
                 _logger.LogInformation(msg.ToString());
             }

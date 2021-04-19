@@ -14,5 +14,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
         }
 
         public string BaseUrl => GetConfigValue<string>(nameof(BaseUrl));
+        public string KeyName => GetConfigValue<string>(nameof(KeyName));
     }
 }

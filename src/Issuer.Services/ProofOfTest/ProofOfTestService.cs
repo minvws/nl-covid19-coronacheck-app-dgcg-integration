@@ -13,52 +13,55 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
     public class ProofOfTestService : IProofOfTestService
     {
-        private readonly IProofOfTestServiceConfig _config;
         private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
         private readonly IPartialDisclosureService _partialDisclosureService;
 
-        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IProofOfTestServiceConfig config,
-                                  IPartialDisclosureService partialDisclosureService)
+        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IPartialDisclosureService partialDisclosureService)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
             _partialDisclosureService = partialDisclosureService ?? throw new ArgumentNullException(nameof(partialDisclosureService));
         }
 
-        public string GenerateNonce()
+        public string GenerateNonce(string keyName)
         {
-            return _issuer.GenerateNonce(_config.PublicKeyIdentifier);
+            if (string.IsNullOrWhiteSpace(keyName)) throw new ArgumentNullException(nameof(keyName));
+
+            return _issuer.GenerateNonce(keyName);
         }
 
-        public (string, ProofOfTestAttributes) GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes)
+        public (string, ProofOfTestAttributes) GetStaticProofQr(ProofOfTestAttributes proofOfTestAttributes, string nameKeySet)
         {
             if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
+            if (string.IsNullOrWhiteSpace(nameKeySet)) throw new ArgumentNullException(nameof(nameKeySet));
+
+            var keys = _keyStore.GetKeys(nameKeySet);
 
             var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
-            var proof = _issuer.IssueStaticDisclosureQr(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), serializedAttributes);
+            var proof = _issuer.IssueStaticDisclosureQr(nameKeySet, keys.PublicKey, keys.PrivateKey, serializedAttributes);
 
             return (proof, filteredAttributes);
         }
 
-        public (string, ProofOfTestAttributes) GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments)
+        public (string, ProofOfTestAttributes) GetProofOfTest(ProofOfTestAttributes proofOfTestAttributes, string nonce, string commitments, string nameKeySet)
         {
             if (proofOfTestAttributes == null) throw new ArgumentNullException(nameof(proofOfTestAttributes));
             if (string.IsNullOrWhiteSpace(nonce)) throw new ArgumentNullException(nameof(nonce));
             if (string.IsNullOrWhiteSpace(commitments)) throw new ArgumentNullException(nameof(commitments));
 
+            var keys = _keyStore.GetKeys(nameKeySet);
+
             var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
-            var proof = _issuer
-               .IssueProof(_config.PublicKeyIdentifier, _keyStore.GetPublicKey(), _keyStore.GetPrivateKey(), nonce, commitments, serializedAttributes);
+            var proof = _issuer.IssueProof(nameKeySet, keys.PublicKey, keys.PrivateKey, nonce, commitments, serializedAttributes);
 
             return (proof, filteredAttributes);
         }

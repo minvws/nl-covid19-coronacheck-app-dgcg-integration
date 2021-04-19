@@ -20,20 +20,26 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public string GetPrivateKey()
+        public KeySet GetKeys(string name)
         {
-            _logger.LogDebug($"Loading private key from: {_config.PathPrivateKey}.");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
 
-            var file = File.ReadAllBytes(_config.PathPrivateKey);
+            _logger.LogInformation($"Using key set '{name}'");
 
-            return Encoding.UTF8.GetString(file);
+            var config = _config.KeySets[name];
+
+            return new KeySet
+            {
+                PrivateKey = GetLoad(config.PathPrivateKey),
+                PublicKey = GetLoad(config.PathPublicKey)
+            };
         }
 
-        public string GetPublicKey()
+        private string GetLoad(string path)
         {
-            _logger.LogDebug($"Loading public key from: {_config.PathPublicKey}.");
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
 
-            var file = File.ReadAllBytes(_config.PathPublicKey);
+            var file = File.ReadAllBytes(path);
 
             return Encoding.UTF8.GetString(file);
         }
