@@ -37,8 +37,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
             if (!request.UnpackAll(_jsonSerializer))
                 return BadRequest("Unable to unpack either commitments or test result");
 
-            if (!ModelState.IsValid)
-                return ValidationProblem();
+            if (!TryValidateModel(request)) return ValidationProblem();
 
             var result = await command.Execute(request);
 

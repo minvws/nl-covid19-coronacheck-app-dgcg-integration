@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
@@ -33,16 +31,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Controllers
             if (result == null) throw new ArgumentNullException(nameof(result));
 
             return Ok(_srb.Build(result));
-        }
-
-        protected static bool IsValid<T>(T req)
-        {
-            if (req == null) throw new ArgumentNullException(nameof(req));
-
-            var context = new ValidationContext(req);
-            var results = new List<ValidationResult>();
-
-            return Validator.TryValidateObject(req, context, results);
         }
     }
 }

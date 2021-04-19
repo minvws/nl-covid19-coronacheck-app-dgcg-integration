@@ -66,8 +66,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                 return BadRequest("Test result signature is invalid");
 
             // Validate TestResult (1/3)
-            if (!IsValid(request))
+            if (!TryValidateModel(request))
+            {
+                if (ModelState.IsValid) return ValidationProblem();
+
                 return ValidationProblem();
+            }
 
             // Validate TestResult (2/3)
             if (!request.Result!.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
