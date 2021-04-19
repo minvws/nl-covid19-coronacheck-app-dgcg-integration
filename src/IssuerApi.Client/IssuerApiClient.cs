@@ -16,6 +16,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
         private readonly IHttpClientFactory _clientFactory;
         private readonly IIssuerApiClientConfig _config;
 
+        private readonly string _httpClientConfigName = "AllowSelfSignedCertificatesHandler";
+
         private readonly IJsonSerializer _jsonSerializer;
 
         public IssuerApiClient(IIssuerApiClientConfig config, IJsonSerializer jsonSerializer, IHttpClientFactory clientFactory)
@@ -35,7 +37,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var client = _clientFactory.CreateClient();
+            var client = _clientFactory.CreateClient(_httpClientConfigName);
             var requestJson = _jsonSerializer.Serialize(request);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
@@ -51,7 +53,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
 
         public async Task<GenerateNonceResult> GenerateNonce()
         {
-            var client = _clientFactory.CreateClient();
+            var client = _clientFactory.CreateClient(_httpClientConfigName);
             var request = new HttpRequestMessage(HttpMethod.Post, GenerateNonceUrl);
 
             var response = await client.SendAsync(request);
@@ -68,7 +70,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var client = _clientFactory.CreateClient();
+            var client = _clientFactory.CreateClient(_httpClientConfigName);
             var requestJson = _jsonSerializer.Serialize(request);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
