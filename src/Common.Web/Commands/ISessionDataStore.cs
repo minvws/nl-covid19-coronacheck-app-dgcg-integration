@@ -9,17 +9,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
     public interface ISessionDataStore
     {
         /// <summary>
-        /// Get the Nonce value for the given key
+        ///     Get the Nonce value for the given key
         /// </summary>
         Task<(bool, string)> GetNonce(string key);
 
         /// <summary>
-        /// Add the nonce to the store, optionally returning a unique key
+        ///     Register the nonce to the store, optionally returning a unique key
         /// </summary>
         Task<string> AddNonce(string nonce);
 
         /// <summary>
-        /// Removes the nonce from the store
+        ///     Removes the nonce from the store
         /// </summary>
         Task RemoveNonce(string key);
     }
