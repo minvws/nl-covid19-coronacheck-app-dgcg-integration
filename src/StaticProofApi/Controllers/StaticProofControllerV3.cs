@@ -93,7 +93,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             });
 
             // Log the result & fail if we have hit the limit
-            if (!await _testResultLog.Register(request.Result.Unique!, request.ProviderIdentifier!))
+            var staticTestUnique = $"{request.Result.Unique!}.static";
+            if (!await _testResultLog.Register(staticTestUnique, request.ProviderIdentifier!))
                 return BadRequest("Limit of issuance for the given test result has been reached");
 
             return ApiSigningConfig.WrapAndSignResult

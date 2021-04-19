@@ -43,16 +43,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
             var db = _redis.GetDatabase();
 
-            // TODO duration
-            // -1 = limit reached
+            // This is implemented as a Lua script to ensure that the operation is atomic
             // Script adapted from https://stackoverflow.com/questions/34871567/redis-distributed-increment-with-locking/34875132#34875132
+            // Increments the key: if the key is new then set the expire, if limit is reached then fail
             var result = (int) await db.ScriptEvaluateAsync(@"
-            local result = redis.call('incr', KEYS[1])
-            if result > tonumber(ARGV[1]) then
+            local result = redis.call('incr', KEYS[1])    
+            IF result == 1
+                redis.call('expire', ARGV[2])
+            END
+            IF result > tonumber(ARGV[1]) THEN
                 result = 0
-                redis.call('set', KEYS[1], result)
-            end
-            return result", new RedisKey[] {key}, new RedisValue[] {_config.Limit - 1});
+            END
+            RETURN result", new RedisKey[] {key}, new RedisValue[] {_config.Limit - 1, _config.Duration});
 
             return result > 0;
         }
