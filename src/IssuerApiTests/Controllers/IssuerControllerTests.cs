@@ -22,12 +22,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
     /// </summary>
     public class IssuerControllerTests : TesterWebApplicationFactory<Startup>
     {
+        private const string KeyName = "Default";
+
         [Fact]
         public async Task Post_Proof_Nonce_returns_nonce()
         {
             // Arrange
+            var json = new StandardJsonSerializer();
             var client = Factory.CreateClient();
-            var requestContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var requestJson = json.Serialize(new GenerateNonceRequest {Key = KeyName});
+            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             // Act
             var result = await client.PostAsync("proof/nonce", requestContent);
@@ -67,7 +71,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var client = Factory.CreateClient();
 
             // Arrange: get a Nonce
-            var requestContentNonce = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var requestContentNonce = new StringContent(json.Serialize(new GenerateNonceRequest {Key = KeyName}), Encoding.UTF8, "application/json");
             var resultNonce = await client.PostAsync("proof/nonce", requestContentNonce);
             var responseBodyNonce = await resultNonce.Content.ReadAsStringAsync();
             var typedResultNonce = Unwrap<GenerateNonceResult>(responseBodyNonce);
@@ -80,6 +84,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
             requestObject.Nonce = typedResultNonce.Nonce!;
             requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
+            requestObject.Key = KeyName;
             var requestJson = json.Serialize(requestObject);
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
@@ -107,8 +112,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
 
             // Arrange: the request
             var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_IssueStatic_returns_proof.json");
-            var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
+            var requestObject = json.Deserialize<IssueStaticProofRequest>(rawJson);
             requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
+            requestObject.Key = KeyName;
             var requestJson = json.Serialize(requestObject);
             var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
@@ -137,8 +143,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
 
         private async Task<GenerateNonceResult> GetNonce()
         {
+            var json = new StandardJsonSerializer();
             var client = Factory.CreateClient();
-            var requestContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var requestContent = new StringContent(json.Serialize(new GenerateNonceRequest {Key = KeyName}), Encoding.UTF8, "application/json");
             var result = await client.PostAsync("proof/nonce", requestContent);
             var responseBody = await result.Content.ReadAsStringAsync();
             return Unwrap<GenerateNonceResult>(responseBody);

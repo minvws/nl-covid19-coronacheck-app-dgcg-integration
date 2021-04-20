@@ -75,7 +75,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     IsPaperProof = "0"
                 };
 
-                var (proofResult, attributesIssued) = _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson);
+                var (proofResult, attributesIssued) = _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson, request.Key);
 
                 var issueProofResult = _jsonSerializer.Deserialize<IssueProofResult>(proofResult);
                 issueProofResult.AttributesIssued = new IssuerAttributes
@@ -110,11 +110,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         [HttpPost]
         [Route("nonce")]
         [ProducesResponseType(typeof(GenerateNonceResult), 200)]
-        public IActionResult GenerateNonce()
+        public IActionResult GenerateNonce(GenerateNonceRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogDebug("GenerateNonce: Invalid model state.");
+
+                return new BadRequestResult();
+            }
+
             try
             {
-                var nonce = _potService.GenerateNonce();
+                var nonce = _potService.GenerateNonce(request.Key);
 
                 var result = new GenerateNonceResult {Nonce = nonce};
 
@@ -159,7 +166,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0"
                 };
 
-                var (qr, attributesIssued) = _potService.GetStaticProofQr(attributes);
+                var (qr, attributesIssued) = _potService.GetStaticProofQr(attributes, request.Key);
 
                 var result = new IssueStaticProofResult
                 {

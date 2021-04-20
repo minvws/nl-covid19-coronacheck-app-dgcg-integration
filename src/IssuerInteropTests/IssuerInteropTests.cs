@@ -41,14 +41,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests
             };
 
             var issuerPkId = "testPk";
-            var issuerPkXml = keystore.GetPublicKey();
-            var issuerSkXml = keystore.GetPrivateKey();
+            var keys = keystore.GetKeys(issuerPkId);
             var issuerNonceB64 = issuer.GenerateNonce(issuerPkId);
             var attributesJson = JsonSerializer.Serialize(attributes);
             var commitments =
                 @"{""n_2"":""3Z0EabX/T+jFK7VyGxWfkQ=="",""combinedProofs"":[{""U"":""WpKqkB9KfkQS4dWq98BwUaXXyzHGjuAbX0EbGThYy8TUWv4BfgA9bmueTOsjVWhtmpBLjkBBrrowaLdaqJGzV5zaPnR+jgHtKT9A3IwfZnCBIYivzsWnqjbox0vrhaRIMa4ESNVpcsCNx2N/GcrXvs1T62kklLLxM3K/ziKJiTdTrgt9vCZ3M5LJuYIO443UiANMEWj2vWdV30JIuGNW5UKL8U6oxK0E+m9+8IxP/RbFrTJuL7jGzEqiqsfArLvAgQJyWsgpGHFQ5pl3RzQscxh3PZxti8qmnyke94mbzazahgbbZQimAbSiqe56kwrgO5UK8OrkmdsWqNSzVFG2yA=="",""c"":""pSiu2TrnziN77RqKPFZ68p9pE/V8LkU0kvFTWOtYBpg="",""v_prime_response"":""igaPjUTzX6WD2Js934D/YX2BB0mJz+n+DiscloseMonth+WtrrALtU5guAHdS2BiTde5/KDRSkwLve7mcqNGIwg7nb+YLJxg1MKY68q1OA3CaFnvRobdRBfAIfys290p9Nw5zaEuN0FcH+f4BxXuZcwX3BC7W0nRTMPVeo31vFjtePcBi54diNKr5AnZmFSYXE0tL3kgcUZr1pr+54nuE0AshwoLpmvLB8URXI06HC2X3k/n9XDn3UuJlDsSaVWH87qluxn2+H3OGOWaxqw1h2M8ns+lG6Rit4vcGmx1z34Nq6jhJusK46xiSIirzi+l6/oqKxRWHsNmBD9AtZf4OYY7L/d43Vn4QPuA0uXv8GmOutgnuzf1vl9ltJ7dD3v6u1FReLa5fbQ54HKghv6LbRz1g21WAAGdwtvqJAvjZa6EuZDx0o5VkdY="",""s_response"":""kPKLjTmLCXAYZ4XmvgRQ8US+f1SowzywaovNu5abnaRJAz4xs2tuKWUdVkZnyhCHOgl1LXRvG6Aw/6bteFh/5M/FA5NWQjzdajQ=""}]}";
 
-            var result = issuer.IssueProof(issuerPkId, issuerPkXml, issuerSkXml, issuerNonceB64, commitments, attributesJson);
+            var result = issuer.IssueProof(issuerPkId, keys.PublicKey, keys.PrivateKey, issuerNonceB64, commitments, attributesJson);
 
             // Result contains a couple of expected strings
             Assert.Contains("proof", result);
@@ -76,11 +75,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInteropTests
             };
 
             var issuerPkId = "testPk";
-            var issuerPkXml = keystore.GetPublicKey();
-            var issuerSkXml = keystore.GetPrivateKey();
+            var keys = keystore.GetKeys(issuerPkId);
             var attributesJson = JsonSerializer.Serialize(attributes);
 
-            var result = issuer.IssueStaticDisclosureQr(issuerPkId, issuerPkXml, issuerSkXml, attributesJson);
+            var result = issuer.IssueStaticDisclosureQr(issuerPkId, keys.PublicKey, keys.PrivateKey, attributesJson);
 
             // Result contains something
             Assert.NotEmpty(result);

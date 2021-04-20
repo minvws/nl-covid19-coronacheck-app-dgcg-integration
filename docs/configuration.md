@@ -62,10 +62,12 @@ The Session Store is responsible for storing the a hash of the identifier of the
 This configures the endpoint where the IssuerAPI service is located.
   
   "IssuerApi": {
-    "BaseUrl": "https://localhost:44332"
+    "BaseUrl": "https://localhost:44332",
+	"KeyName": "Default"
   },
   
 * BaseUrl: Base url for the IssuerAPI in your environment. Must be a valid URI with no trailing '/'.
+* KeyName: Name of the keyset which will be used by the issuer. See the Issuer API section for more details.
 
 ### Test signing
 
@@ -94,10 +96,30 @@ The issuer certificates configure the CL certificates which will be used by the 
 		"PathPublicKey": "Resources/public_key.xml",
 		"PathPrivateKey": "Resources/private_key.xml"
 	}
+	
+	"IssuerCertificates": {
+		"UseEmbedded": false,
+		"KeySets": {
+			"Default": {
+				"PathPublicKey": "Resources/public_key.xml",
+				"PathPrivateKey": "Resources/private_key.xml"
+			},
+			"Test": {
+				"PathPublicKey": "Resources/public_key.xml",
+				"PathPrivateKey": "Resources/private_key.xml"
+			}
+		}
+	},	
+
 
 For details on generating the keys please see the documentation of the CL library.
 
-* UseEmbedded: For ACC/PROD deployments this is always `false`. Set to `true` to use the development certificates embedded into the assembly.
+* UseEmbedded: For ACC/PROD deployments this is always `false`. Set to `true` to use the development certificates embedded into the assembly. When set you do not need any other settings - when using Embedded keys only one keyset will be used - the embedded ones.
+
+The "KeySets" key contains a dictionary of key sets, keyed to the name of the keysets. In the example above "Default" and "Test" are the keyset names. This section is required if you are not using the embedded keys.
+
+Each keyset contains the following properties:
+
 * PathPublicKey: UNC path to the public key.
 * PathPrivateKey: UNC path to the private key.
   

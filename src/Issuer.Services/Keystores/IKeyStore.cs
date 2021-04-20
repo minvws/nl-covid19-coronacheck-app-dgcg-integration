@@ -6,7 +6,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
 {
     public interface IKeyStore
     {
-        string GetPrivateKey();
-        string GetPublicKey();
+        KeySet GetKeys(string name);
     }
 }

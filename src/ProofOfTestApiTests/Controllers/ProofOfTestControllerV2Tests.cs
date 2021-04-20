@@ -235,7 +235,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             // Commitments
             var icm = new IssuerCommitmentMessage
             {
-                CombinedProofs = new CombinedProof[1]
+                CombinedProofs = new[]
                 {
                     new CombinedProof
                     {

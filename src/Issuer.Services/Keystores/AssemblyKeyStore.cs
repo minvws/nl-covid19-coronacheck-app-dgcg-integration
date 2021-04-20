@@ -12,6 +12,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
     {
         private const string PrivateKeyPath = @"EmbeddedResources.private_key.xml";
         private const string PublicKeyPath = @"EmbeddedResources.public_key.xml";
+
         private readonly ILogger<AssemblyKeyStore> _logger;
 
         public AssemblyKeyStore(ILogger<AssemblyKeyStore> logger)
@@ -19,18 +20,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public string GetPrivateKey()
+        public KeySet GetKeys(string name)
         {
-            _logger.LogInformation("Loading private key from the assembly.");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
 
-            return typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PrivateKeyPath);
-        }
+            _logger.LogInformation("Using the embedded key-set");
 
-        public string GetPublicKey()
-        {
-            _logger.LogInformation("Loading private key from the assembly.");
-
-            return typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PublicKeyPath);
+            return new KeySet
+            {
+                PrivateKey = typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PrivateKeyPath),
+                PublicKey = typeof(AssemblyKeyStore).Assembly.GetEmbeddedResourceAsString(PublicKeyPath)
+            };
         }
     }
 }

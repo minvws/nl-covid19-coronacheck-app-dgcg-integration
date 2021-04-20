@@ -30,5 +30,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         [Base64String]
         [JsonPropertyName("commitments")]
         public string Commitments { get; set; } = default!;
+
+        /// <summary>
+        ///     Name of the key to use; if not specified then the Default key will be used.
+        ///     Alphanumeric, max 20 character.
+        /// </summary>
+        [Required]
+        [JsonPropertyName("key")]
+        [RegularExpression("^[A-Za-z0-9]{1,20}$")]
+        public string Key { get; set; } = "Default";
     }
 }
