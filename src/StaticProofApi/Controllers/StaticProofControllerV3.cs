@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
@@ -27,6 +28,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
     public class StaticProofControllerV3 : MiddlewareControllerBase
     {
         private readonly IIssuerApiClient _issuerApiClient;
+        private readonly ILogger<StaticProofControllerV3> _log;
         private readonly ITestProviderSignatureValidator _signatureValidator;
         private readonly ITestResultLog _testResultLog;
 
@@ -37,11 +39,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             IUtcDateTimeProvider utcDateTimeProvider,
             ITestResultLog testResultLog,
             IApiSigningConfig apiSigningConfig,
-            IResponseBuilder responseBuilder) : base(jsonSerializer, utcDateTimeProvider, responseBuilder, apiSigningConfig)
+            IResponseBuilder responseBuilder,
+            ILogger<StaticProofControllerV3> log) : base(jsonSerializer, utcDateTimeProvider, responseBuilder, apiSigningConfig)
         {
             _issuerApiClient = issuerApiClient ?? throw new ArgumentNullException(nameof(issuerApiClient));
             _signatureValidator = signatureValidator ?? throw new ArgumentNullException(nameof(signatureValidator));
             _testResultLog = testResultLog ?? throw new ArgumentNullException(nameof(testResultLog));
+            _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         [HttpPost]
@@ -65,19 +69,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             if (!IsTestSignatureValid(request.ProviderIdentifier!, wrappedRequest))
                 return BadRequest("Test result signature is invalid");
 
-            // Validate TestResult (1/3)
+            // Validate TestResult (1/2)
             if (!TryValidateModel(request))
             {
-                if (ModelState.IsValid) return ValidationProblem();
+                _log.LogWarning($"Model validation failed on the fields: {JsonSerializer.Serialize(ModelState.Keys)}");
 
                 return ValidationProblem();
             }
 
-            // Validate TestResult (2/3)
-            if (!request.Result!.SampleDate.LessThanNHoursBefore(72, UtcDateTimeProvider.Snapshot))
-                return BadRequest("");
-
-            // Validate TestResult (3/3)
+            // Validate TestResult (2/2)
             if (await _testResultLog.Contains(request.Result.Unique!, request.ProviderIdentifier!))
                 return BadRequest("Duplicate test result");
 
