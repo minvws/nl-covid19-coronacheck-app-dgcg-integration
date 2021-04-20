@@ -44,8 +44,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddSingleton<IJsonSerializer, StandardJsonSerializer>();
-            services.AddSingleton<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
+            services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
+            services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
         }
     }
 }

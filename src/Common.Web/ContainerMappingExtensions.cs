@@ -52,9 +52,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddSingleton<IFileLoader, FileSystemFileLoader>();
+            services.AddScoped<IFileLoader, FileSystemFileLoader>();
             services.AddSingleton<ITestProviderSignatureValidatorConfig, TestProviderSignatureValidatorConfig>();
-            services.AddSingleton(provider =>
+            services.AddScoped(provider =>
             {
                 var config = provider.GetService<ITestProviderSignatureValidatorConfig>();
                 var fileLoader = provider.GetService<IFileLoader>();
