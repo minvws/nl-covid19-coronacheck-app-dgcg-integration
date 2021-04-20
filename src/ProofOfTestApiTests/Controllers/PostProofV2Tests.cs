@@ -1,17 +1,15 @@
-// // Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-// // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-// // SPDX-License-Identifier: EUPL-1.2
+// Copyright 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
 {
-    /// <summary>
-    /// </summary>
-    public class PostStaticProofV3Tests : PostStaticProofTestsBase
+    public class PostProofV2Tests : PostProofTestsBase
     {
-        protected override string ApiVersion => "v3";
+        protected override string ApiVersion => "v2";
 
         [Theory]
         [InlineData(true, -60)]

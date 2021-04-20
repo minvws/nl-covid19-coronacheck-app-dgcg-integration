@@ -2,31 +2,15 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using System;
 using System.Globalization;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using Xunit;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Tests.Extensions
 {
     public class DateTimeExtensionsTests
     {
-        [Theory]
-        [InlineData("2021-01-25T13:30:30.30Z", "2021-01-25T13:00:00Z")]
-        [InlineData("2021-01-25T13:00:00.00Z", "2021-01-25T13:00:00Z")]
-        [InlineData("2021-01-25T00:00:00.00Z", "2021-01-25T00:00:00Z")]
-        [InlineData("2021-06-25T13:30:30.30Z", "2021-06-25T13:00:00Z")]
-        [InlineData("2021-06-25T13:00:00.00Z", "2021-06-25T13:00:00Z")]
-        [InlineData("2021-06-25T00:00:00.00Z", "2021-06-25T00:00:00Z")]
-        public void ToGoApiStringExpectedResult(string testDateString, string expectedResult)
-        {
-            var date = DateTime.Parse(testDateString);
-
-            var result = date.ToGoApiString();
-
-            Assert.Equal(expectedResult, result);
-        }
-
         [Theory]
         [InlineData("2021-01-25T13:00:00.00Z", "2021-01-25T13:00:00.00Z", 72, true)]
         [InlineData("2021-01-24T13:00:00.00Z", "2021-01-25T13:00:00.00Z", 72, true)]
@@ -45,7 +29,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Tests.Extensions
 
             Assert.Equal(expectedResult, result);
         }
-
 
         [Theory]
         [InlineData("2021-01-25T00:00:00.00Z", true)]

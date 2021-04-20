@@ -9,18 +9,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
     public static class DateTimeExtensions
     {
         /// <summary>
-        ///     GO API string is based on ISO 8601 format but including only the hour (minutes/second are zeroed out) and is in
-        ///     UTC.
-        /// </summary>
-        /// <example>2021-01-25T13:00:00Z</example>
-        public static string ToGoApiString(this DateTime date)
-        {
-            var utcDate = date.ToUniversalTime();
-
-            return $"{utcDate:yyyy-MM-dd}T{utcDate:HH}:00:00Z";
-        }
-
-        /// <summary>
         ///     Returns TRUE if [comparisionDate] - [nHours] &lt; [date] &lt; [comparisionDate]
         /// </summary>
         public static bool LessThanNHoursBefore(this DateTime date, int nHours, DateTime comparisionDate)

@@ -54,7 +54,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogDebug("IssueProof: Invalid model state.");
+                _logger.LogWarning($"IssueProof: Model validation failed on the fields: {_jsonSerializer.Serialize(ModelState.Keys)}");
 
                 return new BadRequestResult();
             }
@@ -140,7 +140,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogDebug("IssueProof: Invalid model state.");
+                _logger.LogWarning($"IssueStaticProof: Model validation failed on the fields: {_jsonSerializer.Serialize(ModelState.Keys)}");
 
                 return new BadRequestResult();
             }
@@ -187,13 +187,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
             }
             catch (FormatException e)
             {
-                _logger.LogError("IssueProof: Error decoding either commitments or issuer message.", e);
+                _logger.LogError("IssueStaticProof: Error decoding either commitments or issuer message.", e);
 
                 return new BadRequestResult();
             }
             catch (Exception e)
             {
-                _logger.LogError("IssueProof: Error issuing proof.", e);
+                _logger.LogError("IssueStaticProof: Error issuing proof.", e);
 
                 return StatusCode((int) HttpStatusCode.InternalServerError);
             }

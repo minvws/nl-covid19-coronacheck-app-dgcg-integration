@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Commands;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Models;
@@ -19,10 +20,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
     public class ProofOfTestControllerV2 : ControllerBase
     {
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly ILogger<ProofOfTestControllerV2> _log;
 
-        public ProofOfTestControllerV2(IJsonSerializer jsonSerializer)
+        public ProofOfTestControllerV2(IJsonSerializer jsonSerializer, ILogger<ProofOfTestControllerV2> log)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
+            _log = log ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
         [HttpPost]
@@ -37,7 +40,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Controllers
             if (!request.UnpackAll(_jsonSerializer))
                 return BadRequest("Unable to unpack either commitments or test result");
 
-            if (!TryValidateModel(request)) return ValidationProblem();
+            if (!TryValidateModel(request))
+            {
+                _log.LogWarning($"Model validation failed on the fields: {_jsonSerializer.Serialize(ModelState.Keys)}");
+
+                return ValidationProblem();
+            }
 
             // Automatically strike all of the attributes
             request!.Test!.Result!.Holder!.BirthMonth = string.Empty;
