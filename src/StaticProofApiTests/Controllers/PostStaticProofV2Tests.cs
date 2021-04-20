@@ -19,8 +19,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
         [InlineData(true, -10)]
         [InlineData(true, -42)]
         [InlineData(true, 0)]
-        [InlineData(true, 1)]
-        [InlineData(true, 5)]
+        [InlineData(false, 1)]
+        [InlineData(false, 5)]
         [InlineData(false, 60)]
         [InlineData(false, -7200)]
         public async Task Test_sample_dates(bool success, double sampleDateOffsetMinutes)

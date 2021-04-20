@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Testing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models;
@@ -51,7 +50,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApiTests.Controllers
                 },
                 IsSpecimen = false,
                 NegativeResult = true,
-                SampleDate = dtp.Snapshot.ToHourPrecision().AddMinutes(dateOffset),
+                SampleDate = dtp.Snapshot.AddMinutes(dateOffset),
                 TestType = "PCR",
                 Unique = Guid.NewGuid().ToString()
             };
