@@ -33,7 +33,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
 
         [JsonPropertyName("isSpecimen")] public string IsSpecimen { get; set; } = string.Empty;
 
-        [JsonPropertyName("IsPaperProof")] public string IsPaperProof { get; set; } = "1";
+        [JsonPropertyName("isPaperProof")] public string IsPaperProof { get; set; } = "1";
 
         [JsonPropertyName("testType")] public string TestType { get; set; } = string.Empty;
     }
