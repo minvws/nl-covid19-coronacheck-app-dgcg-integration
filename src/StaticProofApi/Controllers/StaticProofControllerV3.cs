@@ -69,17 +69,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
             if (!IsTestSignatureValid(request.ProviderIdentifier!, wrappedRequest))
                 return BadRequest("Test result signature is invalid");
 
-            // Validate TestResult (1/2)
+            // Validate TestResult
             if (!TryValidateModel(request))
             {
                 _log.LogWarning($"Model validation failed on the fields: {JsonSerializer.Serialize(ModelState.Keys)}");
 
                 return ValidationProblem();
             }
-
-            // Validate TestResult (2/2)
-            if (await _testResultLog.Contains(request.Result.Unique!, request.ProviderIdentifier!))
-                return BadRequest("Duplicate test result");
 
             // Call Issuer
             var result = await _issuerApiClient.IssueStaticProof(new IssueStaticProofRequest
@@ -96,10 +92,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.StaticProofApi.Controllers
                 }
             });
 
-            var resultAdded = await _testResultLog.Add(request.Result.Unique!, request.ProviderIdentifier!);
-
-            if (!resultAdded)
-                return BadRequest("Duplicate test result");
+            // Log the result & fail if we have hit the limit
+            var staticTestUnique = $"{request.Result.Unique!}.static";
+            if (!await _testResultLog.Register(staticTestUnique, request.ProviderIdentifier!))
+                return BadRequest("Limit of issuance for the given test result has been reached");
 
             return ApiSigningConfig.WrapAndSignResult
                 ? OkWrapped(result)

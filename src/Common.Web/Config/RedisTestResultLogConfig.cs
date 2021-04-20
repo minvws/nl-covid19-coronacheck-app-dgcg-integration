@@ -18,5 +18,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
         public int Duration => GetConfigValue<int>(nameof(Duration));
 
         public string Salt => GetConfigValue<string>(nameof(Salt));
+
+        public int Limit => GetConfigValue<int>(nameof(Limit));
     }
 }

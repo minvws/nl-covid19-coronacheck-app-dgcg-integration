@@ -8,7 +8,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
     public interface ITestResultLog
     {
-        Task<bool> Add(string unique, string providerId);
-        Task<bool> Contains(string unique, string providerId);
+        /// <summary>
+        ///     Registers the test result; returns FALSE if the limit has been achieved
+        /// </summary>
+        Task<bool> Register(string unique, string providerId);
     }
 }

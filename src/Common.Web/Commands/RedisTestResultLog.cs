@@ -11,6 +11,9 @@ using StackExchange.Redis;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 {
+    /// <summary>
+    ///     This implementation allows a configurable number of cases
+    /// </summary>
     public class RedisTestResultLog : ITestResultLog, IDisposable
     {
         private readonly IRedisTestResultLogConfig _config;
@@ -31,7 +34,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
             _redis.Dispose();
         }
 
-        public async Task<bool> Add(string unique, string providerId)
+        public async Task<bool> Register(string unique, string providerId)
         {
             if (string.IsNullOrWhiteSpace(unique)) throw new ArgumentException(nameof(unique));
             if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(providerId));
@@ -40,36 +43,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Commands
 
             var db = _redis.GetDatabase();
 
-            // Execute the ADD in a transaction; if a key already exists then
-            // the transaction will rollback and won't be committed. This
-            // ensures that the operation is atomic and thus test results
-            // cannot be issued twice.
-            var tran = db.CreateTransaction();
-            tran.AddCondition(Condition.KeyNotExists(key));
-            #pragma warning disable 4014
-            // Note: you cannot await here because the transaction is executed in one go. So the warning is disabled for now.
-            // See post from the library author himself:
-            // https://stackoverflow.com/questions/25976231/stackexchange-redis-transaction-methods-freezes
-            tran.StringSetAsync(key, key, TimeSpan.FromHours(_config.Duration));
-            #pragma warning restore 4014
+            // This is implemented as a Lua script to ensure that the operation is atomic
+            // Script adapted from https://stackoverflow.com/questions/34871567/redis-distributed-increment-with-locking/34875132#34875132
+            // Increments the key: if the key is new then set the expire, if limit is reached then fail
+            var result = (int) await db.ScriptEvaluateAsync(@"
+            local result = redis.call('incr', KEYS[1])
+            if result == 1 then
+                redis.call('expire', KEYS[1], ARGV[2])
+            end
+            if result > tonumber(ARGV[1]) then
+                result = 0
+            end
+            return result", new RedisKey[] {key}, new RedisValue[] {_config.Limit, _config.Duration});
 
-            return await tran.ExecuteAsync();
-        }
-
-        public async Task<bool> Contains(string unique, string providerId)
-        {
-            if (string.IsNullOrWhiteSpace(unique)) throw new ArgumentException(nameof(unique));
-            if (string.IsNullOrWhiteSpace(providerId)) throw new ArgumentException(nameof(providerId));
-
-            var key = CreateUniqueKey(unique, providerId);
-            var db = _redis.GetDatabase();
-
-            var value = await db.StringGetAsync(key);
-
-            // IsNull is TRUE when the key was not found; the documentation on StringGetAsync refers
-            // to a special `nil` value but that appears to be mixing of lingo.
-            // Source: https://github.com/StackExchange/StackExchange.Redis/blob/main/docs/KeysValues.md
-            return !value.IsNull;
+            return result > 0;
         }
 
         private string CreateUniqueKey(string unique, string providerId)

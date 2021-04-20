@@ -48,12 +48,14 @@ The Session Store is responsible for storing the a hash of the identifier of the
 	"RedisTestResultLog": {
 		"Configuration": "localhost:6379",
 		"Duration": 72,
-		"Salt": "abcdefg"
+		"Salt": "abcdefg",
+		"Limit": 5
 	}
 
 * Configuration: provide a valid Redis configuration string, the format of the configuration string is documentated here: https://stackexchange.github.io/StackExchange.Redis/Configuration.html
 * Duration: number of hours that the hash will be stored. Positive 32bit integer.
-* Salt: salt used for the hash function. This can be any valid JSON string. **This is security sensative data**.
+* Limit: number of times the test result may be issued.
+* Salt: salt used for the hash function. This can be any valid JSON string. **This is security sensitive data**.
 
 ### Issuer API client
 
@@ -138,7 +140,7 @@ The CMS signing certificates are used to sign all of the responses made by our s
 
 * UseEmbedded: For ACC/PROD deployments this is always `false`. Set to `true` to use the development certificates embedded into the assembly.
 * Path: UNC path to the x.509 CMS signing certificate. For ACC/PROD this must be a PKi Overheid certificate, see our security document for details. For testing/development you can generate your own certificate, see the guide in this document.
-* Password:  Password for the private key of the above signing certificate **This is security sensative data**.
+* Password:  Password for the private key of the above signing certificate **This is security sensitive data**.
 
 ### API Signing
 

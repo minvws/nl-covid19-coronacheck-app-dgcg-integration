@@ -51,9 +51,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Commands
             if (!request.ValidateSignature(_signatureValidator))
                 return new BadRequestObjectResult("Test result signature is invalid");
 
-            if (await _testResultLog.Contains(request.Test.Result.Unique!, request.Test.ProviderIdentifier!))
-                return new BadRequestObjectResult("Duplicate test result");
-
             var (nonceFound, nonce) = await _sessionData.GetNonce(request.SessionToken!);
 
             if (!nonceFound)
@@ -61,12 +58,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApi.Commands
 
             var result = await _issuerApiClient.IssueProof(request.ToIssuerApiRequest(nonce));
 
-            var resultAdded = await _testResultLog.Add(request.Test.Result.Unique!, request.Test.ProviderIdentifier!);
-
-            if (!resultAdded)
-                return new BadRequestObjectResult("Duplicate test result");
-
             await _sessionData.RemoveNonce(request.SessionToken!);
+
+            if (!await _testResultLog.Register(request.Test.Result.Unique!, request.Test.ProviderIdentifier!))
+                return new BadRequestObjectResult("Limit of issuance for the given test result has been reached");
 
             var response = _responseBuilder.Build(result.ToProofOfTestApiResult());
 

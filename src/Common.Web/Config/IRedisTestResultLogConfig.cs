@@ -6,8 +6,23 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Config
 {
     public interface IRedisTestResultLogConfig
     {
+        /// <summary>
+        ///     Redis configuration string
+        /// </summary>
         string Configuration { get; }
+
+        /// <summary>
+        ///     Number of hours that the test result hash will be stored for
+        /// </summary>
         int Duration { get; }
+
+        /// <summary>
+        /// </summary>
         string Salt { get; }
+
+        /// <summary>
+        ///     Number of times a test result can be used
+        /// </summary>
+        int Limit { get; }
     }
 }
