@@ -15,7 +15,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Models
         /// </summary>
         [Required]
         [JsonPropertyName("key")]
-        [RegularExpression("^[A-Za-z0-9]{1,20}$")]
+        [RegularExpression("^[A-Za-z0-9-]{1,20}$")]
         public string Key { get; set; } = "Default";
     }
 }
