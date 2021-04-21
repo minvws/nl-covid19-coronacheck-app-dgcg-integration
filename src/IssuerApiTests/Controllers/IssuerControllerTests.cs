@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -101,6 +102,19 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             Assert.NotNull(typedResult.Ism);
             Assert.NotNull(typedResult.Ism!.Proof);
             Assert.NotNull(typedResult.Ism.Signature);
+
+            // Assert attributes are as expected
+            var decodedAttributes = typedResult.Attributes!.Select(Base64.DecodeAsUtf8String).ToList();
+            var reqSampleDate = requestObject.Attributes!.SampleTime.ToUnixTime().ToString();
+            Assert.NotEmpty(decodedAttributes[(int) AttributeIndex.KeyName]);
+            Assert.Equal("1", decodedAttributes[(int) AttributeIndex.IsSpecimen]);
+            Assert.Equal("0", decodedAttributes[(int) AttributeIndex.IsPaperProof]); // ALWAYS FALSE / "0"
+            Assert.Equal("aaaaaa", decodedAttributes[(int) AttributeIndex.TestType]);
+            Assert.Equal("1", decodedAttributes[(int) AttributeIndex.BirthMonth]);
+            Assert.Equal("", decodedAttributes[(int) AttributeIndex.BirthDay]); // Should be removed by partial issuance
+            Assert.Equal("", decodedAttributes[(int) AttributeIndex.FirstNameInitial]); // Should be removed by partial issuance
+            Assert.Equal("A", decodedAttributes[(int) AttributeIndex.LastNameInitial]);
+            Assert.Equal(reqSampleDate, decodedAttributes[(int) AttributeIndex.SampleTime]);
         }
 
         [Fact]
@@ -132,7 +146,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             Assert.NotEmpty(typedResult.Qr.Data);
             Assert.NotNull(typedResult.Qr.AttributesIssued);
             Assert.Equal("1", typedResult.Qr.AttributesIssued.IsSpecimen);
-            Assert.Equal("1", typedResult.Qr.AttributesIssued.IsPaperProof);
+            Assert.Equal("1", typedResult.Qr.AttributesIssued.IsPaperProof); // ALWAYS TRUE / "1"
             Assert.Equal("aaaaaa", typedResult.Qr.AttributesIssued.TestType);
             Assert.Equal("1", typedResult.Qr.AttributesIssued.BirthMonth);
             Assert.Equal("", typedResult.Qr.AttributesIssued.BirthDay); // Should be removed by partial issuance
@@ -149,6 +163,19 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             var result = await client.PostAsync("proof/nonce", requestContent);
             var responseBody = await result.Content.ReadAsStringAsync();
             return Unwrap<GenerateNonceResult>(responseBody);
+        }
+
+        private enum AttributeIndex
+        {
+            KeyName = 0,
+            IsSpecimen = 1,
+            IsPaperProof = 2,
+            TestType = 3,
+            SampleTime = 4,
+            FirstNameInitial = 5,
+            LastNameInitial = 6,
+            BirthDay = 7,
+            BirthMonth = 8
         }
     }
 }
