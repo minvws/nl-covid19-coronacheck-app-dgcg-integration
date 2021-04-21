@@ -72,7 +72,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     BirthMonth = request.Attributes.BirthMonth,
                     BirthDay = request.Attributes.BirthDay,
                     IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0",
-                    IsPaperProof = "0"
+                    IsPaperProof = "0" // THIS IS *ALWAYS* FALSE ("0") for DYNAMIC PROOFS !!!
                 };
 
                 var (proofResult, attributesIssued) = _potService.GetProofOfTest(attributes, request.Nonce!, commitmentsJson, request.Key);
@@ -162,7 +162,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     LastNameInitial = request.Attributes.LastNameInitial,
                     BirthDay = request.Attributes.BirthDay,
                     BirthMonth = request.Attributes.BirthMonth,
-                    IsPaperProof = "1",
+                    IsPaperProof = "1", // THIS IS *ALWAYS* TRUE ("1") for STATIC PROOFS !!!
                     IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0"
                 };
 
@@ -181,7 +181,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                             FirstNameInitial = attributesIssued.FirstNameInitial,
                             LastNameInitial = attributesIssued.LastNameInitial,
                             IsSpecimen = attributesIssued.IsSpecimen,
-                            IsPaperProof = "1", // ALWAYS true because paper proof = static proof
+                            IsPaperProof = attributesIssued.IsPaperProof,
                             TestType = attributesIssued.TestType,
                             SampleTime = attributesIssued.SampleTime
                         }
