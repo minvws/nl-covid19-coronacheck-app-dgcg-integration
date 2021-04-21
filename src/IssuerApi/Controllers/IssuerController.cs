@@ -162,7 +162,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                     LastNameInitial = request.Attributes.LastNameInitial,
                     BirthDay = request.Attributes.BirthDay,
                     BirthMonth = request.Attributes.BirthMonth,
-                    IsPaperProof = "0",
+                    IsPaperProof = "1",
                     IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0"
                 };
 
