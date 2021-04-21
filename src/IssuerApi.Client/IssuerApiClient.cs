@@ -43,7 +43,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Client
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(IssueProofUrl, content);
-
+Console.WriteLine(requestJson);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Error calling IssueProof service, failed with the status code {response.StatusCode}");
 
