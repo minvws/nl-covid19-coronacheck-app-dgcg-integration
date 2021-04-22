@@ -67,8 +67,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi.Controllers
                 {
                     SampleTime = request.Attributes.SampleTime.ToUnixTime().ToString(),
                     TestType = request.Attributes.TestType,
-                    FirstNameInitial = request.Attributes.FirstNameInitial,
-                    LastNameInitial = request.Attributes.LastNameInitial,
+                    FirstNameInitial = request.Attributes.FirstNameInitial.ToUpper(),
+                    LastNameInitial = request.Attributes.LastNameInitial.ToUpper(),
                     BirthMonth = request.Attributes.BirthMonth,
                     BirthDay = request.Attributes.BirthDay,
                     IsSpecimen = request.Attributes.IsSpecimen ? "1" : "0",

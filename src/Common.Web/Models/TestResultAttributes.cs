@@ -10,12 +10,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Models
     public class TestResultAttributes
     {
         [Required]
-        [RegularExpression("^[A-Z]{1}$")]
+        //[RegularExpression("^[A-Z']{1}$")]
+        [RegularExpression(@"^[\w\d\s']{1}$")]
         [JsonPropertyName("firstNameInitial")]
         public string FirstNameInitial { get; set; } = string.Empty;
 
         [Required]
-        [RegularExpression("^[A-Z]{1}$")]
+        //[RegularExpression("^[A-Z']{1}$")]
+        [RegularExpression(@"^[\w\d\s']{1}$")]
         [JsonPropertyName("lastNameInitial")]
         public string LastNameInitial { get; set; } = string.Empty;
 
