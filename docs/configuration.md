@@ -128,10 +128,14 @@ Each keyset contains the following properties:
 This section contains configuration for the CL Issuer library.
 
   "Issuer": {
-    "PublicKeyIdentifier": "testPk"
+    "PublicKeyIdentifier": "testPk",
+    "EnablePartialIssuanceForDynamicProof": true,
+    "EnablePartialIssuanceForStaticProof": true
   },
   
-* PublicKeyIdentifier: name of the Public Key used by the CL issuer library.
+* PublicKeyIdentifier: name of the Public Key used by the CL issuer library [DEPRECATED]
+* EnablePartialIssuanceForDynamicProof: when `true` the partial issuer whitelist will be applied to dynamic proofs; when `false` it will not be applied for dynamic proofs.
+* EnablePartialIssuanceForStaticProof: when `true` the partial issuer whitelist will be applied to static proofs; when `false` it will not be applied for static proofs.
 
 ## Partial Issuance Whitelist
 
