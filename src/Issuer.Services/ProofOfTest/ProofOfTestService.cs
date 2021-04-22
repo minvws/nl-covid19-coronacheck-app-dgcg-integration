@@ -13,17 +13,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
     public class ProofOfTestService : IProofOfTestService
     {
+        private readonly IProofOfTestServiceConfig _config;
         private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
         private readonly IPartialIssuanceService _partialIssuanceService;
 
-        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IPartialIssuanceService partialIssuanceService)
+        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IPartialIssuanceService partialIssuanceService,
+                                  IProofOfTestServiceConfig config)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
             _partialIssuanceService = partialIssuanceService ?? throw new ArgumentNullException(nameof(partialIssuanceService));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public string GenerateNonce(string keyName)
@@ -40,7 +43,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 
             var keys = _keyStore.GetKeys(nameKeySet);
 
-            var filteredAttributes = _partialIssuanceService.Apply(proofOfTestAttributes);
+            var filteredAttributes = _config.EnablePartialIssuanceForStaticProof
+                ? _partialIssuanceService.Apply(proofOfTestAttributes)
+                : proofOfTestAttributes;
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
@@ -57,7 +62,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 
             var keys = _keyStore.GetKeys(nameKeySet);
 
-            var filteredAttributes = _partialIssuanceService.Apply(proofOfTestAttributes);
+            var filteredAttributes = _config.EnablePartialIssuanceForDynamicProof
+                ? _partialIssuanceService.Apply(proofOfTestAttributes)
+                : proofOfTestAttributes;
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 

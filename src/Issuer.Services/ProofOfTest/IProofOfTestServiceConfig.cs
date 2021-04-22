@@ -6,6 +6,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 {
     public interface IProofOfTestServiceConfig
     {
-        string PublicKeyIdentifier { get; }
+        bool EnablePartialIssuanceForStaticProof { get; }
+        bool EnablePartialIssuanceForDynamicProof { get; }
     }
 }

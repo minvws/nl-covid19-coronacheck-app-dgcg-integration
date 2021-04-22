@@ -13,6 +13,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
         {
         }
 
-        public string PublicKeyIdentifier => GetConfigValue<string>(nameof(PublicKeyIdentifier));
+        public bool EnablePartialIssuanceForStaticProof => GetConfigValue<bool>(nameof(EnablePartialIssuanceForStaticProof));
+        public bool EnablePartialIssuanceForDynamicProof => GetConfigValue<bool>(nameof(EnablePartialIssuanceForDynamicProof));
     }
 }
