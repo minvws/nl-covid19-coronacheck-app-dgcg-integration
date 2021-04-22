@@ -6,18 +6,18 @@ using System;
 using System.Collections.Generic;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance
 {
-    public class PartialDisclosureService : IPartialDisclosureService
+    public class PartialIssuanceService : IPartialIssuanceService
     {
-        private readonly IReadOnlyDictionary<string, StopFilter> _list;
+        private readonly IReadOnlyDictionary<string, WhitelistItem> _list;
 
-        public PartialDisclosureService(IReadOnlyDictionary<string, StopFilter> list)
+        public PartialIssuanceService(IReadOnlyDictionary<string, WhitelistItem> list)
         {
             _list = list ?? throw new ArgumentNullException(nameof(list));
         }
 
-        public PartialDisclosureService(IPartialDisclosureListProvider provider)
+        public PartialIssuanceService(IWhitelistProvider provider)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
 
@@ -32,16 +32,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
 
             if (!_list.ContainsKey(search)) return attributes;
 
-            var stopFilter = _list[search];
+            var whitelist = _list[search];
 
             return new ProofOfTestAttributes
             {
                 SampleTime = attributes.SampleTime,
                 TestType = attributes.TestType,
-                FirstNameInitial = stopFilter.DiscloseFirstInitial ? attributes.FirstNameInitial : string.Empty,
-                LastNameInitial = stopFilter.DiscloseLastInitial ? attributes.LastNameInitial : string.Empty,
-                BirthMonth = stopFilter.DiscloseMonth ? attributes.BirthMonth : string.Empty,
-                BirthDay = stopFilter.DiscloseDay ? attributes.BirthDay : string.Empty,
+                FirstNameInitial = whitelist.AllowFirstInitial ? attributes.FirstNameInitial : string.Empty,
+                LastNameInitial = whitelist.AllowLastInitial ? attributes.LastNameInitial : string.Empty,
+                BirthMonth = whitelist.AllowMonth ? attributes.BirthMonth : string.Empty,
+                BirthDay = whitelist.AllowDay ? attributes.BirthDay : string.Empty,
                 IsPaperProof = attributes.IsPaperProof,
                 IsSpecimen = attributes.IsSpecimen
             };

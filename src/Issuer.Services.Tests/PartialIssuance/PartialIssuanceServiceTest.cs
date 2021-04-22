@@ -7,21 +7,21 @@ using System.Collections.Generic;
 using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance;
 using Xunit;
 
-namespace Issuer.Services.Tests.PartialDisclosure
+namespace Issuer.Services.Tests.PartialIssuance
 {
-    public class PartialDisclosureServiceTest
+    public class PartialIssuanceServiceTest
     {
         [Fact]
         public void Apply_returns_new_attributes_on_match()
         {
             // Assemble
-            var stopList = new Dictionary<string, StopFilter> {{"AB", new StopFilter(true, true, true, true)}};
-            var provider = new Mock<IPartialDisclosureListProvider>();
+            var stopList = new Dictionary<string, WhitelistItem> {{"AB", new WhitelistItem(true, true, true, true)}};
+            var provider = new Mock<IWhitelistProvider>();
             provider.Setup(x => x.Execute()).Returns(stopList);
-            var service = new PartialDisclosureService(provider.Object);
+            var service = new PartialIssuanceService(provider.Object);
 
             // Act
             var attributes = new ProofOfTestAttributes
@@ -46,14 +46,14 @@ namespace Issuer.Services.Tests.PartialDisclosure
         public void Apply_matches_only_one_item()
         {
             // Assemble
-            var stopList = new Dictionary<string, StopFilter>
+            var stopList = new Dictionary<string, WhitelistItem>
             {
-                {"AA", new StopFilter(true, true, true, true)},
-                {"AB", new StopFilter(false, false, false, false)}
+                {"AA", new WhitelistItem(true, true, true, true)},
+                {"AB", new WhitelistItem(false, false, false, false)}
             };
-            var provider = new Mock<IPartialDisclosureListProvider>();
+            var provider = new Mock<IWhitelistProvider>();
             provider.Setup(x => x.Execute()).Returns(stopList);
-            var service = new PartialDisclosureService(provider.Object);
+            var service = new PartialIssuanceService(provider.Object);
 
             // Act
             var attributes = new ProofOfTestAttributes
@@ -95,13 +95,14 @@ namespace Issuer.Services.Tests.PartialDisclosure
         [InlineData(true, true, false, true)]
         [InlineData(true, true, true, false)]
         [InlineData(true, true, true, true)]
-        public void Apply_executes_expected_partial_disclosures(bool discloseFirstInitial, bool discloseLastInitial, bool discloseDay, bool discloseMonth)
+        public void Apply_executes_expected_partial_issuances(bool allowFirstInitial, bool allowLastInitial, bool allowDay, bool allowMonth)
         {
             // Assemble
-            var stopList = new Dictionary<string, StopFilter> {{"AB", new StopFilter(discloseFirstInitial, discloseLastInitial, discloseDay, discloseMonth)}};
-            var provider = new Mock<IPartialDisclosureListProvider>();
+            var stopList = new Dictionary<string, WhitelistItem>
+                {{"AB", new WhitelistItem(allowFirstInitial, allowLastInitial, allowDay, allowMonth)}};
+            var provider = new Mock<IWhitelistProvider>();
             provider.Setup(x => x.Execute()).Returns(stopList);
-            var service = new PartialDisclosureService(provider.Object);
+            var service = new PartialIssuanceService(provider.Object);
 
             // Act
             var attributes = new ProofOfTestAttributes
@@ -125,21 +126,21 @@ namespace Issuer.Services.Tests.PartialDisclosure
             Assert.Equal(attributes.SampleTime, result.SampleTime);
             Assert.Equal("ZXY", result.TestType);
 
-            // Assert: check the partial disclosures
-            Assert.Equal(discloseFirstInitial ? "A" : string.Empty, result.FirstNameInitial);
-            Assert.Equal(discloseLastInitial ? "B" : string.Empty, result.LastNameInitial);
-            Assert.Equal(discloseMonth ? "1" : string.Empty, result.BirthMonth);
-            Assert.Equal(discloseDay ? "2" : string.Empty, result.BirthDay);
+            // Assert: check the attributes issued
+            Assert.Equal(allowFirstInitial ? "A" : string.Empty, result.FirstNameInitial);
+            Assert.Equal(allowLastInitial ? "B" : string.Empty, result.LastNameInitial);
+            Assert.Equal(allowMonth ? "1" : string.Empty, result.BirthMonth);
+            Assert.Equal(allowDay ? "2" : string.Empty, result.BirthDay);
         }
 
         [Fact]
-        public void Apply_returns_attributes_unchanged_when_stoplist_not_matched()
+        public void Apply_returns_attributes_unchanged_when_whitelist_not_matched()
         {
             // Assemble
-            var stopList = new Dictionary<string, StopFilter>();
-            var provider = new Mock<IPartialDisclosureListProvider>();
+            var stopList = new Dictionary<string, WhitelistItem>();
+            var provider = new Mock<IWhitelistProvider>();
             provider.Setup(x => x.Execute()).Returns(stopList);
-            var service = new PartialDisclosureService(provider.Object);
+            var service = new PartialIssuanceService(provider.Object);
 
             // Act
             var attributes = new ProofOfTestAttributes
@@ -163,7 +164,7 @@ namespace Issuer.Services.Tests.PartialDisclosure
             Assert.Equal(attributes.SampleTime, result.SampleTime);
             Assert.Equal("ZXY", result.TestType);
 
-            // Assert: partial disclosure attributes unchanged
+            // Assert: attributes unchanged
             Assert.NotNull(result);
             Assert.Same(attributes, result);
             Assert.Equal("1", result.BirthMonth);

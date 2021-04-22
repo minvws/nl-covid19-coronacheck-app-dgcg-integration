@@ -4,10 +4,10 @@
 
 using System.Collections.Generic;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance
 {
-    public interface IPartialDisclosureListProvider
+    public interface IWhitelistProvider
     {
-        IReadOnlyDictionary<string, StopFilter> Execute();
+        IReadOnlyDictionary<string, WhitelistItem> Execute();
     }
 }

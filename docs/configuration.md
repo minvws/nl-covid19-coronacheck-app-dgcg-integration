@@ -133,16 +133,32 @@ This section contains configuration for the CL Issuer library.
   
 * PublicKeyIdentifier: name of the Public Key used by the CL issuer library.
 
-## Partial Disclosure List
+## Partial Issuance Whitelist
 
-The partial disclosure list is a CSV file which contains the list used by the Partial Disclosure service to provide privacy-preserving attribute sets. The contents of the file are documented in our architecture document.
+The partial issuance list is a whitelist which specified the attributes which will be issued for a given tuple[2] of initials. It is a CSV file which contains the list used by the Partial Issuance service to provide privacy-preserving attribute sets. The contents of the file are documented in our architecture document.
 
-	"PartialDisclosureList": {
-		"Path": "..\\..\\..\\..\\..\\test\\configuration\\partial-disclosure-list.csv"
+	"PartialIssuance": {
+		"WhitelistPath": "..\\..\\..\\..\\..\\test\\configuration\\partial-issuance-whitelist.csv"
 	}
 
-* Path: UNC path to the partial-disclosure-list.
+* WhitelistPath: UNC path to the partial-issuance-list.
 
+The file is in UTF-8 encoding containing N lines conforming to the following pattern:
+
+```
+	^[A-Z]{2},[VFMD]{1,4}$
+```
+
+Line ending can be either CRLF or LF.
+
+The first entry on the line is the combination of the initials in the order first-name (V) and last-name (F). The second entry on the list represents the attributes that will be issued.
+
+`V`: First letter of the first name (voornaam) will be issued.
+`F`: First letter of the family name (achternaam) will be issued.
+`M`: Month of birth will be issued.
+`D`: Day of birth will be issued.
+
+The full specification can be found in the coordination repository under `architecture/identity`.
 
 ## Shared
 

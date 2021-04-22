@@ -5,12 +5,12 @@
 using System;
 using System.IO;
 using System.Text;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance;
 using Xunit;
 
-namespace Issuer.Services.Tests.PartialDisclosure
+namespace Issuer.Services.Tests.PartialIssuance
 {
-    public class PartialDisclosureListLoaderTests
+    public class PartialIssuanceListLoaderTests
     {
         [Fact]
         public void TestLoadFromString()
@@ -22,16 +22,16 @@ namespace Issuer.Services.Tests.PartialDisclosure
             sb.AppendLine("AC,FMD");
 
             // Act
-            var result = PartialDisclosureListLoader.LoadFromString(sb.ToString());
+            var result = WhitelistLoader.LoadFromString(sb.ToString());
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(3, result.Count);
             Assert.Contains("AA", result);
-            Assert.True(result["AA"].DiscloseFirstInitial);
-            Assert.True(result["AA"].DiscloseLastInitial);
-            Assert.True(result["AA"].DiscloseMonth);
-            Assert.True(result["AA"].DiscloseDay);
+            Assert.True(result["AA"].AllowFirstInitial);
+            Assert.True(result["AA"].AllowLastInitial);
+            Assert.True(result["AA"].AllowMonth);
+            Assert.True(result["AA"].AllowDay);
         }
 
         [Fact]
@@ -46,16 +46,16 @@ namespace Issuer.Services.Tests.PartialDisclosure
                 File.WriteAllLines(fileName, data);
 
                 // Act
-                var result = PartialDisclosureListLoader.LoadFromFile(fileName);
+                var result = WhitelistLoader.LoadFromFile(fileName);
 
                 // Assert
                 Assert.NotNull(result);
                 Assert.Equal(3, result.Count);
                 Assert.Contains("AA", result);
-                Assert.True(result["AA"].DiscloseFirstInitial);
-                Assert.True(result["AA"].DiscloseLastInitial);
-                Assert.True(result["AA"].DiscloseMonth);
-                Assert.True(result["AA"].DiscloseDay);
+                Assert.True(result["AA"].AllowFirstInitial);
+                Assert.True(result["AA"].AllowLastInitial);
+                Assert.True(result["AA"].AllowMonth);
+                Assert.True(result["AA"].AllowDay);
             }
             finally
             {
@@ -79,22 +79,22 @@ namespace Issuer.Services.Tests.PartialDisclosure
         [InlineData("VMD")]
         [InlineData("FMD")]
         [InlineData("VFMD")]
-        public void TestLoadFromStringCombinatorial(string disclosures)
+        public void TestLoadFromStringCombinatorial(string attributesToIssue)
         {
             // Assemble
             var sb = new StringBuilder();
-            sb.AppendLine($"AA,{disclosures}");
+            sb.AppendLine($"AA,{attributesToIssue}");
 
             // Act
-            var result = PartialDisclosureListLoader.LoadFromString(sb.ToString());
+            var result = WhitelistLoader.LoadFromString(sb.ToString());
 
             // Assert
             Assert.NotNull(result);
             Assert.Contains("AA", result);
-            if (disclosures.Contains("V")) Assert.True(result["AA"].DiscloseFirstInitial);
-            if (disclosures.Contains("F")) Assert.True(result["AA"].DiscloseLastInitial);
-            if (disclosures.Contains("M")) Assert.True(result["AA"].DiscloseMonth);
-            if (disclosures.Contains("D")) Assert.True(result["AA"].DiscloseDay);
+            if (attributesToIssue.Contains("V")) Assert.True(result["AA"].AllowFirstInitial);
+            if (attributesToIssue.Contains("F")) Assert.True(result["AA"].AllowLastInitial);
+            if (attributesToIssue.Contains("M")) Assert.True(result["AA"].AllowMonth);
+            if (attributesToIssue.Contains("D")) Assert.True(result["AA"].AllowDay);
         }
     }
 }

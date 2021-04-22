@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApi
 
             // Issuer
             services.AddProofOfTestService();
-            services.AddPartialDisclosure();
+            services.AddPartialIssuance();
 
             base.ConfigureServices(services);
         }
