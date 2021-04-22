@@ -216,8 +216,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
             // Assert: Initials received by the IssuerClient are empty
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(attributesRequested);
-            Assert.Equal("A", attributesRequested!.FirstNameInitial);
-            Assert.Equal("B", attributesRequested!.LastNameInitial);
+            Assert.Equal("a", attributesRequested!.FirstNameInitial);
+            Assert.Equal("a", attributesRequested!.LastNameInitial);
             Assert.Equal("1", attributesRequested!.BirthDay);
             Assert.Equal("1", attributesRequested!.BirthMonth);
         }
@@ -256,8 +256,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
                 {
                     BirthDay = "1",
                     BirthMonth = "1",
-                    FirstNameInitial = "A",
-                    LastNameInitial = "B"
+                    FirstNameInitial = "a",
+                    LastNameInitial = "a"
                 },
                 //IsSpecimen = isSpecimen,
                 NegativeResult = true,

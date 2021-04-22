@@ -256,8 +256,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.ProofOfTestApiTests.Controllers
                 {
                     BirthDay = "1",
                     BirthMonth = "1",
-                    FirstNameInitial = "A",
-                    LastNameInitial = "B"
+                    FirstNameInitial = "a",
+                    LastNameInitial = "b"
                 },
                 //IsSpecimen = isSpecimen,
                 NegativeResult = true,

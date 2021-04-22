@@ -83,6 +83,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             // Arrange: the request
             var rawJson = typeof(IssuerControllerTests).Assembly.GetEmbeddedResourceAsString("EmbeddedResources.Post_Proof_Issue_returns_proof_request.json");
             var requestObject = json.Deserialize<IssueProofRequest>(rawJson);
+            requestObject.Attributes.FirstNameInitial = "U";
+            requestObject.Attributes.LastNameInitial = "X";
             requestObject.Nonce = typedResultNonce.Nonce!;
             requestObject.Attributes!.SampleTime = DateTime.UtcNow.ToHourPrecision();
             requestObject.Key = KeyName;
@@ -111,9 +113,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerApiTests.Controllers
             Assert.Equal("0", decodedAttributes[(int) AttributeIndex.IsPaperProof]); // ALWAYS FALSE / "0"
             Assert.Equal("aaaaaa", decodedAttributes[(int) AttributeIndex.TestType]);
             Assert.Equal("1", decodedAttributes[(int) AttributeIndex.BirthMonth]);
-            Assert.Equal("", decodedAttributes[(int) AttributeIndex.BirthDay]); // Should be removed by partial issuance
-            Assert.Equal("", decodedAttributes[(int) AttributeIndex.FirstNameInitial]); // Should be removed by partial issuance
-            Assert.Equal("A", decodedAttributes[(int) AttributeIndex.LastNameInitial]);
+            Assert.Equal("1", decodedAttributes[(int) AttributeIndex.BirthDay]); // Should be removed by partial issuance
+            Assert.Equal("U", decodedAttributes[(int) AttributeIndex.FirstNameInitial]); // Should be removed by partial issuance
+            Assert.Equal("X", decodedAttributes[(int) AttributeIndex.LastNameInitial]);
             Assert.Equal(reqSampleDate, decodedAttributes[(int) AttributeIndex.SampleTime]);
         }
 
