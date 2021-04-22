@@ -4,9 +4,9 @@
 
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance
 {
-    public interface IPartialDisclosureService
+    public interface IPartialIssuanceService
     {
         ProofOfTestAttributes Apply(ProofOfTestAttributes attributes);
     }

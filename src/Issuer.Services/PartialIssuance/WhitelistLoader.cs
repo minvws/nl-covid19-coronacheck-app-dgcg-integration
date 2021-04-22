@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance
 {
-    public static class PartialDisclosureListLoader
+    public static class WhitelistLoader
     {
-        public static IReadOnlyDictionary<string, StopFilter> LoadFromFile(string path)
+        public static IReadOnlyDictionary<string, WhitelistItem> LoadFromFile(string path)
         {
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
 
@@ -20,21 +20,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
             return Load(lines);
         }
 
-        public static IReadOnlyDictionary<string, StopFilter> LoadFromString(string data)
+        public static IReadOnlyDictionary<string, WhitelistItem> LoadFromString(string data)
         {
             if (string.IsNullOrWhiteSpace(data)) throw new ArgumentNullException(nameof(data));
 
             return Load(data.Contains("\r\n") ? data.Split("\r\n") : data.Split("\n"));
         }
 
-        private static IReadOnlyDictionary<string, StopFilter> Load(string[] lines)
+        private static IReadOnlyDictionary<string, WhitelistItem> Load(string[] lines)
         {
             // Note: lines is not null here; if it's an empty array that's also OK
 
             var keyPattern = new Regex("^[A-Z]{2}$");
             var valuePattern = new Regex("^[VFMD]{1,4}$");
 
-            var filter = new Dictionary<string, StopFilter>();
+            var filter = new Dictionary<string, WhitelistItem>();
 
             foreach (var line in lines)
             {
@@ -55,7 +55,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure
                 var discloseMonth = value.Contains("M");
                 var discloseDay = value.Contains("D");
 
-                filter.Add(key, new StopFilter(discloseFirstInitial, discloseLastInitial, discloseDay, discloseMonth));
+                filter.Add(key, new WhitelistItem(discloseFirstInitial, discloseLastInitial, discloseDay, discloseMonth));
             }
 
             return filter;

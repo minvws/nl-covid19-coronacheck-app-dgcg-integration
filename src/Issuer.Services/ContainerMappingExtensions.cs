@@ -5,7 +5,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
@@ -26,13 +26,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services
             services.AddSingleton<IProofOfTestServiceConfig, ProofOfTestServiceConfig>();
         }
 
-        public static void AddPartialDisclosure(this IServiceCollection services)
+        public static void AddPartialIssuance(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddSingleton<IPartialDisclosureService, PartialDisclosureService>();
-            services.AddSingleton<IPartialDisclosureListProvider, PartialDisclosureListProvider>();
-            services.AddSingleton<IPartialDisclosureServiceConfig, PartialDisclosureServiceConfig>();
+            services.AddSingleton<IPartialIssuanceService, PartialIssuanceService>();
+            services.AddSingleton<IWhitelistProvider, WhitelistProvider>();
+            services.AddSingleton<IPartialIssuanceServiceConfig, PartialIssuanceServiceConfig>();
         }
     }
 }

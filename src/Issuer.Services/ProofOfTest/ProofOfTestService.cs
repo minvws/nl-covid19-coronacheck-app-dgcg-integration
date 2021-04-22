@@ -6,7 +6,7 @@ using System;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Attributes;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.Keystores;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialDisclosure;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.PartialIssuance;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.IssuerInterop;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
@@ -16,14 +16,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
         private readonly IIssuerInterop _issuer;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IKeyStore _keyStore;
-        private readonly IPartialDisclosureService _partialDisclosureService;
+        private readonly IPartialIssuanceService _partialIssuanceService;
 
-        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IPartialDisclosureService partialDisclosureService)
+        public ProofOfTestService(IJsonSerializer jsonSerializer, IKeyStore keyStore, IIssuerInterop issuer, IPartialIssuanceService partialIssuanceService)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _keyStore = keyStore ?? throw new ArgumentNullException(nameof(keyStore));
             _issuer = issuer ?? throw new ArgumentNullException(nameof(issuer));
-            _partialDisclosureService = partialDisclosureService ?? throw new ArgumentNullException(nameof(partialDisclosureService));
+            _partialIssuanceService = partialIssuanceService ?? throw new ArgumentNullException(nameof(partialIssuanceService));
         }
 
         public string GenerateNonce(string keyName)
@@ -40,7 +40,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 
             var keys = _keyStore.GetKeys(nameKeySet);
 
-            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
+            var filteredAttributes = _partialIssuanceService.Apply(proofOfTestAttributes);
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
@@ -57,7 +57,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Issuer.Services.ProofOfTest
 
             var keys = _keyStore.GetKeys(nameKeySet);
 
-            var filteredAttributes = _partialDisclosureService.Apply(proofOfTestAttributes);
+            var filteredAttributes = _partialIssuanceService.Apply(proofOfTestAttributes);
 
             var serializedAttributes = _jsonSerializer.Serialize(filteredAttributes);
 
