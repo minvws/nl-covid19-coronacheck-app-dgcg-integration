@@ -22,6 +22,7 @@ Upload a cert [NOTE: at time of writing not tested]
 
 The configuration looks like this:
 
+```
 {
   "Certificates": {
     "Authentication": {
@@ -35,6 +36,7 @@ The configuration looks like this:
     "GatewayUrl":  "http://localhost:8090/" 
   } 
 }
+```
 
 You need to configure the path to the authentication certificate and the password.
 
