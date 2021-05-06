@@ -12,7 +12,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
     /// <summary>
     ///     Loads a certificate in p12 format from the given path
     /// </summary>
-    public class FileSystemCertificateProvider : ICertificateProvider
+    // ReSharper disable once RedundantExtendsListEntry
+    public class FileSystemCertificateProvider : ICertificateProvider, IAuthenticationCertificateProvider
     {
         private readonly ICertificateLocationConfig _config;
 
@@ -26,6 +27,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
             var cert = File.ReadAllBytes(_config.Path);
 
             return new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
+            //return string.IsNullOrWhiteSpace(_config.Password)
+            //    ? new X509Certificate2(cert)
+            //    : new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
         }
     }
 }

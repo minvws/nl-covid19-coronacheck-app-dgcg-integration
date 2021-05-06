@@ -56,9 +56,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HolderInteropTests", "Holde
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Interop.Go", "Common.Interop.Go\Common.Interop.Go.csproj", "{3B17A689-2193-4D6F-99F3-D4E978B16618}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Issuer.Services", "Issuer.Services\Issuer.Services.csproj", "{8CF38946-6388-4B75-AF9E-40CE77EA76C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Issuer.Services", "Issuer.Services\Issuer.Services.csproj", "{8CF38946-6388-4B75-AF9E-40CE77EA76C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Issuer.Services.Tests", "Issuer.Services.Tests\Issuer.Services.Tests.csproj", "{7BAED075-F509-4742-B1F0-6A70E49654C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Issuer.Services.Tests", "Issuer.Services.Tests\Issuer.Services.Tests.csproj", "{7BAED075-F509-4742-B1F0-6A70E49654C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DGCG", "DGCG", "{C72DAF39-81D6-4DB6-9D97-6A5C25F4C65C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalGreenGatewayTool", "DigitalGreenGatewayTool\DigitalGreenGatewayTool.csproj", "{BE8D491E-D4C5-4629-92D9-D25FABE64220}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalGreenGatewayToolTests", "DigitalGreenGatewayToolTests\DigitalGreenGatewayToolTests.csproj", "{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -154,6 +160,14 @@ Global
 		{7BAED075-F509-4742-B1F0-6A70E49654C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BAED075-F509-4742-B1F0-6A70E49654C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BAED075-F509-4742-B1F0-6A70E49654C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8D491E-D4C5-4629-92D9-D25FABE64220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8D491E-D4C5-4629-92D9-D25FABE64220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8D491E-D4C5-4629-92D9-D25FABE64220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8D491E-D4C5-4629-92D9-D25FABE64220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,6 +181,8 @@ Global
 		{AA4961E4-AB9C-4BFF-A59E-C4874A01A4BB} = {17FBBE80-7C50-438E-BF9C-841872A5145D}
 		{CD3CD721-B284-4D25-B850-B672A4207810} = {17FBBE80-7C50-438E-BF9C-841872A5145D}
 		{77BB0407-B38D-4EAF-817D-812A70053A20} = {A20C5F91-0261-4C37-9370-42762BAB07EC}
+		{BE8D491E-D4C5-4629-92D9-D25FABE64220} = {C72DAF39-81D6-4DB6-9D97-6A5C25F4C65C}
+		{04AB26B2-4C8D-4972-9FF3-19DC2FDD26CA} = {C72DAF39-81D6-4DB6-9D97-6A5C25F4C65C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4594D907-7F95-4BE7-9F36-5549A090604B}
