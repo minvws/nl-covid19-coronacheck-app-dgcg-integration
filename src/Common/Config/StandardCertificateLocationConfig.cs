@@ -8,7 +8,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     public class StandardCertificateLocationConfig : AppSettingsReader, ICertificateLocationConfig
     {
-        public StandardCertificateLocationConfig(IConfiguration config) : base(config, "Certificates:CmsSigning")
+        public StandardCertificateLocationConfig(IConfiguration config, string location = "Certificates:CmsSigning") : base(config, location)
         {
         }
 

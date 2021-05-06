@@ -17,3 +17,7 @@ rm -r publish/Tools/CmsSigner
 dotnet publish src/IssuerInteropBenchmark/IssuerInteropBenchmark.csproj -o publish/Tools/IssuerInteropBenchmark
 tar -czvf publish/IssuerInteropBenchmark.tar.gz publish/Tools/IssuerInteropBenchmark
 rm -r publish/Tools/IssuerInteropBenchmark
+
+dotnet publish src/DigitalGreenGatewayTool/DigitalGreenGatewayTool.csproj -o publish/Tools/DigitalGreenGatewayTool
+tar -czvf publish/DigitalGreenGatewayTool.tar.gz publish/Tools/DigitalGreenGatewayTool
+rm -r publish/Tools/DigitalGreenGatewayTool
