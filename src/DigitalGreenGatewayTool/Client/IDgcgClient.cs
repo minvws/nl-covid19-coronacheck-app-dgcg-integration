@@ -12,7 +12,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         Task<IReadOnlyList<TrustListDto>> GetTrustList();
         Task<IReadOnlyList<TrustListDto>> GetTrustList(CertificateType type);
         Task<IReadOnlyList<TrustListDto>> GetTrustList(CertificateType type, string country);
-        Task<bool> Upload(string certificateB64);
-        Task<bool> Revoke(string certificateB64);
+        Task<bool> Upload(byte[] certificateBytes);
+        Task<bool> Revoke(byte[] certificateBytes);
     }
 }

@@ -40,7 +40,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             }
             else if (_options.Upload || _options.Revoke)
             {
-                string fileContent = null;
+                byte[] fileBytes = null;
 
                 if (string.IsNullOrWhiteSpace(_options.File))
                 {
@@ -51,8 +51,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
                 try
                 {
-                    var fileBytes = await File.ReadAllBytesAsync(_options.File);
-                    fileContent = Convert.ToBase64String(fileBytes);
+                    fileBytes = await File.ReadAllBytesAsync(_options.File);
                 }
                 catch (FileNotFoundException)
                 {
@@ -71,7 +70,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 {
                     Console.WriteLine($"Uploading the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
 
-                    await _dgcgClient.Upload(fileContent);
+                    await _dgcgClient.Upload(fileBytes);
 
                     Console.WriteLine("Certificate successfully uploaded!");
                 }
@@ -79,7 +78,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 {
                     Console.WriteLine($"Revoking the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
 
-                    await _dgcgClient.Revoke(fileContent);
+                    await _dgcgClient.Revoke(fileBytes);
 
                     Console.WriteLine("Certificate successfully revoked!");
                 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 {
@@ -20,14 +21,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         private readonly HttpClient _client;
         private readonly IDgcgClientConfig _config;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IContentSigner _signer;
 
-        public DgcgClient(HttpClient client, IDgcgClientConfig config, IJsonSerializer jsonSerializer,
-                          IAuthenticationCertificateProvider authCertProvider)
+        public DgcgClient(HttpClient client, IDgcgClientConfig config, IJsonSerializer jsonSerializer, IAuthenticationCertificateProvider authCertProvider,
+                          IContentSigner signer)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _authCertProvider = authCertProvider ?? throw new ArgumentNullException(nameof(authCertProvider));
+            _signer = signer ?? throw new ArgumentNullException(nameof(signer));
         }
 
         public async Task<IReadOnlyList<TrustListDto>> GetTrustList()
@@ -57,7 +60,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             return _jsonSerializer.Deserialize<List<TrustListDto>>(response);
         }
 
-        public async Task<bool> Upload(string certificateB64)
+        public async Task<bool> Upload(byte[] certificateBytes)
         {
             var uri = new Uri($"{_config.GatewayUrl}/signerCertificate");
 
@@ -86,8 +89,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             request.Headers.Add("Content-Encoding", "base64");
             //request.Headers.Add("Content-Type", "application/cms");
 
+            // Sign the cert
+            var signatureBytes = _signer.GetSignature(certificateBytes, false, true);
+
             // Generate the body
-            request.Content = new StringContent(certificateB64, Encoding.UTF8, "application/cms");
+            request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
 
             var response = await _client.SendAsync(request);
 
@@ -98,7 +104,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             throw new Exception(msg);
         }
 
-        public async Task<bool> Revoke(string certificateB64)
+        public async Task<bool> Revoke(byte[] certificateBytes)
         {
             var uri = new Uri($"{_config.GatewayUrl}/signerCertificate");
 
@@ -127,8 +133,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             request.Headers.Add("Content-Encoding", "base64");
             //request.Headers.Add("Content-Type", "application/cms");
 
+            // Sign the cert
+            var signatureBytes = _signer.GetSignature(certificateBytes, false, true);
+
             // Generate the body
-            request.Content = new StringContent(certificateB64, Encoding.UTF8, "application/cms");
+            request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
 
             var response = await _client.SendAsync(request);
 
