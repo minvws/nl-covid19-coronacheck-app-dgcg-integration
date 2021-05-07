@@ -45,3 +45,19 @@ Under `DgcgClient`, the `GatewayUrl` must be set; for test this is: https://test
 The flag `SendAuthenticationHeaders` can be set in order to include the TLS authentication headers; this is
 probably always required. For EFGS this was optional in some circumstances.
 
+# Creating some DGC signing certs
+
+You'll need these to test stuff. The CSCA is created when following the DGC readme.
+
+Two lines
+
+```
+openssl req -new -keyout key_dgc1.pem -nodes -out key_dgc1.csr
+openssl x509 -req -in key_dgc1.csr -CAkey key_csca.pem -CA cert_csca.pem -CAcreateserial -out cert_dgc1.pem
+```
+
+One line:
+
+```
+openssl req -new -keyout key_dgc1.pem -nodes | openssl x509 -req -CAkey key_csca.pem -CA cert_csca.pem -CAcreateserial -out cert_dgc1.pem
+```
