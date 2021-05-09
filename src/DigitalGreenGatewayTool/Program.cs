@@ -64,7 +64,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                     ),
                     x.GetRequiredService<IUtcDateTimeProvider>()
                 ));
-            services.AddTransient<IContentSigner, CmsSigner>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();

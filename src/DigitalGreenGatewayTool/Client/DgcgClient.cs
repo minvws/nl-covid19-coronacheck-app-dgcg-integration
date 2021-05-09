@@ -84,12 +84,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
                 request.Headers.Add("X-SSL-Client-DN", dn);
             }
 
-            // Set other required headers
-            request.Headers.Add("accept", "*/*");
-            //request.Headers.Add("Content-Type", "application/cms");
-
             // Sign the cert
-            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature);
+            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
 
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
@@ -97,6 +93,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             var response = await _client.SendAsync(request);
 
             if (response.StatusCode == HttpStatusCode.Created) return true;
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                Console.WriteLine($"ERROR: a certificate of type TODO already exists!");
+            }
 
             var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {response.Content.ReadAsStringAsync()}";
 
@@ -127,19 +128,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
                 request.Headers.Add("X-SSL-Client-DN", dn);
             }
 
-            // Set other required headers
-            request.Headers.Add("accept", "*/*");
-            //request.Headers.Add("Content-Type", "application/cms");
-
             // Sign the cert
-            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature);
+            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
 
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
 
             var response = await _client.SendAsync(request);
 
-            if (response.StatusCode == HttpStatusCode.Created) return true;
+            if (response.StatusCode == HttpStatusCode.NoContent) return true;
 
             var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {response.Content.ReadAsStringAsync()}";
 
