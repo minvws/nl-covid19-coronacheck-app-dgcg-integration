@@ -52,6 +52,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 try
                 {
                     fileBytes = await File.ReadAllBytesAsync(_options.File);
+
                 }
                 catch (FileNotFoundException)
                 {

@@ -19,16 +19,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
         private readonly FileSystemCertificateChainProvider _fileSystemProvider;
         private readonly ILogger<CertificateChainProvider> _logger;
 
-        public CertificateChainProvider(
-            ICertificateLocationConfig config,
-            EmbeddedResourcesCertificateChainProvider embeddedProvider,
-            FileSystemCertificateChainProvider fileSystemProvider,
-            ILogger<CertificateChainProvider> logger
-        )
+        public CertificateChainProvider(ICertificateLocationConfig config, ILogger<CertificateChainProvider> logger)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _embeddedProvider = embeddedProvider ?? throw new ArgumentNullException(nameof(embeddedProvider));
-            _fileSystemProvider = fileSystemProvider ?? throw new ArgumentNullException(nameof(fileSystemProvider));
+            _embeddedProvider = new EmbeddedResourcesCertificateChainProvider(config);
+            _fileSystemProvider = new FileSystemCertificateChainProvider(config);
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InitLog();

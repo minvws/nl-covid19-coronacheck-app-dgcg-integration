@@ -16,5 +16,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         public bool SendAuthenticationHeaders => GetConfigValue<bool>(nameof(SendAuthenticationHeaders));
 
         public string GatewayUrl => GetConfigValue<string>(nameof(GatewayUrl));
+
+        public bool IncludeChainInSignature => GetConfigValue<bool>(nameof(IncludeChainInSignature));
+
+        public bool IncludeCertsInSignature => GetConfigValue<bool>(nameof(IncludeCertsInSignature));
     }
 }

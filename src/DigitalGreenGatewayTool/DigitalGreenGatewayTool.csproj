@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="cert_dgc1.der" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +37,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="cert_dgc1.der" />
+  </ItemGroup>
+
+  <ItemGroup>
+     <None Update="cert_dgc1.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="auth.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -58,6 +66,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="key_dgc3.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sign.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
