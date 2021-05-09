@@ -28,12 +28,24 @@ The configuration looks like this:
     "Authentication": {
       "UseEmbedded": false,
       "Path": "auth.pfx",
-      "Password":  "" 
+      "Password": ""
+    },
+    "Signing": {
+      "UseEmbedded": false,
+      "Path": "sign.pfx",
+      "Password": ""
+    },
+    "SigningChain": {
+      "UseEmbedded": false,
+      "Path": "only_used_if_IncludeChainInSignature_is_TRUE.pfx",
+      "Password": ""
     }
   },
   "DgcgClient": {
     "SendAuthenticationHeaders": true,
-    "GatewayUrl":  "http://localhost:8090/" 
+    "GatewayUrl": "http://localhost:8080",
+    "IncludeChainInSignature": false,
+    "IncludeCertsInSignature": true 
   } 
 }
 ```
@@ -44,6 +56,11 @@ Under `DgcgClient`, the `GatewayUrl` must be set; for test this is: https://test
 
 The flag `SendAuthenticationHeaders` can be set in order to include the TLS authentication headers; this is
 probably always required. For EFGS this was optional in some circumstances.
+
+The flag `IncludeChainInSignature` when set will include the cert chain in the signature. You must also 
+configure the 'SigningChain' certificate if this is set.
+
+The flag `IncludeCertsInSignature` when set will include the certificates in the signature.
 
 # Creating some DGC signing certs
 

@@ -89,7 +89,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             //request.Headers.Add("Content-Type", "application/cms");
 
             // Sign the cert
-            var signatureBytes = _signer.GetSignature(certificateBytes, false, true);
+            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature);
 
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
@@ -132,7 +132,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             //request.Headers.Add("Content-Type", "application/cms");
 
             // Sign the cert
-            var signatureBytes = _signer.GetSignature(certificateBytes, false, true);
+            var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature);
 
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
