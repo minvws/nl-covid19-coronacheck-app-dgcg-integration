@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Net.Http;
+using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using Xunit;
 
@@ -19,7 +21,8 @@ namespace DigitalGreenGatewayToolTests
         {
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider);
+            var signer = new Mock<IContentSigner>().Object;
+            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList();
 
@@ -37,7 +40,8 @@ namespace DigitalGreenGatewayToolTests
         {
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider);
+            var signer = new Mock<IContentSigner>().Object;
+            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType);
 
@@ -62,7 +66,8 @@ namespace DigitalGreenGatewayToolTests
         {
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider);
+            var signer = new Mock<IContentSigner>().Object;
+            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType, land);
 
@@ -85,5 +90,7 @@ namespace DigitalGreenGatewayToolTests
         public string Password => string.Empty;
         public bool SendAuthenticationHeaders => true;
         public string GatewayUrl => "http://localhost:8080";
+        public bool IncludeChainInSignature => false;
+        public bool IncludeCertsInSignature => false;
     }
 }

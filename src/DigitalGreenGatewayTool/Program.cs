@@ -10,6 +10,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
@@ -47,11 +48,23 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
             services.AddTransient<IAuthenticationCertificateProvider>(
                 x => new CertificateProvider(
-                    x.GetRequiredService<ICertificateLocationConfig>(),
-                    x.GetRequiredService<EmbeddedResourceCertificateProvider>(),
-                    x.GetRequiredService<FileSystemCertificateProvider>(),
+                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"),
                     x.GetRequiredService<ILogger<CertificateProvider>>()
                 ));
+
+            services.AddTransient<IContentSigner>(
+                x => new CmsSigner(
+                    new CertificateProvider(
+                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Signing"),
+                        x.GetRequiredService<ILogger<CertificateProvider>>()
+                    ),
+                    new CertificateChainProvider(
+                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:SigningChain"),
+                        x.GetRequiredService<ILogger<CertificateChainProvider>>()
+                    ),
+                    x.GetRequiredService<IUtcDateTimeProvider>()
+                ));
+            services.AddTransient<IContentSigner, CmsSigner>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();

@@ -86,7 +86,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
             // Set other required headers
             request.Headers.Add("accept", "*/*");
-            request.Headers.Add("Content-Encoding", "base64");
             //request.Headers.Add("Content-Type", "application/cms");
 
             // Sign the cert
@@ -130,7 +129,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
             // Set other required headers
             request.Headers.Add("accept", "*/*");
-            request.Headers.Add("Content-Encoding", "base64");
             //request.Headers.Add("Content-Type", "application/cms");
 
             // Sign the cert

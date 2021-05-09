@@ -8,5 +8,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
     {
         bool SendAuthenticationHeaders { get; }
         string GatewayUrl { get; }
+        bool IncludeChainInSignature { get; }
+        bool IncludeCertsInSignature { get; }
     }
 }
