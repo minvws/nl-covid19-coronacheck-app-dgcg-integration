@@ -8,17 +8,23 @@ The documentation there is now pretty good.. because we improved it :-)
 
 # How to use this tool
 
-
 Download the certs:
 
 ```dggt -d```
 
-Upload a cert [NOTE: at time of writing not tested]
+Upload a cert:
 
 ```dggt -u -f path/to/cert.```
 
-# Configuration
+* File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
+Upload a cert:
+
+```dggt -r -f path/to/cert.```
+
+* File must be a DER encoded certificate; see the example below if you need to convert from PEM
+
+# Configuration
 
 The configuration looks like this:
 
@@ -66,15 +72,14 @@ The flag `IncludeCertsInSignature` when set will include the certificates in the
 
 You'll need these to test stuff. The CSCA is created when following the DGC readme.
 
-Two lines
+Generate the DGC certs like this:
 
 ```
 openssl req -new -keyout key_dgc1.pem -nodes -out key_dgc1.csr
-openssl x509 -req -in key_dgc1.csr -CAkey key_csca.pem -CA cert_csca.pem -CAcreateserial -out cert_dgc1.pem
 ```
 
-One line:
+Then convert the certificate into DER format:
 
 ```
-openssl req -new -keyout key_dgc1.pem -nodes | openssl x509 -req -CAkey key_csca.pem -CA cert_csca.pem -CAcreateserial -out cert_dgc1.pem
-```
+ openssl x509 -outform der -in cert_dgc2.pem -out dgc2.der
+ ```

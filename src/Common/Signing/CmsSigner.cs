@@ -25,7 +25,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        public byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false)
+        public byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false, bool detached = true)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
 
@@ -36,7 +36,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
                     $"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
 
             var contentInfo = new ContentInfo(content);
-            var signedCms = new SignedCms(contentInfo, true);
+            var signedCms = new SignedCms(contentInfo, detached);
 
             if (includeChain)
             {
