@@ -22,7 +22,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
+            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList();
 
@@ -41,7 +41,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
+            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType);
 
@@ -67,7 +67,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(new HttpClient(), config, new StandardJsonSerializer(), authCertProvider, signer);
+            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType, land);
 

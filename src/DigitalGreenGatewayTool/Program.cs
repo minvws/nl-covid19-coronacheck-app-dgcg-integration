@@ -12,6 +12,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using Microsoft.AspNetCore.Authentication.Certificate;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
@@ -27,6 +28,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                   .WithNotParsed(HandleParseError);
 
             using var serviceProvider = services.BuildServiceProvider();
+            // PrintConfig(serviceProvider);
             var app = serviceProvider.GetRequiredService<DgcgApp>();
             app.Run().Wait();
         }
@@ -65,6 +67,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                     x.GetRequiredService<IUtcDateTimeProvider>()
                 ));
 
+            // Defaults for client authentication
+            services
+               .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+               .AddCertificate();
+
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
             services.AddSingleton<IConfiguration>(configuration);
@@ -78,6 +85,32 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             Console.WriteLine("Error parsing input, please check your call and try again.");
 
             Environment.Exit(0);
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private static void PrintConfig(IServiceProvider serviceProvider)
+        {
+            var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
+
+            Console.WriteLine("** START CONFIGURATION **");
+
+            var conf1 = serviceProvider.GetRequiredService<IDgcgClientConfig>();
+            Console.WriteLine("DgcgClient");
+            Console.WriteLine(serializer.Serialize(conf1));
+
+            var conf2 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:Signing");
+            Console.WriteLine("Certificates:Signing");
+            Console.WriteLine(serializer.Serialize(conf2));
+
+            var conf3 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:SigningChain");
+            Console.WriteLine("Certificates:SigningChain");
+            Console.WriteLine(serializer.Serialize(conf3));
+
+            var conf4 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:Authentication");
+            Console.WriteLine("Certificates:Authentication");
+            Console.WriteLine(serializer.Serialize(conf4));
+
+            Console.WriteLine("** END CONFIGURATION **");
         }
     }
 }

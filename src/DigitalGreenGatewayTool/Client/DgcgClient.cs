@@ -18,17 +18,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
     public class DgcgClient : IDgcgClient
     {
         private readonly IAuthenticationCertificateProvider _authCertProvider;
-        private readonly HttpClient _client;
         private readonly IDgcgClientConfig _config;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IContentSigner _signer;
 
-        public DgcgClient(HttpClient client, IDgcgClientConfig config, IJsonSerializer jsonSerializer, IAuthenticationCertificateProvider authCertProvider,
-                          IContentSigner signer)
+        public DgcgClient(IDgcgClientConfig config, IJsonSerializer jsonSerializer, IAuthenticationCertificateProvider authCertProvider, IContentSigner signer)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _authCertProvider = authCertProvider ?? throw new ArgumentNullException(nameof(authCertProvider));
             _signer = signer ?? throw new ArgumentNullException(nameof(signer));
         }
@@ -64,6 +61,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         {
             var uri = new Uri($"{_config.GatewayUrl}/signerCertificate");
 
+            Console.WriteLine($"Initializing Upload call to {uri.AbsoluteUri}");
+
             // Configure authentication certificate
             using var clientCert = _authCertProvider.GetCertificate();
             using var clientHandler = new HttpClientHandler
@@ -78,11 +77,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
+                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
                 request.Headers.Add("X-SSL-Client-DN", dn);
+            } else
+            {
+                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
             }
+
+            Console.WriteLine($"Signing: IncludeChain={_config.IncludeChainInSignature}, IncludeCertificates={_config.IncludeCertsInSignature}");
 
             // Sign the cert
             var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
@@ -90,7 +95,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
 
-            var response = await _client.SendAsync(request);
+            Console.WriteLine("Sending the following request:");
+            Console.WriteLine(request.ToString());
+
+            using var client = new HttpClient(clientHandler);
+            var response = await client.SendAsync(request);
 
             if (response.StatusCode == HttpStatusCode.Created) return true;
 
@@ -108,6 +117,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         {
             var uri = new Uri($"{_config.GatewayUrl}/signerCertificate");
 
+            Console.WriteLine($"Initializing Revoke call to {uri.AbsoluteUri}");
+
             // Configure authentication certificate
             using var clientCert = _authCertProvider.GetCertificate();
             using var clientHandler = new HttpClientHandler
@@ -122,11 +133,18 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
+                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
                 request.Headers.Add("X-SSL-Client-DN", dn);
             }
+            else
+            {
+                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
+            }
+
+            Console.WriteLine($"Signing: IncludeChain={_config.IncludeChainInSignature}, IncludeCertificates={_config.IncludeCertsInSignature}");
 
             // Sign the cert
             var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
@@ -134,7 +152,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Generate the body
             request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
 
-            var response = await _client.SendAsync(request);
+            Console.WriteLine("Sending the following request:");
+            Console.WriteLine(request.ToString());
+
+            using var client = new HttpClient(clientHandler);
+            var response = await client.SendAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NoContent) return true;
 
@@ -145,6 +167,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
         private async Task<string> ExecuteRequest(Uri uri)
         {
+            Console.WriteLine($"Initializing trustList call to {uri.AbsoluteUri}");
+
             // Configure authentication certificate
             using var clientCert = _authCertProvider.GetCertificate();
             using var clientHandler = new HttpClientHandler
@@ -159,16 +183,25 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
+                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
                 request.Headers.Add("X-SSL-Client-DN", dn);
             }
+            else
+            {
+                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
+            }
 
             // Set other required headers
             request.Headers.Add("accept", "application/json");
 
-            var response = await _client.SendAsync(request);
+            Console.WriteLine("Sending the following request:");
+            Console.WriteLine(request.ToString());
+
+            using var client = new HttpClient(clientHandler);
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsStringAsync();
 
