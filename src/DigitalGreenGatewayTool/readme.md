@@ -18,7 +18,7 @@ Upload a cert:
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
-Upload a cert:
+Revoke a cert:
 
 ```dggt -r -f path/to/cert.```
 
