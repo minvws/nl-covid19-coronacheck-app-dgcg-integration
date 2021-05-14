@@ -93,10 +93,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
 
             // Generate the body
-            request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
+            var requestContentString = Convert.ToBase64String(signatureBytes);
+            request.Content = new StringContent(requestContentString, Encoding.UTF8, "application/cms");
 
             Console.WriteLine("Sending the following request:");
             Console.WriteLine(request.ToString());
+            Console.WriteLine("Request content string:");
+            Console.WriteLine(requestContentString);
 
             using var client = new HttpClient(clientHandler);
             var response = await client.SendAsync(request);
@@ -108,9 +111,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
                 Console.WriteLine($"ERROR: a certificate of type TODO already exists!");
             }
 
-            var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {response.Content.ReadAsStringAsync()}";
+            Console.WriteLine($"ERROR: HTTP status code: {response.StatusCode}; received the following response body:");
+            Console.WriteLine($"{await response.Content.ReadAsStringAsync()}");
 
-            throw new Exception(msg);
+            return false;
         }
 
         public async Task<bool> Revoke(byte[] certificateBytes)
@@ -150,19 +154,23 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             var signatureBytes = _signer.GetSignature(certificateBytes, _config.IncludeChainInSignature, !_config.IncludeCertsInSignature, false);
 
             // Generate the body
-            request.Content = new StringContent(Convert.ToBase64String(signatureBytes), Encoding.UTF8, "application/cms");
+            var requestContentString = Convert.ToBase64String(signatureBytes);
+            request.Content = new StringContent(requestContentString, Encoding.UTF8, "application/cms");
 
             Console.WriteLine("Sending the following request:");
             Console.WriteLine(request.ToString());
+            Console.WriteLine("Request content string:");
+            Console.WriteLine(requestContentString);
 
             using var client = new HttpClient(clientHandler);
             var response = await client.SendAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NoContent) return true;
 
-            var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {response.Content.ReadAsStringAsync()}";
+            Console.WriteLine($"ERROR: HTTP status code: {response.StatusCode}; received the following response body:");
+            Console.WriteLine($"{await response.Content.ReadAsStringAsync()}");
 
-            throw new Exception(msg);
+            return false;
         }
 
         private async Task<string> ExecuteRequest(Uri uri)
@@ -205,7 +213,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsStringAsync();
 
-            var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {response.Content.ReadAsStringAsync()}";
+            Console.WriteLine($"ERROR: HTTP status code: {response.StatusCode}; received the following response body:");
+            Console.WriteLine($"{await response.Content.ReadAsStringAsync()}");
+
+            var msg = $"Something went wrong. HTTP response code: {response.StatusCode}; response body: {await response.Content.ReadAsStringAsync()}";
 
             throw new Exception(msg);
         }
