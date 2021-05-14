@@ -8,9 +8,13 @@ The documentation there is now pretty good.. because we improved it :-)
 
 # How to use this tool
 
+Get help:
+
+```dggt --help```
+
 Download the certs:
 
-```dggt -d```
+```dggt -d -o path/to/save/trustlist.json```
 
 Upload a cert:
 

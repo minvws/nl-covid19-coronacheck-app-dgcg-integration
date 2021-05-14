@@ -5,6 +5,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
@@ -33,12 +34,27 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 
             var certificateChain = _certificateChainProvider.GetCertificates();
 
+            return Validate(content, signature, certificate, certificateChain);
+        }
+
+        public bool ValidateWith(byte[] content, byte[] signature, X509Certificate2 certificate)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+
+            return Validate(content, signature, certificate);
+        }
+
+        private bool Validate(byte[] content, byte[] signature, X509Certificate2 certificate, X509Certificate2[]? certificateChain = null)
+        {
             var contentInfo = new ContentInfo(content);
 
             var signedCms = new SignedCms(contentInfo, true);
 
             signedCms.Certificates.Add(certificate);
-            signedCms.Certificates.AddRange(certificateChain);
+
+            if (certificateChain != null) signedCms.Certificates.AddRange(certificateChain);
 
             signedCms.Decode(signature);
 

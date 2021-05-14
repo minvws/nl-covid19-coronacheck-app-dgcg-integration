@@ -77,14 +77,15 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
-                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
                 request.Headers.Add("X-SSL-Client-DN", dn);
-            } else
+            }
+            else
             {
-                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders disabled, not sending them with the request.");
             }
 
             Console.WriteLine($"Signing: IncludeChain={_config.IncludeChainInSignature}, IncludeCertificates={_config.IncludeCertsInSignature}");
@@ -106,10 +107,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
             if (response.StatusCode == HttpStatusCode.Created) return true;
 
-            if (response.StatusCode == HttpStatusCode.Conflict)
-            {
-                Console.WriteLine($"ERROR: a certificate of type TODO already exists!");
-            }
+            if (response.StatusCode == HttpStatusCode.Conflict) Console.WriteLine("ERROR: a certificate of type TODO already exists!");
 
             Console.WriteLine($"ERROR: HTTP status code: {response.StatusCode}; received the following response body:");
             Console.WriteLine($"{await response.Content.ReadAsStringAsync()}");
@@ -137,7 +135,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
-                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
@@ -145,7 +143,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             }
             else
             {
-                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders disabled, not sending them with the request.");
             }
 
             Console.WriteLine($"Signing: IncludeChain={_config.IncludeChainInSignature}, IncludeCertificates={_config.IncludeCertsInSignature}");
@@ -191,7 +189,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
             {
-                Console.WriteLine($"SendAuthenticationHeaders enabled, sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders enabled, sending them with the request.");
                 var sha = clientCert.ComputeSha256Hash();
                 request.Headers.Add("X-SSL-Client-SHA256", sha);
                 var dn = clientCert.Subject.Replace(" ", string.Empty);
@@ -199,7 +197,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             }
             else
             {
-                Console.WriteLine($"SendAuthenticationHeaders disabled, not sending them with the request.");
+                Console.WriteLine("SendAuthenticationHeaders disabled, not sending them with the request.");
             }
 
             // Set other required headers

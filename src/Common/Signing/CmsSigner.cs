@@ -46,7 +46,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
 
             var signer = new System.Security.Cryptography.Pkcs.CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
             var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Snapshot);
-            if (excludeCertificates) signer.IncludeOption = X509IncludeOption.None;
+            if (excludeCertificates) signer.IncludeOption = X509IncludeOption.WholeChain;
 
             if (signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
 

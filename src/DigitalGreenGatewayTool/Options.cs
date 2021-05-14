@@ -30,5 +30,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
         [Option('f', "file", Required = false, HelpText = "Path to the file to upload.")]
         public string File { get; set; }
+
+        [Option('o', "output", Required = false, HelpText = "Path to the file where the trustlist output will be written. Overwrites existing files.")]
+        public string Output { get; set; }
     }
 }

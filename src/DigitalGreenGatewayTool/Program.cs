@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using CommandLine;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,6 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
-using Microsoft.AspNetCore.Authentication.Certificate;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
@@ -65,6 +65,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                         x.GetRequiredService<ILogger<CertificateChainProvider>>()
                     ),
                     x.GetRequiredService<IUtcDateTimeProvider>()
+                ));
+
+            services.AddTransient(
+                x => new TrustListValidator(
+                    new CertificateProvider(
+                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
+                        x.GetRequiredService<ILogger<CertificateProvider>>()
+                    )
                 ));
 
             // Defaults for client authentication
