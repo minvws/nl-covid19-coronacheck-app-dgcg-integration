@@ -47,23 +47,26 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 Console.WriteLine("File:");
                 Console.WriteLine(trustListJson);
 
-                Console.WriteLine();
-                Console.WriteLine("Validating the TrustList");
-                var errors = new List<string>();
-                var validDigitalGreenCertificates = _validator.Validate(trustList, errors);
-
-                if (errors.Any())
+                if (_options.Validate)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Validation failed for a number of TrustList items:");
-                    foreach (var error in errors)
-                        Console.WriteLine(error);
-                }
+                    Console.WriteLine("Validating the TrustList");
+                    var errors = new List<string>();
+                    var validDigitalGreenCertificates = _validator.Validate(trustList, errors);
 
-                Console.WriteLine();
-                var validDgcJson = _serializer.Serialize(validDigitalGreenCertificates);
-                Console.WriteLine("Valid DGCs:");
-                Console.WriteLine(validDgcJson);
+                    if (errors.Any())
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Validation failed for a number of TrustList items:");
+                        foreach (var error in errors)
+                            Console.WriteLine(error);
+                    }
+
+                    Console.WriteLine();
+                    var validDgcJson = _serializer.Serialize(validDigitalGreenCertificates);
+                    Console.WriteLine("Valid DGCs:");
+                    Console.WriteLine(validDgcJson);
+                }
 
                 if (!string.IsNullOrWhiteSpace(_options.Output))
                 {

@@ -66,7 +66,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
                 var cscaItems = trustList
                                .Where(_ => _.Country == country)
-                               .Where(_ => _.CertificateType == CertificateType.Authentication);
+                               .Where(_ => _.CertificateType == CertificateType.Csca);
 
                 var uploadCert = uploadItem.GetCertificate();
 

@@ -86,4 +86,13 @@ Then convert the certificate into DER format:
 
 ```
  openssl x509 -outform der -in cert_dgc2.pem -out dgc2.der
- ```
+```
+
+
+# Converting the DGCG certs to PFX
+
+If you're using a local install of the gateway then you'll need to convert the certificates into PFX so that they can be used here.
+
+```
+openssl pkcs12 -inkey key_ta.pem -in cert_ta.pem -export -out ta.pfx
+```

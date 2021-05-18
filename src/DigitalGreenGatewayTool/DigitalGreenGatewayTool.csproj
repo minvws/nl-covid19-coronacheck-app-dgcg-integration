@@ -51,6 +51,12 @@
     <None Update="cert_dgc3.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="cert_ta.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="dgc2.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="key_auth.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

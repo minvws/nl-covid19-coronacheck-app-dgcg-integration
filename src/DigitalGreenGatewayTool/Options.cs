@@ -33,5 +33,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
         [Option('o', "output", Required = false, HelpText = "Path to the file where the trustlist output will be written. Overwrites existing files.")]
         public string Output { get; set; }
+
+        [Option('v', "revoke", Required = false, HelpText = "Validate the certificates received from DGCG.")]
+        public bool Validate { get; set; }
     }
 }
