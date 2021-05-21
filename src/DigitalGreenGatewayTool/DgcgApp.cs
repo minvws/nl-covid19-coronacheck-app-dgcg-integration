@@ -1,15 +1,15 @@
-﻿// // Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-// // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-// // SPDX-License-Identifier: EUPL-1.2
+﻿// Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
@@ -18,15 +18,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         private readonly IDgcgClient _dgcgClient;
         private readonly IDgcgClientConfig _dgcgClientConfig;
         private readonly Options _options;
-        private readonly IJsonSerializer _serializer;
         private readonly TrustListValidator _validator;
 
-        public DgcgApp(IDgcgClient dgcgClient, Options options, IJsonSerializer serializer, IDgcgClientConfig dgcgClientConfig,
-                       TrustListValidator validator)
+        public DgcgApp(IDgcgClient dgcgClient, Options options, IDgcgClientConfig dgcgClientConfig, TrustListValidator validator)
         {
             _dgcgClient = dgcgClient ?? throw new ArgumentNullException(nameof(dgcgClient));
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _dgcgClientConfig = dgcgClientConfig ?? throw new ArgumentNullException(nameof(dgcgClientConfig));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
@@ -41,32 +38,23 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
                 Console.WriteLine("Download successful!");
                 Console.WriteLine();
+                Console.WriteLine("Validating the TrustList");
+                var validatorResult = _validator.Validate(trustList);
 
-                var trustListJson = _serializer.Serialize(trustList);
-
-                Console.WriteLine("File:");
-                Console.WriteLine(trustListJson);
-
-                if (_options.Validate)
+                if (validatorResult.InvalidItems.Any())
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Validating the TrustList");
-                    var errors = new List<string>();
-                    var validDigitalGreenCertificates = _validator.Validate(trustList, errors);
-
-                    if (errors.Any())
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Validation failed for a number of TrustList items:");
-                        foreach (var error in errors)
-                            Console.WriteLine(error);
-                    }
-
+                    Console.WriteLine("Validation failed for a number of TrustList items:");
                     Console.WriteLine();
-                    var validDgcJson = _serializer.Serialize(validDigitalGreenCertificates);
-                    Console.WriteLine("Valid DGCs:");
-                    Console.WriteLine(validDgcJson);
+                    foreach (var item in validatorResult.InvalidItems)
+                        Console.WriteLine($"ID: {item.Kid} [{item.Country}]: {validatorResult.GetReasonInvalid(item)}");
                 }
+
+                Console.WriteLine();
+                Console.WriteLine("Valid DSCs:");
+                Console.WriteLine();
+                foreach (var item in validatorResult.ValidItems)
+                    Console.WriteLine($"ID: {item.Kid} [{item.Country}]");
 
                 if (!string.IsNullOrWhiteSpace(_options.Output))
                 {
@@ -74,8 +62,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                     Console.WriteLine($"Writing output to: {_options.Output}");
                     try
                     {
-                        // Write the raw output
-                        File.WriteAllText(_options.Output, trustListJson);
+                        var formatter = _options.Unformatted ? (ITrustListFormatter) new DgcgJsonFormatter() : new DutchFormatter();
+
+                        await File.WriteAllTextAsync(_options.Output, formatter.Format(validatorResult.ValidItems));
                     }
                     catch (Exception e)
                     {
@@ -134,6 +123,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             {
                 Console.WriteLine("No action selected.");
             }
+
+            if (_options.Pause) Console.Read();
         }
 
         private void HandleFileError()

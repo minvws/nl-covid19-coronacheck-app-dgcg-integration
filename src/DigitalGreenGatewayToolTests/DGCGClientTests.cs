@@ -1,5 +1,8 @@
-﻿using System.Linq;
-using System.Net.Http;
+﻿// Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
+
+using System.Linq;
 using Moq;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
@@ -22,7 +25,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
+            IDgcgClient client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList();
 
@@ -41,7 +44,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
+            IDgcgClient client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType);
 
@@ -67,7 +70,7 @@ namespace DigitalGreenGatewayToolTests
             var config = new Config();
             var authCertProvider = new FileSystemCertificateProvider(config);
             var signer = new Mock<IContentSigner>().Object;
-            var client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
+            IDgcgClient client = new DgcgClient(config, new StandardJsonSerializer(), authCertProvider, signer);
 
             var result = await client.GetTrustList(certificateType, land);
 

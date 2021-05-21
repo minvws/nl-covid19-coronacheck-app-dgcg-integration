@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
@@ -13,6 +17,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
@@ -28,7 +33,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                   .WithNotParsed(HandleParseError);
 
             using var serviceProvider = services.BuildServiceProvider();
-            // PrintConfig(serviceProvider);
             var app = serviceProvider.GetRequiredService<DgcgApp>();
             app.Run().Wait();
         }
@@ -93,32 +97,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             Console.WriteLine("Error parsing input, please check your call and try again.");
 
             Environment.Exit(0);
-        }
-
-        // ReSharper disable once UnusedMember.Local
-        private static void PrintConfig(IServiceProvider serviceProvider)
-        {
-            var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-
-            Console.WriteLine("** START CONFIGURATION **");
-
-            var conf1 = serviceProvider.GetRequiredService<IDgcgClientConfig>();
-            Console.WriteLine("DgcgClient");
-            Console.WriteLine(serializer.Serialize(conf1));
-
-            var conf2 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:Signing");
-            Console.WriteLine("Certificates:Signing");
-            Console.WriteLine(serializer.Serialize(conf2));
-
-            var conf3 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:SigningChain");
-            Console.WriteLine("Certificates:SigningChain");
-            Console.WriteLine(serializer.Serialize(conf3));
-
-            var conf4 = new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:Authentication");
-            Console.WriteLine("Certificates:Authentication");
-            Console.WriteLine(serializer.Serialize(conf4));
-
-            Console.WriteLine("** END CONFIGURATION **");
         }
     }
 }

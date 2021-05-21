@@ -1,16 +1,15 @@
-﻿// // Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-// // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-// // SPDX-License-Identifier: EUPL-1.2
+﻿// Copyright 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+// Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Diagnostics.CodeAnalysis;
 using CommandLine;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
-    // TODO: migrate to verbs :)
-    //
-    // ReSharper disable ClassNeverInstantiated.Global
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class Options
     {
         [Option('d', "download", Required = false, HelpText = "Download files, ")]
@@ -31,10 +30,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         [Option('f', "file", Required = false, HelpText = "Path to the file to upload.")]
         public string File { get; set; }
 
-        [Option('o', "output", Required = false, HelpText = "Path to the file where the trustlist output will be written. Overwrites existing files.")]
+        [Option('o', "output", Required = false, HelpText = "Path to the file where the trust-list output will be written. Overwrites existing files.")]
         public string Output { get; set; }
+
+        [Option("unformatted", Required = false, HelpText = "Output the raw unformatted TrustList JSON instead of the Dutch packaged format.")]
+        public bool Unformatted { get; set; }
 
         [Option('v', "revoke", Required = false, HelpText = "Validate the certificates received from DGCG.")]
         public bool Validate { get; set; }
+
+        [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
+        public bool Pause { get; set; }
     }
 }
