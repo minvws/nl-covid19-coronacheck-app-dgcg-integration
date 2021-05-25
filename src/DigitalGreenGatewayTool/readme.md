@@ -99,26 +99,41 @@ The configuration looks like this:
   "Certificates": {
     "Authentication": {
       "UseEmbedded": false,
-      "Path": "auth.pfx",
-      "Password": ""
+      "Path": "tls-cert.pfx",
+      "Password": "NWo3oXbmiLfZGf2n9BPf"
     },
-    "Signing": {
+    "UploadSignature": {
       "UseEmbedded": false,
-      "Path": "sign.pfx",
-      "Password": ""
+      "Path": "upload-cert.pfx",
+      "Password": "SxEhZFOm2pnDDlntqK0V"
     },
-    "SigningChain": {
+    "UploadSignatureChain": {
       "UseEmbedded": false,
       "Path": "only_used_if_IncludeChainInSignature_is_TRUE.pfx",
+      "Password": ""
+    },
+    "TrustAnchor": {
+      "UseEmbedded": false,
+      "Path": "ta.pem",
+      "Password": ""
+    },
+    "CmsSignature": {
+      "UseEmbedded": false,
+      "Path": "cms-cert.p12",
+      "Password": "123456"
+    },
+    "CmsSignatureChain": {
+      "UseEmbedded": false,
+      "Path": "cms-cert-chain.p7b",
       "Password": ""
     }
   },
   "DgcgClient": {
     "SendAuthenticationHeaders": true,
-    "GatewayUrl": "http://localhost:8080",
+    "GatewayUrl": "https://url-to-test",
     "IncludeChainInSignature": false,
-    "IncludeCertsInSignature": true 
-  } 
+    "IncludeCertsInSignature": false
+  }
 }
 ```
 
@@ -129,10 +144,27 @@ Under `DgcgClient`, the `GatewayUrl` must be set; for test this is: https://test
 The flag `SendAuthenticationHeaders` can be set in order to include the TLS authentication headers; this is
 probably always required. For EFGS this was optional in some circumstances.
 
-The flag `IncludeChainInSignature` when set will include the cert chain in the signature. You must also 
-configure the 'SigningChain' certificate if this is set.
+The flag `IncludeChainInSignature` when set will include the cert chain in the upload signature. You must also 
+configure the `SigningChain` certificate if this is set.
 
 The flag `IncludeCertsInSignature` when set will include the certificates in the signature.
+
+
+The certificate map contains the various certificates. The option `UseEmbedded` should be set to `false` in all
+cases, and the password blank unless otherwise specified.
+
+The certificates `Authentication` is our DGCG authentication certificate, `UploadSignature` and `UploadSignatureChain`
+are our DGCG TLS certificates. The first two include the private keys and require a password. You only need to include
+a `UploadSignatureChain` when `DgcgClient.IncludeChainInSignature` is set to `true`.
+
+The `TrustAnchor` is the DGCG trust anchor certificate, containing the public key only.
+
+The certificates `CmsSignature` and `CmsSignatureChain` are the CMS signing cert and the chain for our own signing 
+certificate. These are both required to support the `-w` option (which outputs the Dutch format in the output wrapper).
+
+Passwords are required for `CmsSignature`, `Authentication` and `UploadSignature`.
+
+Supported formats: PEM for the public keys. P12/PFX for certificates including private keys and P7B/PFX for chains.
 
 
 # Creating some DGC signing certs

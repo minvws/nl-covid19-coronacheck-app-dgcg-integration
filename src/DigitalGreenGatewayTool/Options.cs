@@ -43,6 +43,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
         public bool Pause { get; set; }
 
+        [Option('w', "wrap", Required = false, HelpText = "Sign and wrap the output with our CMS signing wrapper.")]
+        public bool Wrap { get; set; }
+
         public void ValidateSelectedOptions()
         {
             // Type

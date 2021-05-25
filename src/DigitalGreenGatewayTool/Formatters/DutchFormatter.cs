@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -21,10 +22,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
     public class DutchFormatter : ITrustListFormatter
     {
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IResponseBuilder _responseBuilder;
 
-        public DutchFormatter(IJsonSerializer serializer)
+        public DutchFormatter(IJsonSerializer serializer, IResponseBuilder responseBuilder)
         {
             _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _responseBuilder = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
         }
 
         private static IDictionary<string, string> OidName => new AttributeDictionary
@@ -60,7 +63,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                     resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
             }
 
-            return _jsonSerializer.Serialize(resultSet);
+            return _jsonSerializer.Serialize(_responseBuilder.Build(resultSet));
         }
     }
 

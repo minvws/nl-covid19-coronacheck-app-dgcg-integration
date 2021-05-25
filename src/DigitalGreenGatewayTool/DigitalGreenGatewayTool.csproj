@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,15 +9,20 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="cert_dgc1.der" />
     <None Remove="NLog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -36,48 +41,48 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="cert_dgc1.der" />
-  </ItemGroup>
-
-  <ItemGroup>
-     <None Update="cert_dgc1.der">
+     <None Update="appsettings.Development.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="Resources\cert_dgc1.der">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="auth.pfx">
+    <None Update="Resources\auth.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cert_dgc1.pem">
+    <None Update="Resources\cert_dgc1.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cert_dgc2.pem">
+    <None Update="Resources\cert_dgc2.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cert_dgc3.pem">
+    <None Update="Resources\cert_dgc3.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cert_ta.pem">
+    <None Update="Resources\cert_ta.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="dgc2.der">
+    <None Update="Resources\dgc2.der">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="key_auth.pem">
+    <None Update="Resources\key_auth.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="key_dgc1.pem">
+    <None Update="Resources\key_dgc1.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="key_dgc2.pem">
+    <None Update="Resources\key_dgc2.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="key_dgc3.pem">
+    <None Update="Resources\key_dgc3.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="sign.pfx">
+    <None Update="Resources\sign.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

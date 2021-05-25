@@ -16,6 +16,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
@@ -80,7 +81,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             services.AddTransient<HttpClient>();
             services.AddTransient<IDgcgClient, DgcgClient>();
             services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-            services.AddTransient<IJsonSerializer, StandardJsonSerializer>();
+            services.AddTransient<IJsonSerializer, UnsafeJsonSerializer>();
             services.AddCertificateProviders();
             services.AddLogging();
 
@@ -96,11 +97,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             services.AddTransient<IContentSigner>(
                 x => new CmsSigner(
                     new CertificateProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Signing"),
+                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignature"),
                         x.GetRequiredService<ILogger<CertificateProvider>>()
                     ),
                     new CertificateChainProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:SigningChain"),
+                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignatureChain"),
                         x.GetRequiredService<ILogger<CertificateChainProvider>>()
                     ),
                     x.GetRequiredService<IUtcDateTimeProvider>()
@@ -124,6 +125,29 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
             else
                 services.AddTransient<ITrustListFormatter, DutchFormatter>();
+
+            // Register the response wrapping
+            if (options.Wrap)
+                services.AddTransient<IResponseBuilder>(
+                    serviceProvider =>
+                    {
+                        var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
+                        var signer = new CmsSigner(
+                            new CertificateProvider(
+                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignature"),
+                                serviceProvider.GetRequiredService<ILogger<CertificateProvider>>()
+                            ),
+                            new CertificateChainProvider(
+                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignatureChain"),
+                                serviceProvider.GetRequiredService<ILogger<CertificateChainProvider>>()
+                            ),
+                            serviceProvider.GetRequiredService<IUtcDateTimeProvider>()
+                        );
+
+                        return new SignedResponseBuilder(serializer, signer);
+                    });
+            else
+                services.AddTransient<IResponseBuilder, StandardResponseBuilder>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
