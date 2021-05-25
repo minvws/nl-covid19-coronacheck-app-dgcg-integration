@@ -17,15 +17,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
     {
         private readonly IDgcgClient _dgcgClient;
         private readonly IDgcgClientConfig _dgcgClientConfig;
+        private readonly ITrustListFormatter _formatter;
         private readonly Options _options;
         private readonly TrustListValidator _validator;
 
-        public DgcgApp(IDgcgClient dgcgClient, Options options, IDgcgClientConfig dgcgClientConfig, TrustListValidator validator)
+        public DgcgApp(IDgcgClient dgcgClient, Options options, IDgcgClientConfig dgcgClientConfig, TrustListValidator validator, ITrustListFormatter formatter)
         {
             _dgcgClient = dgcgClient ?? throw new ArgumentNullException(nameof(dgcgClient));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _dgcgClientConfig = dgcgClientConfig ?? throw new ArgumentNullException(nameof(dgcgClientConfig));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
         }
 
         public async Task Run()
@@ -36,7 +38,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 
                 var trustList = await _dgcgClient.GetTrustList();
 
-                Console.WriteLine("Download successful!");
+                Console.WriteLine("Download successful!" + trustList.Count);
                 Console.WriteLine();
                 Console.WriteLine("Validating the TrustList");
                 var validatorResult = _validator.Validate(trustList);
@@ -62,9 +64,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                     Console.WriteLine($"Writing output to: {_options.Output}");
                     try
                     {
-                        var formatter = _options.Unformatted ? (ITrustListFormatter) new DgcgJsonFormatter() : new DutchFormatter();
-
-                        await File.WriteAllTextAsync(_options.Output, formatter.Format(validatorResult.ValidItems));
+                        await File.WriteAllTextAsync(_options.Output, _formatter.Format(validatorResult.ValidItems));
                     }
                     catch (Exception e)
                     {
@@ -123,8 +123,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             {
                 Console.WriteLine("No action selected.");
             }
-
-            if (_options.Pause) Console.Read();
         }
 
         private void HandleFileError()

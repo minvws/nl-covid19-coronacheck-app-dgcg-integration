@@ -17,7 +17,11 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
+using NLog;
+using NLog.Extensions.Logging;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
 {
@@ -26,19 +30,50 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
     {
         private static void Main(string[] args)
         {
-            var services = new ServiceCollection();
+            try
+            {
+                var services = new ServiceCollection();
 
-            Parser.Default.ParseArguments<Options>(args)
-                  .WithParsed(opt => ConfigureContainer(services, opt))
-                  .WithNotParsed(HandleParseError);
+                Parser.Default.ParseArguments<Options>(args)
+                      .WithParsed(opt => ConfigureContainer(services, opt))
+                      .WithNotParsed(HandleParseError);
 
-            using var serviceProvider = services.BuildServiceProvider();
-            var app = serviceProvider.GetRequiredService<DgcgApp>();
-            app.Run().Wait();
+                using var serviceProvider = services.BuildServiceProvider();
+                var options = serviceProvider.GetRequiredService<Options>();
+                options.ValidateSelectedOptions();
+                var app = serviceProvider.GetRequiredService<DgcgApp>();
+                app.Run().Wait();
+
+                if (options.Pause)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Finished! Press ENTER to exit.");
+                    Console.ReadLine();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error with NLog configuration");
+
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                LogManager.Shutdown();
+            }
         }
 
         private static void ConfigureContainer(ServiceCollection services, Options options)
         {
+            services.AddLogging(loggingBuilder =>
+            {
+                // configure Logging with NLog
+                loggingBuilder.ClearProviders();
+                loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+                loggingBuilder.AddNLog("nlog.config");
+            });
+
             services.AddSingleton(options);
             services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
             services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
@@ -83,6 +118,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             services
                .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                .AddCertificate();
+
+            // Register formatter
+            if (options.Unformatted)
+                services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
+            else
+                services.AddTransient<ITrustListFormatter, DutchFormatter>();
 
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();

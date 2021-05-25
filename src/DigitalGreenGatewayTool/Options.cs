@@ -2,6 +2,7 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using CommandLine;
 
@@ -36,10 +37,44 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         [Option("unformatted", Required = false, HelpText = "Output the raw unformatted TrustList JSON instead of the Dutch packaged format.")]
         public bool Unformatted { get; set; }
 
-        [Option('v', "revoke", Required = false, HelpText = "Validate the certificates received from DGCG.")]
+        [Option('v', "validate", Required = false, HelpText = "Validate the certificates received from DGCG.")]
         public bool Validate { get; set; }
 
         [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
         public bool Pause { get; set; }
+
+        public void ValidateSelectedOptions()
+        {
+            // Type
+            if (!string.IsNullOrWhiteSpace(Type))
+            {
+                switch (Type)
+                {
+                    case "AUTHENTICATION":
+                        break;
+                    case "UPLOAD":
+                        break;
+                    case "CSCA":
+                        break;
+                    case "DSC":
+                        break;
+                    default:
+                        Console.WriteLine($"ERROR: Invalid type `{Type}`, acceptable values are: `AUTHENTICATION`, `UPLOAD`, `CSCA`, `DSC`.");
+                        Environment.Exit(1);
+                        break;
+                }
+
+                if (Validate) Console.WriteLine("WARNING: you are downloading trust list items of a specific type, this may cause the validation to fail.");
+            }
+
+            // Country
+            if (!string.IsNullOrWhiteSpace(Country))
+            {
+                if (Country.Length == 2) return;
+
+                Console.WriteLine($"ERROR: Invalid country `{Country}`, please use a two-digit ISO code.");
+                Environment.Exit(1);
+            }
+        }
     }
 }

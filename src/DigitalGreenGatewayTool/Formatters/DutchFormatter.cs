@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -19,9 +20,19 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
     /// </summary>
     public class DutchFormatter : ITrustListFormatter
     {
+        private readonly IJsonSerializer _jsonSerializer;
+
+        public DutchFormatter(IJsonSerializer serializer)
+        {
+            _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+        }
+
+        private static IDictionary<string, string> OidName => new AttributeDictionary
+            {{"1.3.6.1.4.1.0.1847.2021.1.1", "t"}, {"1.3.6.1.4.1.0.1847.2021.1.2", "v"}, {"1.3.6.1.4.1.0.1847.2021.1.3", "r"}};
+
         public string Format(IEnumerable<TrustListItem> trustList)
         {
-            var resultSet = new Dictionary<string, DutchFormatItem>();
+            var resultSet = new Dictionary<string, List<DutchFormatItem>>();
 
             foreach (var item in trustList)
             {
@@ -39,13 +50,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                     foreach (var usage in certificate.GetExtendedKeyUsage())
                     {
                         if (usage == null) continue;
-                        resultItem.KeyUsage.Add(usage.ToString());
+                        var usageOid = usage.ToString() ?? string.Empty;
+                        if (OidName.ContainsKey(usageOid)) resultItem.KeyUsage.Add(OidName[usageOid]);
                     }
 
-                resultSet.Add(item.Kid, resultItem);
+                if (resultSet.ContainsKey(item.Kid))
+                    resultSet[item.Kid].Add(resultItem);
+                else
+                    resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
             }
 
-            return JsonSerializer.Serialize(resultSet);
+            return _jsonSerializer.Serialize(resultSet);
         }
     }
 
