@@ -6,6 +6,7 @@ https://github.com/eu-digital-green-certificates/dgc-gateway
 
 The documentation there is now pretty good.. because we improved it :-)
 
+
 # How to use this tool
 
 Get help:
@@ -27,6 +28,67 @@ Revoke a cert:
 ```dggt -r -f path/to/cert.```
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
+
+
+# Command-line interface
+
+```-p | --pause```
+
+Pauses once the task has executed until a key press.
+
+## TrustList
+
+```-d | --download```
+
+Download the trust list.
+
+```-c <country--two-letter-iso-code> | --country <country--two-letter-iso-code>```
+
+Only download trust list for the given country. `<country--two-letter-iso-code>` must be a valid two-letter ISO country code.
+
+```-t <type> | --type <type>```
+
+Only download trust list items of the given type. NOTE: this can result in validation failure as certain certificates are validated by those of other types.
+
+`<type>` can be any of: `AUTHENTICATION`, `UPLOAD`, `CSCA`, `DSC`.
+
+```-o <path-to-file> | --output <path-to-file> ```
+
+Output file; the TrustList will be output here.
+
+```--unformatted```
+
+Outputs the raw unformatted trust list if set. Otherwise the output will be the output expected of our apps.
+
+```-v | --validate```
+
+Validates the certificates on the trust list. This validates the trust chain as well as the format. Errors will be printed to the console and will not be included in the output.
+
+## Upload
+
+```-u | --upload```
+
+Upload the given file.
+
+```-f <file> | --file <file>```
+
+Required! Provides the file (containing the DSC encoded as a DER) to be uploaded.
+
+`<file>` is a valid path/file name.
+
+
+## Revoke
+
+```-r | --revoke```
+
+Revokes the given file.
+
+```-f <file> | --file <file>```
+
+Required! Provides the file (containing the DSC encoded as a DER) to be uploaded.
+
+`<file>` is a valid path/file name.
+
 
 # Configuration
 
@@ -71,6 +133,7 @@ The flag `IncludeChainInSignature` when set will include the cert chain in the s
 configure the 'SigningChain' certificate if this is set.
 
 The flag `IncludeCertsInSignature` when set will include the certificates in the signature.
+
 
 # Creating some DGC signing certs
 
