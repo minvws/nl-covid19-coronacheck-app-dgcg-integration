@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DigitalGreenGatewayTool": {
+      "commandName": "Project",
+      "commandLineArgs": "-d -v -p -o \"output.json\" -w"
+    }
+  }
+}

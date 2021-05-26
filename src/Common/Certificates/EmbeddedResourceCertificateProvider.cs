@@ -12,7 +12,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
     /// <summary>
     ///     Loads a certificate in p12 format
     /// </summary>
-    public class EmbeddedResourceCertificateProvider : ICertificateProvider
+    // ReSharper disable once RedundantExtendsListEntry
+    public class EmbeddedResourceCertificateProvider : ICertificateProvider, IAuthenticationCertificateProvider
     {
         private readonly ICertificateLocationConfig _config;
 
