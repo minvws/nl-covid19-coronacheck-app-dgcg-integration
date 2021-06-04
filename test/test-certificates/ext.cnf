@@ -1,6 +1,0 @@
-[ default_cert_settings ]
-nsComment = For testing only and no this is not the real thing. Duh.
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid:always,issuer
-basicConstraints = CA:FALSE

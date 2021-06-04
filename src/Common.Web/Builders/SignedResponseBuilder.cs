@@ -26,7 +26,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
             if (responseDto == null) throw new ArgumentNullException(nameof(responseDto));
 
             var jsonString = _jsonSerializer.Serialize(responseDto);
-            var response = new SignedDataWrapper<T>
+            var response = new SignedDataWrapper
             {
                 Payload = Base64.Encode(jsonString),
                 Signature = GetSignatureB64(jsonString)
