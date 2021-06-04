@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
     <ProjectReference Include="..\IssuerApi.Client\IssuerApi.Client.csproj" />
-    <ProjectReference Include="..\ProofOfTestApi\ProofOfTestApi.csproj" />
   </ItemGroup>
 
 </Project>

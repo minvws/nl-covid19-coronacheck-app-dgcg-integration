@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
-    <ProjectReference Include="..\Issuer.Services\Issuer.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj" />
-    <ProjectReference Include="..\IssuerApi\IssuerApi.csproj" />
   </ItemGroup>
 
 </Project>

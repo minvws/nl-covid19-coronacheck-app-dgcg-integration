@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Common.Web\Common.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
 </Project>
