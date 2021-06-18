@@ -77,10 +77,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         {
             var validUploadSignature = false;
 
-            var contentInfo = new ContentInfo(GetCertificateBytes());
-            var signedCms = new SignedCms(contentInfo, true);
-            foreach (var signer in signedCms.SignerInfos) Log.LogInformation(signer.SignerIdentifier.ToString());
-
             foreach (var cert in certificates)
             {
                 validUploadSignature = ValidateSignature(cert);
