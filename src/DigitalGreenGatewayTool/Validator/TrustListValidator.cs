@@ -75,22 +75,37 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
 
             foreach (var countryName in nestedTrustList.Keys)
             {
-                var uploadItem = nestedTrustList[countryName][CertificateType.Upload].FirstOrDefault();
-                uploadItem?.ValidateSignature(trustAnchorCert);
-
                 //
-                // Validate Upload certificate
-                if (uploadItem == null || nestedTrustList[countryName][CertificateType.Upload].Count > 1 || !uploadItem.HasValidSignature)
-                {
-                    Log.LogWarning(uploadItem == null
-                                       ? $"No upload certificates found for {countryName}. All of their certificates will be marked as invalid."
-                                       : !uploadItem.HasValidSignature
-                                           ? $"Invalid signature on the upload certificate for {countryName}. All of their certificates will be marked as invalid."
-                                           : $"Multiple upload certificates found for {countryName}. Only one expected. All of their certificates will be marked as invalid.");
+                // Validate Upload certificates
+                var uploadItems = nestedTrustList[countryName][CertificateType.Upload].ToList();
+                var validUploadItems = new List<TrustListItem>();
 
-                    var msg = uploadItem != null && uploadItem.HasValidSignature
-                        ? "No single upload certificate available for the country"
-                        : "Invalid signature on the Upload certificate.";
+                foreach (var uploadItem in uploadItems)
+                {
+                    uploadItem.ValidateSignature(trustAnchorCert);
+
+                    if (uploadItem.HasValidSignature)
+                    {
+                        validUploadItems.Add(uploadItem);
+                    }
+                    else
+                    {
+                        Log.LogWarning($"Invalid signature on the upload certificate for {countryName}. All of their certificates will be marked as invalid.");
+
+                        const string msg = "Invalid signature on the Upload certificate.";
+
+                        foreach (var item in nestedTrustList[countryName][CertificateType.Csca])
+                            result.AddInvalid(item, msg);
+                        foreach (var item in nestedTrustList[countryName][CertificateType.Dsc])
+                            result.AddInvalid(item, msg);
+                    }
+                }
+
+                if (!validUploadItems.Any())
+                {
+                    Log.LogWarning($"No valid upload certificates found for {countryName}. All of their certificates will be marked as invalid.");
+
+                    const string msg = "No upload certificate(s) available for the country";
 
                     foreach (var item in nestedTrustList[countryName][CertificateType.Csca])
                         result.AddInvalid(item, msg);
@@ -99,6 +114,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
 
                     continue;
                 }
+
+                var uploadCertificates = validUploadItems.Select(_ => _.GetCertificate()).ToList();
 
                 //
                 // Validate CSCA certificate
@@ -119,7 +136,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 var validCscaCertificates = new Dictionary<string, X509Certificate2>();
                 foreach (var cscaItem in nestedTrustList[countryName][CertificateType.Csca])
                 {
-                    cscaItem.ValidateSignature(uploadItem.GetCertificate());
+                    cscaItem.ValidateSignature(uploadCertificates);
 
                     if (!cscaItem.HasValidSignature) result.AddInvalid(cscaItem, "Invalid signature");
 
@@ -138,7 +155,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 // Validate DSG
                 foreach (var dsgItem in nestedTrustList[countryName][CertificateType.Dsc])
                 {
-                    dsgItem.ValidateSignature(uploadItem.GetCertificate());
+                    dsgItem.ValidateSignature(uploadCertificates);
 
                     if (!dsgItem.HasValidSignature) result.AddInvalid(dsgItem, "Invalid signature");
 
