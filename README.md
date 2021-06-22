@@ -26,11 +26,11 @@ We use two scripts to build and publish our code; by default these are not execu
 
 Make the build script executable:
 
-```sudo chmod +x src/build.sh ```
+```sudo chmod +x build.sh ```
 
 Make the publish script executable:
 
-```sudo chmod +x src/build.sh ```
+```sudo chmod +x publish.sh ```
 	
 ### Buidling and publishing the solution
 
