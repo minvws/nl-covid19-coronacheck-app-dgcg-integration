@@ -78,13 +78,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
 
             foreach (var item in cert.GetSubjectAlternativeNames())
             {
-                if (item is not ArrayList itemCollection) continue;
-                if (itemCollection is not {Count: 2}) continue;
-                if (itemCollection[0] is not int key) continue;
-                if (key != 4) continue; // The number 4 is the magic number where land code is stored
+                if (item is not (ArrayList {Count: 2} itemCollection)) continue;
+                if (itemCollection[0] is not 4) continue;
                 if (itemCollection[1] is not string value) continue;
 
-                if (value.StartsWith("L=")) return value.Substring(2);
+                if (value.StartsWith("L=")) return value[2..];
             }
 
             return string.Empty;
