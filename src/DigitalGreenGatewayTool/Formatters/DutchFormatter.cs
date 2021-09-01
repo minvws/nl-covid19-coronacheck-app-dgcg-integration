@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
@@ -13,6 +14,7 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
+using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters
 {
@@ -45,7 +47,9 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                 {
                     SubjectPublicKey =
                         Convert.ToBase64String(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(certificate.GetPublicKey()).GetDerEncoded()),
-                    KeyUsage = new List<string>()
+                    KeyUsage = new List<string>(),
+                    Country = item.Country,
+                    Land = GetSubjectAlternativeNameLandCode(certificate)
                 };
 
                 var extendedKeyUsage = certificate.GetExtendedKeyUsage();
@@ -65,6 +69,26 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
 
             return _jsonSerializer.Serialize(_responseBuilder.Build(resultSet));
         }
+
+        private string GetSubjectAlternativeNameLandCode(X509Certificate cert)
+        {
+            var subjectAlternativeNames = cert.GetSubjectAlternativeNames();
+
+            if (subjectAlternativeNames == null) return string.Empty;
+
+            foreach (var item in cert.GetSubjectAlternativeNames())
+            {
+                if (item is not ArrayList itemCollection) continue;
+                if (itemCollection is not {Count: 2}) continue;
+                if (itemCollection[0] is not int key) continue;
+                if (key != 4) continue; // The number 4 is the magic number where land code is stored
+                if (itemCollection[1] is not string value) continue;
+
+                if (value.StartsWith("L=")) return value.Substring(2);
+            }
+
+            return string.Empty;
+        }
     }
 
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
@@ -72,6 +96,10 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
     internal class DutchFormatItem
     {
         [JsonPropertyName("subjectPk")] public string SubjectPublicKey { get; set; }
+
+        [JsonPropertyName("ian")] public string Country { get; set; }
+
+        [JsonPropertyName("san")] public string Land { get; set; }
 
         [JsonPropertyName("keyUsage")] public IList<string> KeyUsage { get; set; }
     }
