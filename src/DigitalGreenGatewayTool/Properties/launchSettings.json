@@ -2,7 +2,7 @@
   "profiles": {
     "DigitalGreenGatewayTool": {
       "commandName": "Project",
-      "commandLineArgs": "-d -v -p -o \"output.json\" -w"
+      "commandLineArgs": "-d -v -p -o \"output.json\" -w --third-party-keys-file \"GB.json\""
     }
   }
 }

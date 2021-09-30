@@ -58,11 +58,27 @@ Output file; the TrustList will be output here.
 
 ```--unformatted```
 
-Outputs the raw unformatted trust list if set. Otherwise the output will be the output expected of our apps.
+Outputs the raw unformatted trust list if set. Does NOT append third party keys. Otherwise the output will be the output expected of our apps.
+This option exists in order to debug issues with the output from the DGCG server.
 
 ```-v | --validate```
 
 Validates the certificates on the trust list. This validates the trust chain as well as the format. Errors will be printed to the console and will not be included in the output.
+
+```--third-party-keys-file <path-to-file>```
+
+The keys included in the provided file will be appended to the trust list. All keys must belong to the same country, so only 1 country is supported.
+
+* The first two letters of the file name will be used as the country code.
+* The file itself must be in the following format:
+
+    [
+	    {
+		    "kid": "base64",
+		    "publicKey": "base64"
+	    },
+    ]
+
 
 ## Upload
 
