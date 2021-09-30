@@ -11,6 +11,7 @@ using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.Security;
 
@@ -64,13 +65,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
         public void ParseCertificate()
         {
-            _certBytes = Convert.FromBase64String(RawData);
+            _certBytes = Base64.Decode(RawData);
             _cert = new X509Certificate2(_certBytes);
         }
 
         public void ParseSignature()
         {
-            _sigBytes = Convert.FromBase64String(Signature);
+            _sigBytes = Base64.Decode(Signature);
         }
 
         public bool ValidateSignature(IEnumerable<X509Certificate2> certificates)

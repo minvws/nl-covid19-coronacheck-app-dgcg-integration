@@ -21,7 +21,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
             _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public string Format(IEnumerable<TrustListItem> trustList)
+        public string Format(IEnumerable<TrustListItem> trustList, Options options = null)
         {
             return _jsonSerializer.Serialize(trustList);
         }

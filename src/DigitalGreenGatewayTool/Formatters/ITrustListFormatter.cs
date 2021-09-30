@@ -9,6 +9,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
 {
     public interface ITrustListFormatter
     {
-        string Format(IEnumerable<TrustListItem> trustList);
+        string Format(IEnumerable<TrustListItem> trustList, Options options = null);
     }
 }

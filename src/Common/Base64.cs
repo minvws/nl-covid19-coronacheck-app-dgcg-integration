@@ -2,6 +2,8 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Linq;
 using static System.Convert;
 using static System.Text.Encoding;
 
@@ -9,6 +11,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 {
     public static class Base64
     {
+        /// <summary>
+        ///     Converts the specified string, which encodes binary data as Base64 digits, to the equivalent byte array.
+        ///     Supports base64 which is missing the padding.
+        /// </summary>
+        /// <param name="s">The string to convert</param>
+        /// <returns>The array of bytes represented by the specified Base64 string.</returns>
+        public static byte[] Decode(string s)
+        {
+            if (s.Length == 0) return Array.Empty<byte>();
+
+            if (s.Length % 4 > 0) s += string.Concat(Enumerable.Repeat("=", 4 - s.Length % 4));
+
+            return FromBase64String(s);
+        }
+
         /// <summary>
         ///     Decodes the given base64 string as UTF8 to a string
         /// </summary>
@@ -18,7 +35,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
         {
             if (b64String.Length == 0) return string.Empty;
 
-            var bytes = FromBase64String(b64String);
+            var bytes = Decode(b64String);
 
             return UTF8.GetString(bytes);
         }

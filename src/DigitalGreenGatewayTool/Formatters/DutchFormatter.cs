@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -35,7 +36,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
         private static IDictionary<string, string> OidName => new AttributeDictionary
             {{"1.3.6.1.4.1.0.1847.2021.1.1", "t"}, {"1.3.6.1.4.1.0.1847.2021.1.2", "v"}, {"1.3.6.1.4.1.0.1847.2021.1.3", "r"}};
 
-        public string Format(IEnumerable<TrustListItem> trustList)
+        public string Format(IEnumerable<TrustListItem> trustList, Options options = null)
         {
             var resultSet = new Dictionary<string, List<DutchFormatItem>>();
 
@@ -67,7 +68,33 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                     resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
             }
 
+            if (options != null && !string.IsNullOrWhiteSpace(options.ThirdPartyKeysFile)) AddThirdPartyKeys(options.ThirdPartyKeysFile, resultSet);
+
             return _jsonSerializer.Serialize(_responseBuilder.Build(resultSet));
+        }
+
+        private void AddThirdPartyKeys(string path, Dictionary<string, List<DutchFormatItem>> resultSet)
+        {
+            var thirdPartyKeysText = File.ReadAllText(path);
+            var thirdPartyKeys = _jsonSerializer.Deserialize<List<ThirdPartyKey>>(thirdPartyKeysText);
+
+            var countryCode = Path.GetFileName(path).Substring(0, 2);
+
+            foreach (var item in thirdPartyKeys)
+            {
+                var resultItem = new DutchFormatItem
+                {
+                    Country = countryCode,
+                    SubjectPublicKey = item.PublicKey,
+                    KeyUsage = new List<string>(),
+                    Land = ""
+                };
+
+                if (resultSet.ContainsKey(item.Kid))
+                    resultSet[item.Kid].Add(resultItem);
+                else
+                    resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
+            }
         }
 
         private string GetSubjectAlternativeNameLandCode(X509Certificate cert)
@@ -100,5 +127,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
         [JsonPropertyName("san")] public string Land { get; set; }
 
         [JsonPropertyName("keyUsage")] public IList<string> KeyUsage { get; set; }
+    }
+
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+    [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")]
+    internal class ThirdPartyKey
+    {
+        [JsonPropertyName("kid")] public string Kid { get; set; }
+
+        [JsonPropertyName("publicKey")] public string PublicKey { get; set; }
     }
 }
