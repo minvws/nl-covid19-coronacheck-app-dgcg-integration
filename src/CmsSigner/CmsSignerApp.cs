@@ -5,6 +5,7 @@
 using System;
 using System.Text;
 using CmsSigner.Model;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
 
@@ -29,8 +30,8 @@ namespace CmsSigner
             {
                 var json = Encoding.UTF8.GetString(inputFile);
                 var signedDataResponse = _jsonSerializer.Deserialize<SignedDataResponse>(json);
-                var signatureBytes = Convert.FromBase64String(signedDataResponse.Signature!);
-                var payloadBytes = Convert.FromBase64String(signedDataResponse.Payload!);
+                var signatureBytes = Base64.Decode(signedDataResponse.Signature!);
+                var payloadBytes = Base64.Decode(signedDataResponse.Payload!);
 
                 var valid = _validator.Validate(payloadBytes, signatureBytes);
 
