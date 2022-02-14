@@ -38,7 +38,7 @@ We provide a `build.bat` (`build.sh`) and `publish.bat` (`publish.sh`) which bui
 
 ### Running the tool
 
-See the readme.md in `src/DigitalGreenGatewayTool` for more info!
+See the `readme.md` in `src/DigitalGreenGatewayTool` for more info!
 
 ## Development & Contribution process
 

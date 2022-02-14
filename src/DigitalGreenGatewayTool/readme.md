@@ -115,13 +115,13 @@ The configuration looks like this:
   "Certificates": {
     "Authentication": {
       "UseEmbedded": false,
-      "Path": "tls-cert.pfx",
-      "Password": "NWo3oXbmiLfZGf2n9BPf"
+      "Path": "auth.pfx",
+      "Password": "..."
     },
     "UploadSignature": {
       "UseEmbedded": false,
-      "Path": "upload-cert.pfx",
-      "Password": "SxEhZFOm2pnDDlntqK0V"
+      "Path": "sign.pfx",
+      "Password": ".."
     },
     "UploadSignatureChain": {
       "UseEmbedded": false,

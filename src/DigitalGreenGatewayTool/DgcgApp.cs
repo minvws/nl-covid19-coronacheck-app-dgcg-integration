@@ -52,8 +52,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                         Console.WriteLine($"ID: {item.Kid} [{item.Country}]: {validatorResult.GetReasonInvalid(item)}");
                 }
 
-                //if (string.IsNullOrWhiteSpace(_options.ThirdPartyKeysFile)) AddExternalKeys(_options.ThirdPartyKeysFile, validatorResult);
-
                 Console.WriteLine();
                 Console.WriteLine("Valid DSCs:");
                 Console.WriteLine();
@@ -126,15 +124,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 Console.WriteLine("No action selected.");
             }
         }
-
-        //private void AddExternalKeys(string externalKeysPath, TrustListValidatorResult trustList)
-        //{
-        //    var serializer = new StandardJsonSerializer();
-        //    var jsonString = File.ReadAllText(externalKeysPath);
-        //    var extraItems = serializer.Deserialize<List<TrustListItem>>(jsonString);
-
-        //    foreach (var item in extraItems) trustList.AddValid(item);
-        //}
 
         private void HandleFileError()
         {
