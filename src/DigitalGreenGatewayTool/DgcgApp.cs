@@ -33,96 +33,109 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         public async Task Run()
         {
             if (_options.Download)
-            {
-                Console.WriteLine($"Downloading the Trust List from: {_dgcgClientConfig.GatewayUrl}");
-
-                var trustList = await _dgcgClient.GetTrustList();
-
-                Console.WriteLine("Download successful!" + trustList.Count);
-                Console.WriteLine();
-                Console.WriteLine("Validating the TrustList");
-                var validatorResult = _validator.Validate(trustList);
-
-                if (validatorResult.InvalidItems.Any())
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Validation failed for a number of TrustList items:");
-                    Console.WriteLine();
-                    foreach (var item in validatorResult.InvalidItems)
-                        Console.WriteLine($"ID: {item.Kid} [{item.Country}]: {validatorResult.GetReasonInvalid(item)}");
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("Valid DSCs:");
-                Console.WriteLine();
-                foreach (var item in validatorResult.ValidItems)
-                    Console.WriteLine($"ID: {item.Kid} [{item.Country}]");
-
-                if (!string.IsNullOrWhiteSpace(_options.Output))
-                {
-                    Console.WriteLine();
-                    Console.WriteLine($"Writing output to: {_options.Output}");
-                    try
-                    {
-                        await File.WriteAllTextAsync(_options.Output, _formatter.Format(validatorResult.ValidItems, _options));
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("ERROR: unable to write to file. See error message below for more details.");
-                        Console.WriteLine(e.Message);
-                        Environment.Exit(1);
-                    }
-                }
-            }
+                HandleDownload();
+            else if (_options.Upload)
+                HandleUpload();
             else if (_options.Upload || _options.Revoke)
-            {
-                byte[] fileBytes = null;
-
-                if (string.IsNullOrWhiteSpace(_options.File))
-                {
-                    Console.WriteLine("ERROR: no file provided!");
-
-                    Environment.Exit(1);
-                }
-
-                try
-                {
-                    fileBytes = await File.ReadAllBytesAsync(_options.File);
-                }
-                catch (FileNotFoundException)
-                {
-                    HandleFileError();
-                }
-                catch (FileLoadException)
-                {
-                    HandleFileError();
-                }
-                catch (SecurityException)
-                {
-                    HandleFileError();
-                }
-
-                if (_options.Upload)
-                {
-                    Console.WriteLine($"Uploading the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
-
-                    var result = await _dgcgClient.Upload(fileBytes);
-
-                    Console.WriteLine(result ? "Certificate successfully uploaded!" : "Certificate upload failed!");
-                }
-                else
-                {
-                    Console.WriteLine($"Revoking the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
-
-                    var result = await _dgcgClient.Revoke(fileBytes);
-
-                    Console.WriteLine(result ? "Certificate successfully revoked!" : "Certificate revoke failed!");
-                }
-            }
+                HandleRevoke();
             else
-            {
                 Console.WriteLine("No action selected.");
+        }
+
+        private async void HandleDownload()
+        {
+            Console.WriteLine($"Downloading the Trust List from: {_dgcgClientConfig.GatewayUrl}");
+
+            var trustList = await _dgcgClient.GetTrustList();
+
+            Console.WriteLine("Download successful!" + trustList.Count);
+            Console.WriteLine();
+            Console.WriteLine("Validating the TrustList");
+            var validatorResult = _validator.Validate(trustList);
+
+            if (validatorResult.InvalidItems.Any())
+            {
+                Console.WriteLine();
+                Console.WriteLine("Validation failed for a number of TrustList items:");
+                Console.WriteLine();
+                foreach (var item in validatorResult.InvalidItems)
+                    Console.WriteLine($"ID: {item.Kid} [{item.Country}]: {validatorResult.GetReasonInvalid(item)}");
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Valid DSCs:");
+            Console.WriteLine();
+            foreach (var item in validatorResult.ValidItems)
+                Console.WriteLine($"ID: {item.Kid} [{item.Country}]");
+
+            if (string.IsNullOrWhiteSpace(_options.Output)) return;
+
+            Console.WriteLine();
+            Console.WriteLine($"Writing output to: {_options.Output}");
+            try
+            {
+                await File.WriteAllTextAsync(_options.Output, _formatter.Format(validatorResult.ValidItems, _options));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR: unable to write to file. See error message below for more details.");
+                Console.WriteLine(e.Message);
+                Environment.Exit(1);
+            }
+        }
+
+        private async void HandleUpload()
+        {
+            byte[] fileBytes = null;
+
+            if (string.IsNullOrWhiteSpace(_options.File))
+            {
+                Console.WriteLine("ERROR: no file provided!");
+
+                Environment.Exit(1);
+            }
+
+            try
+            {
+                fileBytes = await File.ReadAllBytesAsync(_options.File);
+            }
+            catch (Exception e) when (e is FileNotFoundException || e is FileLoadException || e is SecurityException)
+            {
+                HandleFileError();
+            }
+
+            Console.WriteLine($"Uploading the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
+
+            var result = await _dgcgClient.Upload(fileBytes);
+
+            Console.WriteLine(result ? "Certificate successfully uploaded!" : "Certificate upload failed!");
+        }
+
+        private async void HandleRevoke()
+        {
+            byte[] fileBytes = null;
+
+            if (string.IsNullOrWhiteSpace(_options.File))
+            {
+                Console.WriteLine("ERROR: no file provided!");
+
+                Environment.Exit(1);
+            }
+
+            try
+            {
+                fileBytes = await File.ReadAllBytesAsync(_options.File);
+            }
+            catch (Exception e) when (e is FileNotFoundException || e is FileLoadException || e is SecurityException)
+            {
+                HandleFileError();
+            }
+
+            Console.WriteLine($"Revoking the certificate {_options.File} to  {_dgcgClientConfig.GatewayUrl}");
+
+            var result = await _dgcgClient.Revoke(fileBytes);
+
+            Console.WriteLine(result ? "Certificate successfully revoked!" : "Certificate revoke failed!");
         }
 
         private void HandleFileError()
