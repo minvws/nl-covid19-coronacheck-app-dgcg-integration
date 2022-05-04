@@ -37,15 +37,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             return Validate(content, signature, certificate, certificateChain);
         }
 
-        public bool ValidateWith(byte[] content, byte[] signature, X509Certificate2 certificate)
-        {
-            if (content == null) throw new ArgumentNullException(nameof(content));
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
-
-            return Validate(content, signature, certificate);
-        }
-
         private bool Validate(byte[] content, byte[] signature, X509Certificate2 certificate, X509Certificate2[]? certificateChain = null)
         {
             var contentInfo = new ContentInfo(content);
@@ -64,7 +55,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
             }
             catch (CryptographicException e)
             {
-                _log.LogWarning("CMS signature did not validate due to a Cryptographic exception. See the exception for details.", e);
+                _log.LogWarning(e, "CMS signature did not validate due to a Cryptographic exception. See the exception for details.");
 
                 return false;
             }

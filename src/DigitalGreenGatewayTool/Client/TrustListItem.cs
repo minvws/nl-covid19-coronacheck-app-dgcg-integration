@@ -46,8 +46,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
         // Base64 encoded certificate
         [JsonPropertyName("rawData")] public string RawData { get; set; }
 
-        public bool HasValidSignature { get; private set; }
-
         public byte[] GetSignature()
         {
             return _sigBytes ?? throw new InvalidOperationException("Signature must be Parsed before it can be accessed");
@@ -76,15 +74,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
 
         public bool ValidateSignature(IEnumerable<X509Certificate2> certificates)
         {
-            var validUploadSignature = false;
-
-            foreach (var cert in certificates)
-            {
-                validUploadSignature = ValidateSignature(cert);
-                if (validUploadSignature) break;
-            }
-
-            return validUploadSignature;
+            return certificates.Any(ValidateSignature);
         }
 
         public bool ValidateSignature(X509Certificate2 certificate)
@@ -110,12 +100,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             }
             catch (Exception e)
             {
-                Log.LogError("Error validating signature with System.Security.Cryptography.Pkcs", e);
+                // ReSharper disable once StringLiteralTypo
+                Log.LogError(e, "Error validating signature with System.Security.Cryptography.Pkcs");
 
                 result = ValidateBouncy(certificate, GetSignature(), GetCertificateBytes());
             }
-
-            HasValidSignature = result;
 
             return result;
         }
@@ -141,7 +130,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             }
             catch (Exception e)
             {
-                Log.LogError("Error validating signature with BouncyCastle", e);
+                Log.LogError(e, "Error validating signature with BouncyCastle");
 
                 return false;
             }

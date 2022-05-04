@@ -14,13 +14,13 @@ namespace CmsSigner.Model
         /// </summary>
         [Required]
         [JsonPropertyName("payload")]
-        public string? Payload { get; set; }
+        public string? Payload { get; init; }
 
         /// <summary>
         ///     CMS/PKCS#7 message containing the signature, encoded as base64
         /// </summary>
         [Required]
         [JsonPropertyName("signature")]
-        public string? Signature { get; set; }
+        public string? Signature { get; init; }
     }
 }

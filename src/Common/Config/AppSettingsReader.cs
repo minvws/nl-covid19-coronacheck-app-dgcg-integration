@@ -44,14 +44,5 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 
             return _config.GetValue<T>($"{_prefix}{path}");
         }
-
-        protected IConfigurationSection GetSection(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
-
-            var key = $"{_prefix}{path}";
-
-            return _config.GetSection(key);
-        }
     }
 }

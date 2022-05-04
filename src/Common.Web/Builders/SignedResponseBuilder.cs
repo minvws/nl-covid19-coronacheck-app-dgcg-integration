@@ -37,7 +37,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders
 
         private string GetSignatureB64(string payload)
         {
-            if (string.IsNullOrWhiteSpace(payload)) throw new ArgumentException(nameof(payload));
+            if (string.IsNullOrWhiteSpace(payload)) throw new ArgumentException("Empty payload", nameof(payload));
 
             var payloadBytes = Encoding.UTF8.GetBytes(payload);
             var signatureBytes = _signer.GetSignature(payloadBytes, true);

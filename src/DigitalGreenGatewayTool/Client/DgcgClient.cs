@@ -74,7 +74,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             clientHandler.ClientCertificates.Clear();
             clientHandler.ClientCertificates.Add(clientCert);
 
-            var request = new HttpRequestMessage {RequestUri = uri, Method = HttpMethod.Post};
+            var request = new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Post };
 
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
@@ -132,7 +132,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             clientHandler.ClientCertificates.Clear();
             clientHandler.ClientCertificates.Add(clientCert);
 
-            var request = new HttpRequestMessage {RequestUri = uri, Method = HttpMethod.Delete};
+            var request = new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Delete };
 
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)
@@ -186,7 +186,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
             clientHandler.ClientCertificates.Clear();
             clientHandler.ClientCertificates.Add(clientCert);
 
-            var request = new HttpRequestMessage {RequestUri = uri, Method = HttpMethod.Get};
+            var request = new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get };
 
             // Set the auth headers
             if (_config.SendAuthenticationHeaders)

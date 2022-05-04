@@ -5,7 +5,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
 namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 {
@@ -35,17 +34,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
 
             services.AddCertificateChainProvider();
             services.AddCertificateProvider();
-        }
-
-        /// <summary>
-        ///     Registers super-common single implementation services such as the Json serializers and UTC datetime provider
-        /// </summary>
-        public static void AddCommon(this IServiceCollection services)
-        {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-
-            services.AddScoped<IJsonSerializer, StandardJsonSerializer>();
-            services.AddScoped<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
         }
     }
 }

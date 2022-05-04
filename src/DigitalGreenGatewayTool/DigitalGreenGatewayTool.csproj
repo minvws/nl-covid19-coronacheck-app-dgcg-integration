@@ -47,12 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="GB.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
      <None Update="appsettings.Development.json">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </None>
