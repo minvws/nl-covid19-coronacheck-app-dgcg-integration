@@ -17,7 +17,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class RevokeOptions : Options
     {
-        [Option('f', "file", Required = false, HelpText = "Path to the file containing the signed(and DER encoded) DSC to revoke.")]
+        [Option('f', "file", Required = false, HelpText = "Path to the file containing the signed (and DER encoded) DSC to revoke.")]
         public string File { get; init; }
     }
 }
