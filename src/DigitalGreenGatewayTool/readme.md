@@ -115,13 +115,13 @@ The configuration looks like this:
   "Certificates": {
     "Authentication": {
       "UseEmbedded": false,
-      "Path": "tls-cert.pfx",
-      "Password": "NWo3oXbmiLfZGf2n9BPf"
+      "Path": "auth.pfx",
+      "Password": "..."
     },
     "UploadSignature": {
       "UseEmbedded": false,
-      "Path": "upload-cert.pfx",
-      "Password": "SxEhZFOm2pnDDlntqK0V"
+      "Path": "sign.pfx",
+      "Password": ".."
     },
     "UploadSignatureChain": {
       "UseEmbedded": false,
@@ -131,16 +131,6 @@ The configuration looks like this:
     "TrustAnchor": {
       "UseEmbedded": false,
       "Path": "ta.pem",
-      "Password": ""
-    },
-    "CmsSignature": {
-      "UseEmbedded": false,
-      "Path": "cms-cert.p12",
-      "Password": "123456"
-    },
-    "CmsSignatureChain": {
-      "UseEmbedded": false,
-      "Path": "cms-cert-chain.p7b",
       "Password": ""
     }
   },
@@ -165,7 +155,6 @@ configure the `SigningChain` certificate if this is set.
 
 The flag `IncludeCertsInSignature` when set will include the certificates in the signature.
 
-
 The certificate map contains the various certificates. The option `UseEmbedded` should be set to `false` in all
 cases, and the password blank unless otherwise specified.
 
@@ -175,10 +164,7 @@ a `UploadSignatureChain` when `DgcgClient.IncludeChainInSignature` is set to `tr
 
 The `TrustAnchor` is the DGCG trust anchor certificate, containing the public key only.
 
-The certificates `CmsSignature` and `CmsSignatureChain` are the CMS signing cert and the chain for our own signing 
-certificate. These are both required to support the `-w` option (which outputs the Dutch format in the output wrapper).
-
-Passwords are required for `CmsSignature`, `Authentication` and `UploadSignature`.
+Passwords are required for `Authentication` and `UploadSignature`.
 
 Supported formats: PEM for the public keys. P12/PFX for certificates including private keys and P7B/PFX for chains.
 

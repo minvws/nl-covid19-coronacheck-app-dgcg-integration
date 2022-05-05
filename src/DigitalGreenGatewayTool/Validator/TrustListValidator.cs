@@ -42,7 +42,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 {
                     const string msg = "RawData does not contain a valid certificate.";
                     result.AddInvalid(item, msg);
-                    Log.LogError(msg, e);
+                    Log.LogError(e, msg);
 
                     continue;
                 }
@@ -55,7 +55,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 {
                     const string msg = "Signature valid base64 string.";
                     result.AddInvalid(item, msg);
-                    Log.LogError(msg, e);
+                    Log.LogError(e, msg);
 
                     continue;
                 }
@@ -81,10 +81,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 var validUploadItems = new List<TrustListItem>();
 
                 foreach (var uploadItem in uploadItems)
-                {
-                    uploadItem.ValidateSignature(trustAnchorCert);
-
-                    if (uploadItem.HasValidSignature)
+                    if (uploadItem.ValidateSignature(trustAnchorCert))
                     {
                         validUploadItems.Add(uploadItem);
                     }
@@ -99,7 +96,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                         foreach (var item in nestedTrustList[countryName][CertificateType.Dsc])
                             result.AddInvalid(item, msg);
                     }
-                }
 
                 if (!validUploadItems.Any())
                 {
@@ -123,7 +119,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 {
                     Log.LogWarning($"No CSCA certificates found for {countryName}, all of their DSCs will be marked as invalid.");
 
-                    var msg = "No CSCA certificates available for the country";
+                    const string msg = "No CSCA certificates available for the country";
 
                     foreach (var item in nestedTrustList[countryName][CertificateType.Csca])
                         result.AddInvalid(item, msg);
@@ -136,9 +132,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 var validCscaCertificates = new Dictionary<string, X509Certificate2>();
                 foreach (var cscaItem in nestedTrustList[countryName][CertificateType.Csca])
                 {
-                    cscaItem.ValidateSignature(uploadCertificates);
-
-                    if (!cscaItem.HasValidSignature) result.AddInvalid(cscaItem, "Invalid signature");
+                    if (!cscaItem.ValidateSignature(uploadCertificates)) result.AddInvalid(cscaItem, "Invalid signature");
 
                     var cscaCert = cscaItem.GetCertificate();
 
@@ -155,9 +149,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                 // Validate DSG
                 foreach (var dsgItem in nestedTrustList[countryName][CertificateType.Dsc])
                 {
-                    dsgItem.ValidateSignature(uploadCertificates);
-
-                    if (!dsgItem.HasValidSignature) result.AddInvalid(dsgItem, "Invalid signature");
+                    if (!dsgItem.ValidateSignature(uploadCertificates)) result.AddInvalid(dsgItem, "Invalid signature");
 
                     var dsgCert = dsgItem.GetCertificate();
 

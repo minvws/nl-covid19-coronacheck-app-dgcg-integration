@@ -44,5 +44,32 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Tests.Extensions
 
             Assert.Equal(expectedResult, result);
         }
+
+        [Theory]
+        [InlineData("2021-01-25T13:10:00.00Z", "2021-01-25T13:00:00.00Z")]
+        [InlineData("2021-01-25T13:00:30.00Z", "2021-01-25T13:00:00.00Z")]
+        [InlineData("2021-01-25T13:00:00.30Z", "2021-01-25T13:00:00.00Z")]
+        public void ToHourPrecisionExpectedResult(string dateString, string expectedDataString)
+        {
+            var date = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            var expectedDate = DateTime.Parse(expectedDataString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+            var result = date.ToHourPrecision();
+
+            Assert.Equal(expectedDate, result);
+        }
+
+        [Theory]
+        [InlineData("2021-01-25T00:00:00.00Z", 1611532800)]
+        [InlineData("2021-01-25T13:00:00.00Z", 1611579600)]
+        [InlineData("2021-01-25T13:10:00.00Z", 1611580200)]
+        public void ToUnixTimeExpectedResult(string dateString, int expectedUnixTime)
+        {
+            var date = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+            var result = date.ToUnixTime();
+
+            Assert.Equal(expectedUnixTime, result);
+        }
     }
 }

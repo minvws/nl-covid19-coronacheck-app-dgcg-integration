@@ -16,8 +16,8 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Commands;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
 using NLog;
@@ -35,22 +35,52 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             {
                 var services = new ServiceCollection();
 
-                Parser.Default.ParseArguments<Options>(args)
-                      .WithParsed(opt => ConfigureContainer(services, opt))
+                Parser.Default.ParseArguments<DownloadOptions, UploadOptions, RevokeOptions>(args)
+                      .WithParsed<DownloadOptions>(opt =>
+                       {
+                           ConfigureContainer(services);
+                           services.AddSingleton(_ => opt);
+                           services.AddTransient<ICommand, DownloadCommand>();
+
+                           services.AddTransient(
+                               x => new TrustListValidator(
+                                   new CertificateProvider(
+                                       new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
+                                       x.GetRequiredService<ILogger<CertificateProvider>>()
+                                   )
+                               ));
+
+                           // Register formatter
+                           if (opt.Unformatted)
+                               services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
+                           else
+                               services.AddTransient<ITrustListFormatter, DutchFormatter>();
+                       })
+                      .WithParsed<UploadOptions>(opt =>
+                       {
+                           ConfigureContainer(services);
+                           services.AddSingleton(_ => opt);
+                           services.AddTransient<ICommand, UploadCommand>();
+                       })
+                      .WithParsed<RevokeOptions>(opt =>
+                       {
+                           ConfigureContainer(services);
+                           services.AddSingleton(_ => opt);
+                           services.AddTransient<ICommand, RevokeCommand>();
+                       })
                       .WithNotParsed(HandleParseError);
 
                 using var serviceProvider = services.BuildServiceProvider();
                 var options = serviceProvider.GetRequiredService<Options>();
-                options.ValidateSelectedOptions();
-                var app = serviceProvider.GetRequiredService<DgcgApp>();
-                app.Run().Wait();
 
-                if (options.Pause)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Finished! Press ENTER to exit.");
-                    Console.ReadLine();
-                }
+                var command = serviceProvider.GetRequiredService<ICommand>();
+                command.Execute().Wait();
+
+                if (!options.Pause) return;
+
+                Console.WriteLine();
+                Console.WriteLine("Finished! Press ENTER to exit.");
+                Console.ReadLine();
             }
             catch (Exception)
             {
@@ -65,17 +95,17 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
             }
         }
 
-        private static void ConfigureContainer(ServiceCollection services, Options options)
+        private static void ConfigureContainer(IServiceCollection services)
         {
             services.AddLogging(loggingBuilder =>
             {
                 // configure Logging with NLog
                 loggingBuilder.ClearProviders();
                 loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+                // ReSharper disable once StringLiteralTypo
                 loggingBuilder.AddNLog("nlog.config");
             });
 
-            services.AddSingleton(options);
             services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
             services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
             services.AddTransient<HttpClient>();
@@ -107,54 +137,14 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                     x.GetRequiredService<IUtcDateTimeProvider>()
                 ));
 
-            services.AddTransient(
-                x => new TrustListValidator(
-                    new CertificateProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
-                        x.GetRequiredService<ILogger<CertificateProvider>>()
-                    )
-                ));
-
             // Defaults for client authentication
             services
                .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                .AddCertificate();
 
-            // Register formatter
-            if (options.Unformatted)
-                services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
-            else
-                services.AddTransient<ITrustListFormatter, DutchFormatter>();
-
-            // Register the response wrapping
-            if (options.Wrap)
-                services.AddTransient<IResponseBuilder>(
-                    serviceProvider =>
-                    {
-                        var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-                        var signer = new CmsSigner(
-                            new CertificateProvider(
-                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignature"),
-                                serviceProvider.GetRequiredService<ILogger<CertificateProvider>>()
-                            ),
-                            new CertificateChainProvider(
-                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignatureChain"),
-                                serviceProvider.GetRequiredService<ILogger<CertificateChainProvider>>()
-                            ),
-                            serviceProvider.GetRequiredService<IUtcDateTimeProvider>()
-                        );
-
-                        return new SignedResponseBuilder(serializer, signer);
-                    });
-            else
-                services.AddTransient<IResponseBuilder, StandardResponseBuilder>();
-
             // Dotnet configuration stuff
             var configuration = ConfigurationRootBuilder.Build();
             services.AddSingleton<IConfiguration>(configuration);
-
-            services.AddTransient(provider => options);
-            services.AddTransient<DgcgApp>();
         }
 
         private static void HandleParseError(IEnumerable<Error> errs)

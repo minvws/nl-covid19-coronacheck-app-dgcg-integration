@@ -33,7 +33,7 @@ namespace CmsSigner
             app.Run(inputFile, options.Validate);
         }
 
-        private static void ConfigureContainer(ServiceCollection services, Options options)
+        private static void ConfigureContainer(IServiceCollection services, Options options)
         {
             // This data must be loaded now as it's used by the classes injected into the DI container
             var certFile = Load(options.SigningCertificateFile!);
@@ -44,9 +44,9 @@ namespace CmsSigner
             services.AddTransient<IContentSigner, NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing.CmsSigner>();
             services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
             services.AddTransient<IJsonSerializer, StandardJsonSerializer>();
-            services.AddTransient<ICertificateProvider, CertProvider>(provider => new CertProvider(CertificateHelpers.Load(certFile, options.Password!)));
-            services.AddTransient<ICertificateChainProvider, ChainProvider>(provider => new ChainProvider(CertificateHelpers.LoadAll(chainFile)));
-            services.AddTransient(provider => options);
+            services.AddTransient<ICertificateProvider, CertProvider>(_ => new CertProvider(CertificateHelpers.Load(certFile, options.Password!)));
+            services.AddTransient<ICertificateChainProvider, ChainProvider>(_ => new ChainProvider(CertificateHelpers.LoadAll(chainFile)));
+            services.AddTransient(_ => options);
             services.AddTransient<CmsSignerApp>();
         }
 

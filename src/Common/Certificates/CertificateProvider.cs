@@ -35,13 +35,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
             return _config.UseEmbedded ? _embeddedProvider.GetCertificate() : _fileSystemProvider.GetCertificate();
         }
 
-        public static ICertificateProvider Create(byte[] certBytes)
-        {
-            if (certBytes == null) throw new ArgumentNullException(nameof(certBytes));
-
-            return new BytesCertificateProvider(certBytes);
-        }
-
         private void InitLog()
         {
             if (_config.UseEmbedded)

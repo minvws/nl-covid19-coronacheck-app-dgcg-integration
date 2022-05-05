@@ -11,7 +11,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -25,18 +24,16 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
     public class DutchFormatter : ITrustListFormatter
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IResponseBuilder _responseBuilder;
 
-        public DutchFormatter(IJsonSerializer serializer, IResponseBuilder responseBuilder)
+        public DutchFormatter(IJsonSerializer serializer)
         {
             _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            _responseBuilder = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
         }
 
         private static IDictionary<string, string> OidName => new AttributeDictionary
-            {{"1.3.6.1.4.1.0.1847.2021.1.1", "t"}, {"1.3.6.1.4.1.0.1847.2021.1.2", "v"}, {"1.3.6.1.4.1.0.1847.2021.1.3", "r"}};
+            { { "1.3.6.1.4.1.0.1847.2021.1.1", "t" }, { "1.3.6.1.4.1.0.1847.2021.1.2", "v" }, { "1.3.6.1.4.1.0.1847.2021.1.3", "r" } };
 
-        public string Format(IEnumerable<TrustListItem> trustList, Options options = null)
+        public string Format(IEnumerable<TrustListItem> trustList, string thirdPartyKeyFile)
         {
             var resultSet = new Dictionary<string, List<DutchFormatItem>>();
 
@@ -65,20 +62,20 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                 if (resultSet.ContainsKey(item.Kid))
                     resultSet[item.Kid].Add(resultItem);
                 else
-                    resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
+                    resultSet.Add(item.Kid, new List<DutchFormatItem> { resultItem });
             }
 
-            if (options != null && !string.IsNullOrWhiteSpace(options.ThirdPartyKeysFile)) AddThirdPartyKeys(options.ThirdPartyKeysFile, resultSet);
+            if (!string.IsNullOrWhiteSpace(thirdPartyKeyFile)) AddThirdPartyKeys(resultSet, thirdPartyKeyFile);
 
-            return _jsonSerializer.Serialize(_responseBuilder.Build(resultSet));
+            return _jsonSerializer.Serialize(resultSet);
         }
 
-        private void AddThirdPartyKeys(string path, Dictionary<string, List<DutchFormatItem>> resultSet)
+        private void AddThirdPartyKeys(IDictionary<string, List<DutchFormatItem>> resultSet, string path)
         {
             var thirdPartyKeysText = File.ReadAllText(path);
             var thirdPartyKeys = _jsonSerializer.Deserialize<List<ThirdPartyKey>>(thirdPartyKeysText);
 
-            var countryCode = Path.GetFileName(path).Substring(0, 2);
+            var countryCode = Path.GetFileName(path)[..2];
 
             foreach (var item in thirdPartyKeys)
             {
@@ -93,11 +90,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
                 if (resultSet.ContainsKey(item.Kid))
                     resultSet[item.Kid].Add(resultItem);
                 else
-                    resultSet.Add(item.Kid, new List<DutchFormatItem> {resultItem});
+                    resultSet.Add(item.Kid, new List<DutchFormatItem> { resultItem });
             }
         }
 
-        private string GetSubjectAlternativeNameLandCode(X509Certificate cert)
+        private static string GetSubjectAlternativeNameLandCode(X509Certificate cert)
         {
             var subjectAlternativeNames = cert.GetSubjectAlternativeNames();
 
@@ -105,7 +102,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
 
             foreach (var item in cert.GetSubjectAlternativeNames())
             {
-                if (item is not (ArrayList {Count: 2} itemCollection)) continue;
+                if (item is not ArrayList { Count: 2 } itemCollection) continue;
                 if (itemCollection[0] is not 4) continue;
                 if (itemCollection[1] is not string value) continue;
 
@@ -126,11 +123,12 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatter
 
         [JsonPropertyName("san")] public string Land { get; set; }
 
-        [JsonPropertyName("keyUsage")] public IList<string> KeyUsage { get; set; }
+        [JsonPropertyName("keyUsage")] public IList<string> KeyUsage { get; init; }
     }
 
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     internal class ThirdPartyKey
     {
         [JsonPropertyName("kid")] public string Kid { get; set; }

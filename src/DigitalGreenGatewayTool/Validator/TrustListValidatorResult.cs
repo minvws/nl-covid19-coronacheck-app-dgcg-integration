@@ -9,13 +9,13 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
 {
     public class TrustListValidatorResult
     {
-        private readonly List<TrustListItem> _invalidItems = new List<TrustListItem>();
-        private readonly Dictionary<TrustListItem, string> _invalidReason = new Dictionary<TrustListItem, string>();
-        private readonly List<TrustListItem> _validItems = new List<TrustListItem>();
+        private readonly List<TrustListItem> _invalidItems = new();
+        private readonly Dictionary<TrustListItem, string> _invalidReason = new();
+        private readonly List<TrustListItem> _validItems = new();
 
-        public IReadOnlyList<TrustListItem> ValidItems => _validItems;
+        public IEnumerable<TrustListItem> ValidItems => _validItems;
 
-        public IReadOnlyList<TrustListItem> InvalidItems => _invalidItems;
+        public IEnumerable<TrustListItem> InvalidItems => _invalidItems;
 
         public void AddValid(TrustListItem item)
         {

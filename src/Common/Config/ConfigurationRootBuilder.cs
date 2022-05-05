@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 
@@ -10,6 +11,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
 {
     public static class ConfigurationRootBuilder
     {
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
         public static IConfigurationRoot Build()
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
