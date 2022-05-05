@@ -16,7 +16,6 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Commands;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
@@ -40,6 +39,8 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                       .WithParsed<DownloadOptions>(opt =>
                        {
                            ConfigureContainer(services);
+                           services.AddSingleton(_ => opt);
+                           services.AddTransient<ICommand, DownloadCommand>();
 
                            services.AddTransient(
                                x => new TrustListValidator(
@@ -54,37 +55,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                                services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
                            else
                                services.AddTransient<ITrustListFormatter, DutchFormatter>();
-
-                           // Register the response wrapping
-                           if (opt.Wrap)
-                               services.AddTransient<IResponseBuilder>(
-                                   serviceProvider =>
-                                   {
-                                       var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-                                       var signer = new CmsSigner(
-                                           new CertificateProvider(
-                                               new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(),
-                                                                                     "Certificates:CmsSignature"),
-                                               serviceProvider.GetRequiredService<ILogger<CertificateProvider>>()
-                                           ),
-                                           new CertificateChainProvider(
-                                               new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(),
-                                                                                     "Certificates:CmsSignatureChain"),
-                                               serviceProvider.GetRequiredService<ILogger<CertificateChainProvider>>()
-                                           ),
-                                           serviceProvider.GetRequiredService<IUtcDateTimeProvider>()
-                                       );
-
-                                       return new SignedResponseBuilder(serializer, signer);
-                                   });
-                           else
-                               services.AddTransient<IResponseBuilder, StandardResponseBuilder>();
-
-                           // Register options instance
-                           services.AddSingleton(_ => opt);
-
-                           // Register command
-                           services.AddTransient<ICommand, DownloadCommand>();
                        })
                       .WithParsed<UploadOptions>(opt =>
                        {

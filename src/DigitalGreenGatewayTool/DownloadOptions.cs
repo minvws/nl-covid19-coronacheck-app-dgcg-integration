@@ -33,9 +33,6 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
         [Option('v', "validate", Required = false, HelpText = "Validate the certificates received from DGCG.")]
         public bool Validate { get; set; }
 
-        [Option('w', "wrap", Required = false, HelpText = "Sign and wrap the output with our CMS signing wrapper.")]
-        public bool Wrap { get; set; }
-
         [Option("third-party-keys-file", Required = false,
                 HelpText =
                     "Path to the file to containing extra external keys which will be injected into the trust-list, formatted as a DGCG trust list json. The filename must be the ISO-3166-2 country code of the third country")]
