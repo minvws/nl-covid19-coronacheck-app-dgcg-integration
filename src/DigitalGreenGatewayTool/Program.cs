@@ -39,7 +39,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                       .WithParsed<DownloadOptions>(opt =>
                        {
                            ConfigureContainer(services);
+
+                           // Register DownloadOptions as both the base type and concrete type such that it can be resolved by either
                            services.AddSingleton(_ => opt);
+                           services.AddSingleton<Options>(_ => opt);
+
                            services.AddTransient<ICommand, DownloadCommand>();
 
                            services.AddTransient(
@@ -59,13 +63,21 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                       .WithParsed<UploadOptions>(opt =>
                        {
                            ConfigureContainer(services);
+
+                           // Register UploadOptions as both the base type and concrete type such that it can be resolved by either
                            services.AddSingleton(_ => opt);
+                           services.AddSingleton<Options>(_ => opt);
+
                            services.AddTransient<ICommand, UploadCommand>();
                        })
                       .WithParsed<RevokeOptions>(opt =>
                        {
                            ConfigureContainer(services);
+
+                           // Register RevokeOptions as both the base type and concrete type such that it can be resolved by either
                            services.AddSingleton(_ => opt);
+                           services.AddSingleton<Options>(_ => opt);
+
                            services.AddTransient<ICommand, RevokeCommand>();
                        })
                       .WithNotParsed(HandleParseError);
