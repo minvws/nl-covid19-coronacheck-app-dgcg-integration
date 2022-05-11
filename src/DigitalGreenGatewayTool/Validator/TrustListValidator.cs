@@ -129,7 +129,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                     continue;
                 }
 
-                var validCscaCertificates = new Dictionary<string, X509Certificate2>();
+                var validCscaCertificates = new Dictionary<string, List<X509Certificate2>>();
                 foreach (var cscaItem in nestedTrustList[countryName][CertificateType.Csca])
                 {
                     if (!cscaItem.ValidateSignature(uploadCertificates)) result.AddInvalid(cscaItem, "Invalid signature");
@@ -142,7 +142,11 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator
                         continue;
                     }
 
-                    validCscaCertificates.Add(cscaCert.SubjectName.Name, cscaCert);
+                    if (!validCscaCertificates.ContainsKey(cscaCert.SubjectName.Name))
+                        validCscaCertificates.Add(cscaCert.SubjectName.Name, new List<X509Certificate2>());
+
+                    // CSCA can be included multiple times, and multiple CSCA with the same DN but different key can exist
+                    validCscaCertificates[cscaCert.SubjectName.Name].Add(cscaCert);
                 }
 
                 //

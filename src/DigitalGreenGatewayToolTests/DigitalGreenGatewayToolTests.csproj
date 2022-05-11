@@ -30,4 +30,11 @@
     <ProjectReference Include="..\DigitalGreenGatewayTool\DigitalGreenGatewayTool.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TrustListExample.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
 </Project>
