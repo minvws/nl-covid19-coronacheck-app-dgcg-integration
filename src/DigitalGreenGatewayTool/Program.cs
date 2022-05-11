@@ -115,7 +115,7 @@ namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
                 loggingBuilder.ClearProviders();
                 loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 // ReSharper disable once StringLiteralTypo
-                loggingBuilder.AddNLog("nlog.config");
+                loggingBuilder.AddNLog("NLog.config");
             });
 
             services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
