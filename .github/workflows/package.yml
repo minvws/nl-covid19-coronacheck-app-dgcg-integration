@@ -1,4 +1,4 @@
-name: Create Release package(s)
+name: Create RDO Release package
 
 on:
   create:
@@ -11,13 +11,28 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Set env
+      - name: Set Version environment variable
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v1
+      - name: Checkout the code
+        uses: actions/checkout@v1
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
 
+      - name: Build .net code for DGGT
+        run: 'dotnet publish src/DigitalGreenGatewayTool/DigitalGreenGatewayTool.csproj -o publish/DigitalGreenGatewayTool'
+
+      - name: Create and add version.json to root
+        run: 'echo "{ \"version\": \"${{ env.RELEASE_VERSION }}\", \"git_ref\": \"$GITHUB_SHA\"}" > publish/DigitalGreenGatewayTool/version.json'
+
+      - name: Create tar.gz
+        run: tar -czf ct_dggt_${{ env.RELEASE_VERSION }}.tar.gz -C publish/DigitalGreenGatewayTool .
+
+      - name: Upload release tar
+        uses: actions/upload-artifact@v1
+        with:
+            name: ct_dggt_${{ env.RELEASE_VERSION }}
+            path: ct_dggt_${{ env.RELEASE_VERSION }}.tar.gz
