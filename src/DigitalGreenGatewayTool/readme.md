@@ -15,17 +15,17 @@ Get help:
 
 Download the certs:
 
-```dggt -d -o path/to/save/trustlist.json```
+```dggt download -o path/to/save/trustlist.json```
 
 Upload a cert:
 
-```dggt -u -f path/to/cert.```
+```dggt upload -f path/to/cert.```
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
 Revoke a cert:
 
-```dggt -r -f path/to/cert.```
+```dggt revoke -f path/to/cert.```
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
@@ -38,7 +38,7 @@ Pauses once the task has executed until a key press.
 
 ## TrustList
 
-```-d | --download```
+```download```
 
 Download the trust list.
 
@@ -82,7 +82,7 @@ The keys included in the provided file will be appended to the trust list. All k
 
 ## Upload
 
-```-u | --upload```
+```upload```
 
 Upload the given file.
 
