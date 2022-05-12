@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>dggt</AssemblyName>
     <RootNamespace>NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool</RootNamespace>
   </PropertyGroup>
