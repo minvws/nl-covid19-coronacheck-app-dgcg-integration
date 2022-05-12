@@ -5,20 +5,19 @@
 using Microsoft.Extensions.Configuration;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+
+public class DgcgClientConfig : AppSettingsReader, IDgcgClientConfig
 {
-    public class DgcgClientConfig : AppSettingsReader, IDgcgClientConfig
+    public DgcgClientConfig(IConfiguration config) : base(config, "DgcgClient")
     {
-        public DgcgClientConfig(IConfiguration config) : base(config, "DgcgClient")
-        {
-        }
-
-        public bool SendAuthenticationHeaders => GetConfigValue<bool>(nameof(SendAuthenticationHeaders));
-
-        public string GatewayUrl => GetConfigValue<string>(nameof(GatewayUrl));
-
-        public bool IncludeChainInSignature => GetConfigValue<bool>(nameof(IncludeChainInSignature));
-
-        public bool IncludeCertsInSignature => GetConfigValue<bool>(nameof(IncludeCertsInSignature));
     }
+
+    public bool SendAuthenticationHeaders => GetConfigValue<bool>(nameof(SendAuthenticationHeaders));
+
+    public string GatewayUrl => GetConfigValue<string>(nameof(GatewayUrl));
+
+    public bool IncludeChainInSignature => GetConfigValue<bool>(nameof(IncludeChainInSignature));
+
+    public bool IncludeCertsInSignature => GetConfigValue<bool>(nameof(IncludeCertsInSignature));
 }

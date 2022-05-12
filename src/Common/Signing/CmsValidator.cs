@@ -9,58 +9,57 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
+
+public class CmsValidator : ICmsValidator
 {
-    public class CmsValidator : ICmsValidator
+    private readonly ICertificateChainProvider _certificateChainProvider;
+    private readonly ICertificateProvider _certificateProvider;
+    private readonly ILogger<CmsValidator> _log;
+
+    public CmsValidator(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
+                        ILogger<CmsValidator> log)
     {
-        private readonly ICertificateChainProvider _certificateChainProvider;
-        private readonly ICertificateProvider _certificateProvider;
-        private readonly ILogger<CmsValidator> _log;
+        _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
+        _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
+        _log = log ?? throw new ArgumentNullException(nameof(log));
+    }
 
-        public CmsValidator(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
-                            ILogger<CmsValidator> log)
+    public bool Validate(byte[] content, byte[] signature)
+    {
+        if (content == null) throw new ArgumentNullException(nameof(content));
+        if (signature == null) throw new ArgumentNullException(nameof(signature));
+
+        var certificate = _certificateProvider.GetCertificate();
+
+        var certificateChain = _certificateChainProvider.GetCertificates();
+
+        return Validate(content, signature, certificate, certificateChain);
+    }
+
+    private bool Validate(byte[] content, byte[] signature, X509Certificate2 certificate, X509Certificate2[]? certificateChain = null)
+    {
+        var contentInfo = new ContentInfo(content);
+
+        var signedCms = new SignedCms(contentInfo, true);
+
+        signedCms.Certificates.Add(certificate);
+
+        if (certificateChain != null) signedCms.Certificates.AddRange(certificateChain);
+
+        signedCms.Decode(signature);
+
+        try
         {
-            _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
-            _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
+            signedCms.CheckSignature(true);
+        }
+        catch (CryptographicException e)
+        {
+            _log.LogWarning(e, "CMS signature did not validate due to a Cryptographic exception. See the exception for details.");
+
+            return false;
         }
 
-        public bool Validate(byte[] content, byte[] signature)
-        {
-            if (content == null) throw new ArgumentNullException(nameof(content));
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
-
-            var certificate = _certificateProvider.GetCertificate();
-
-            var certificateChain = _certificateChainProvider.GetCertificates();
-
-            return Validate(content, signature, certificate, certificateChain);
-        }
-
-        private bool Validate(byte[] content, byte[] signature, X509Certificate2 certificate, X509Certificate2[]? certificateChain = null)
-        {
-            var contentInfo = new ContentInfo(content);
-
-            var signedCms = new SignedCms(contentInfo, true);
-
-            signedCms.Certificates.Add(certificate);
-
-            if (certificateChain != null) signedCms.Certificates.AddRange(certificateChain);
-
-            signedCms.Decode(signature);
-
-            try
-            {
-                signedCms.CheckSignature(true);
-            }
-            catch (CryptographicException e)
-            {
-                _log.LogWarning(e, "CMS signature did not validate due to a Cryptographic exception. See the exception for details.");
-
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

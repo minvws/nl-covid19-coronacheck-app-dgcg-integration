@@ -11,7 +11,7 @@ This repository contains the implementation of the Dutch COVID-19 Digital Green 
 
 ### Prereqs
 
-* Dotnet 5 SDK (https://dotnet.microsoft.com/download/dotnet/5.0)
+* Dotnet 6 SDK (https://dotnet.microsoft.com/download/dotnet/6.0)
 
 ### Nice to have
 

@@ -5,10 +5,9 @@
 using System.Collections.Generic;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
+
+public interface ITrustListFormatter
 {
-    public interface ITrustListFormatter
-    {
-        string Format(IEnumerable<TrustListItem> trustList, string thirdPartyKeyFile);
-    }
+    string Format(IEnumerable<TrustListItem> trustList, string thirdPartyKeyFile);
 }

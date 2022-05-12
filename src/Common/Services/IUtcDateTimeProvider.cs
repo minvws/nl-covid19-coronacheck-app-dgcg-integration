@@ -4,10 +4,9 @@
 
 using System;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+
+public interface IUtcDateTimeProvider
 {
-    public interface IUtcDateTimeProvider
-    {
-        DateTime Snapshot { get; }
-    }
+    DateTime Snapshot { get; }
 }

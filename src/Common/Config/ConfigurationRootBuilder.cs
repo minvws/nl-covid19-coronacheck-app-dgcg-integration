@@ -3,32 +3,29 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
+
+public static class ConfigurationRootBuilder
 {
-    public static class ConfigurationRootBuilder
+    public static IConfigurationRoot Build()
     {
-        [SuppressMessage("ReSharper", "StringLiteralTypo")]
-        public static IConfigurationRoot Build()
-        {
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (string.IsNullOrWhiteSpace(environmentName))
-                environmentName = "Development";
+        if (string.IsNullOrWhiteSpace(environmentName))
+            environmentName = "Development";
 
-            var baseDirectory = Directory.GetParent(AppContext.BaseDirectory);
+        var baseDirectory = Directory.GetParent(AppContext.BaseDirectory);
 
-            if (baseDirectory == null)
-                throw new InvalidOperationException($"No parent directory for {AppContext.BaseDirectory}");
+        if (baseDirectory == null)
+            throw new InvalidOperationException($"No parent directory for {AppContext.BaseDirectory}");
 
-            return new ConfigurationBuilder()
-                  .SetBasePath(baseDirectory.FullName)
-                  .AddJsonFile("appsettings.json", false)
-                  .AddJsonFile($"appsettings.{environmentName}.json", true, true)
-                  .Build();
-        }
+        return new ConfigurationBuilder()
+              .SetBasePath(baseDirectory.FullName)
+              .AddJsonFile("appsettings.json", false)
+              .AddJsonFile($"appsettings.{environmentName}.json", true, true)
+              .Build();
     }
 }

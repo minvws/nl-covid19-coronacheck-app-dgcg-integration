@@ -5,14 +5,11 @@
 using System.Diagnostics.CodeAnalysis;
 using CommandLine;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool;
+
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+public abstract class Options
 {
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    public abstract class Options
-    {
-        [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
-        public bool Pause { get; set; }
-    }
+    [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
+    public bool Pause { get; set; }
 }

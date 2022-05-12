@@ -5,25 +5,24 @@
 using System;
 using System.Text.Json;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+
+public class StandardJsonSerializer : IJsonSerializer
 {
-    public class StandardJsonSerializer : IJsonSerializer
+    private readonly JsonSerializerOptions _serializerOptions;
+
+    public StandardJsonSerializer()
     {
-        private readonly JsonSerializerOptions _serializerOptions;
+        _serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    }
 
-        public StandardJsonSerializer()
-        {
-            _serializerOptions = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
-        }
+    public string Serialize<TContent>(TContent input)
+    {
+        return input == null ? string.Empty : JsonSerializer.Serialize(input, _serializerOptions);
+    }
 
-        public string Serialize<TContent>(TContent input)
-        {
-            return input == null ? string.Empty : JsonSerializer.Serialize(input, _serializerOptions);
-        }
-
-        public TContent Deserialize<TContent>(string input)
-        {
-            return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
-        }
+    public TContent Deserialize<TContent>(string input)
+    {
+        return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
     }
 }

@@ -5,19 +5,18 @@
 using System.Diagnostics.CodeAnalysis;
 using CommandLine;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool;
+
+/// <summary>
+///     Examples
+///     dggt upload -f path/to/cert
+///     dggt upload -f path/to/cert -p
+/// </summary>
+[Verb("upload")]
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+public class UploadOptions : Options
 {
-    /// <summary>
-    ///     Examples
-    ///     dggt upload -f path/to/cert
-    ///     dggt upload -f path/to/cert -p
-    /// </summary>
-    [Verb("upload")]
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    public class UploadOptions : Options
-    {
-        [Option('f', "file", Required = false, HelpText = "Path to the file containing the signed (and DER encoded) DSC to upload.")]
-        public string File { get; set; }
-    }
+    [Option('f', "file", Required = false, HelpText = "Path to the file containing the signed (and DER encoded) DSC to upload.")]
+    public string File { get; set; }
 }

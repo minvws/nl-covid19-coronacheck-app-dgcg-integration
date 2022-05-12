@@ -12,33 +12,33 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
 using Xunit;
 
-namespace DigitalGreenGatewayToolTests
+namespace DigitalGreenGatewayToolTests;
+
+/// <summary>
+///     These are integration tests, they require a local DGCG server configured with only our own keys as per
+///     the guide from readme of the DGCG.
+/// </summary>
+public class TrustListValidatorTests
 {
-    /// <summary>
-    ///     These are integration tests, they require a local DGCG server configured with only our own keys as per
-    ///     the guide from readme of the DGCG.
-    /// </summary>
-    public class TrustListValidatorTests
+    [Fact]
+    public void Validate_supports_multiple_CSCA_from_one_country()
     {
-        [Fact]
-        public void Validate_supports_multiple_CSCA_from_one_country()
-        {
-            // Assemble
-            var serializer = new StandardJsonSerializer();
-            var trustList = serializer.Deserialize<List<TrustListItem>>(File.ReadAllText("TrustListExample.json"));
-            var validator = new TrustListValidator(new TrustAnchorProvider());
+        // Assemble
+        var serializer = new StandardJsonSerializer();
+        var trustList = serializer.Deserialize<List<TrustListItem>>(File.ReadAllText("TrustListExample.json"));
+        var validator = new TrustListValidator(new TrustAnchorProvider());
 
-            // Act
-            var result = validator.Validate(trustList);
+        // Act
+        var result = validator.Validate(trustList);
 
-            // Assert
-            Assert.Empty(result.InvalidItems);
-        }
+        // Assert
+        Assert.Empty(result.InvalidItems);
     }
+}
 
-    internal class TrustAnchorProvider : ICertificateProvider
-    {
-        private readonly string _cert = @"-----BEGIN CERTIFICATE-----
+internal class TrustAnchorProvider : ICertificateProvider
+{
+    private const string Cert = @"-----BEGIN CERTIFICATE-----
 MIIGGzCCBAOgAwIBAgIUX3fFmZobc4FKykeIP3414BhGUdAwDQYJKoZIhvcNAQEL
 BQAwgZwxCzAJBgNVBAYTAkRFMQ8wDQYDVQQIDAZIZXNzZW4xGjAYBgNVBAcMEUZy
 YW5rZnVydCBhbSBNYWluMSUwIwYDVQQKDBxULVN5c3RlbXMgSW50ZXJuYXRpb25h
@@ -74,9 +74,8 @@ C0+bLdamk7WQXOr92edKwYksS8F7TDGMI9xT9SIzZawlVz4gpjFqFfwvl5eE5GVU
 TG4tE33k/UnSMFC5zZJXebD6IFrw4B3dTwlt6cUHbA==
 -----END CERTIFICATE-----";
 
-        public X509Certificate2 GetCertificate()
-        {
-            return new X509Certificate2(Encoding.Default.GetBytes(_cert), "", X509KeyStorageFlags.Exportable);
-        }
+    public X509Certificate2 GetCertificate()
+    {
+        return new X509Certificate2(Encoding.Default.GetBytes(Cert), "", X509KeyStorageFlags.Exportable);
     }
 }

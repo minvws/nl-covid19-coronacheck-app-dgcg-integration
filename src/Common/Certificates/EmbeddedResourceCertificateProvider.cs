@@ -7,28 +7,27 @@ using System.Security.Cryptography.X509Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
+
+/// <summary>
+///     Loads a certificate in p12 format
+/// </summary>
+// ReSharper disable once RedundantExtendsListEntry
+public class EmbeddedResourceCertificateProvider : ICertificateProvider, IAuthenticationCertificateProvider
 {
-    /// <summary>
-    ///     Loads a certificate in p12 format
-    /// </summary>
-    // ReSharper disable once RedundantExtendsListEntry
-    public class EmbeddedResourceCertificateProvider : ICertificateProvider, IAuthenticationCertificateProvider
+    private readonly ICertificateLocationConfig _config;
+
+    public EmbeddedResourceCertificateProvider(ICertificateLocationConfig config)
     {
-        private readonly ICertificateLocationConfig _config;
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+    }
 
-        public EmbeddedResourceCertificateProvider(ICertificateLocationConfig config)
-        {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-        }
+    public X509Certificate2 GetCertificate()
+    {
+        var cert = typeof(EmbeddedResourceCertificateProvider)
+                  .Assembly
+                  .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_config.Path}");
 
-        public X509Certificate2 GetCertificate()
-        {
-            var cert = typeof(EmbeddedResourceCertificateProvider)
-                      .Assembly
-                      .GetEmbeddedResourceAsBytes($"EmbeddedResources.{_config.Path}");
-
-            return new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
-        }
+        return new X509Certificate2(cert, _config.Password, X509KeyStorageFlags.Exportable);
     }
 }

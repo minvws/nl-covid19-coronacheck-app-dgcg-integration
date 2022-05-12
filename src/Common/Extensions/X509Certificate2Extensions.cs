@@ -6,15 +6,14 @@ using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
+
+public static class X509Certificate2Extensions
 {
-    public static class X509Certificate2Extensions
+    public static string ComputeSha256Hash(this X509Certificate2 cert)
     {
-        public static string ComputeSha256Hash(this X509Certificate2 cert)
-        {
-            using var hasher = SHA256.Create();
-            var hash = hasher.ComputeHash(cert.RawData);
-            return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
-        }
+        using var hasher = SHA256.Create();
+        var hash = hasher.ComputeHash(cert.RawData);
+        return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
     }
 }

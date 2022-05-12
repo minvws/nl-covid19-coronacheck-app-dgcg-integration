@@ -4,10 +4,9 @@
 
 using System.Threading.Tasks;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Commands
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Commands;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        Task Execute();
-    }
+    Task Execute();
 }
