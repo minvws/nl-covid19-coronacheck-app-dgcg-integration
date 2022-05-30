@@ -4,18 +4,17 @@
 
 using System;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
-{
-    public class StandardUtcDateTimeProvider : IUtcDateTimeProvider
-    {
-        public StandardUtcDateTimeProvider()
-        {
-            Snapshot = DateTime.UtcNow;
-        }
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
-        /// <summary>
-        ///     Time of start of transaction scope
-        /// </summary>
-        public DateTime Snapshot { get; }
+public class StandardUtcDateTimeProvider : IUtcDateTimeProvider
+{
+    public StandardUtcDateTimeProvider()
+    {
+        Snapshot = DateTime.UtcNow;
     }
+
+    /// <summary>
+    ///     Time of start of transaction scope
+    /// </summary>
+    public DateTime Snapshot { get; }
 }

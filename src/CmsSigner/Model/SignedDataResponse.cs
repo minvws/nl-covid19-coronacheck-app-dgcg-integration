@@ -5,22 +5,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CmsSigner.Model
-{
-    public class SignedDataResponse
-    {
-        /// <summary>
-        ///     Bytes over which <see cref="Signature" /> was calculated, encoded as base64
-        /// </summary>
-        [Required]
-        [JsonPropertyName("payload")]
-        public string? Payload { get; init; }
+namespace CmsSigner.Model;
 
-        /// <summary>
-        ///     CMS/PKCS#7 message containing the signature, encoded as base64
-        /// </summary>
-        [Required]
-        [JsonPropertyName("signature")]
-        public string? Signature { get; init; }
-    }
+public class SignedDataResponse
+{
+    /// <summary>
+    ///     Bytes over which <see cref="Signature" /> was calculated, encoded as base64
+    /// </summary>
+    [Required]
+    [JsonPropertyName("payload")]
+    public string? Payload { get; init; }
+
+    /// <summary>
+    ///     CMS/PKCS#7 message containing the signature, encoded as base64
+    /// </summary>
+    [Required]
+    [JsonPropertyName("signature")]
+    public string? Signature { get; init; }
 }

@@ -6,23 +6,22 @@
 using System;
 using System.Reflection;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Extensions;
+
+public static class AssemblyExtensions
 {
-    public static class AssemblyExtensions
+    public static byte[] GetEmbeddedResourceAsBytes(this Assembly assembly, string resourcePath)
     {
-        public static byte[] GetEmbeddedResourceAsBytes(this Assembly assembly, string resourcePath)
-        {
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-            if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
+        if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+        if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
 
-            var file = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
-            if (file == null) throw new InvalidOperationException("Could not find resource.");
+        var file = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{resourcePath}");
+        if (file == null) throw new InvalidOperationException("Could not find resource.");
 
-            var buffer = new byte[file.Length];
-            var bytesRead = file.Read(buffer, 0, buffer.Length);
-            if (bytesRead <= 0) throw new InvalidOperationException("Embedded resource is empty.");
+        var buffer = new byte[file.Length];
+        var bytesRead = file.Read(buffer, 0, buffer.Length);
+        if (bytesRead <= 0) throw new InvalidOperationException("Embedded resource is empty.");
 
-            return buffer;
-        }
+        return buffer;
     }
 }

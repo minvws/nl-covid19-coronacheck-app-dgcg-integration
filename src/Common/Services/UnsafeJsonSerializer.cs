@@ -6,33 +6,32 @@ using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+
+/// <summary>
+///     Provides a JSON serializes which will not encode special character. This is comparable to the default serializers
+///     from other JSON libraries and the defaults from other platforms.
+/// </summary>
+public class UnsafeJsonSerializer : IJsonSerializer
 {
-    /// <summary>
-    ///     Provides a JSON serializes which will not encode special character. This is comparable to the default serializers
-    ///     from other JSON libraries and the defaults from other platforms.
-    /// </summary>
-    public class UnsafeJsonSerializer : IJsonSerializer
+    private readonly JsonSerializerOptions _serializerOptions;
+
+    public UnsafeJsonSerializer()
     {
-        private readonly JsonSerializerOptions _serializerOptions;
-
-        public UnsafeJsonSerializer()
+        _serializerOptions = new JsonSerializerOptions
         {
-            _serializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-        }
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+    }
 
-        public string Serialize<TContent>(TContent input)
-        {
-            return input == null ? string.Empty : JsonSerializer.Serialize(input, _serializerOptions);
-        }
+    public string Serialize<TContent>(TContent input)
+    {
+        return input == null ? string.Empty : JsonSerializer.Serialize(input, _serializerOptions);
+    }
 
-        public TContent Deserialize<TContent>(string input)
-        {
-            return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
-        }
+    public TContent Deserialize<TContent>(string input)
+    {
+        return JsonSerializer.Deserialize<TContent>(input, _serializerOptions) ?? throw new InvalidOperationException();
     }
 }

@@ -2,11 +2,10 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
+
+public interface IJsonSerializer
 {
-    public interface IJsonSerializer
-    {
-        string Serialize<T>(T obj);
-        TContent Deserialize<TContent>(string input);
-    }
+    string Serialize<T>(T obj);
+    TContent Deserialize<TContent>(string input);
 }

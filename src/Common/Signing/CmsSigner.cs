@@ -9,52 +9,51 @@ using System.Security.Cryptography.X509Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
+
+public class CmsSigner : IContentSigner
 {
-    public class CmsSigner : IContentSigner
+    private readonly ICertificateChainProvider _certificateChainProvider;
+    private readonly ICertificateProvider _certificateProvider;
+    private readonly IUtcDateTimeProvider _dateTimeProvider;
+
+    public CmsSigner(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
+                     IUtcDateTimeProvider dateTimeProvider)
     {
-        private readonly ICertificateChainProvider _certificateChainProvider;
-        private readonly ICertificateProvider _certificateProvider;
-        private readonly IUtcDateTimeProvider _dateTimeProvider;
+        _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
+        _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
+        _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+    }
 
-        public CmsSigner(ICertificateProvider certificateProvider, ICertificateChainProvider certificateChainProvider,
-                         IUtcDateTimeProvider dateTimeProvider)
+    public byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false, bool detached = true)
+    {
+        if (content == null) throw new ArgumentNullException(nameof(content));
+
+        var certificate = _certificateProvider.GetCertificate();
+
+        if (!certificate.HasPrivateKey)
+            throw new InvalidOperationException(
+                $"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
+
+        var contentInfo = new ContentInfo(content);
+        var signedCms = new SignedCms(contentInfo, detached);
+
+        if (includeChain)
         {
-            _certificateProvider = certificateProvider ?? throw new ArgumentNullException(nameof(certificateProvider));
-            _certificateChainProvider = certificateChainProvider ?? throw new ArgumentNullException(nameof(certificateChainProvider));
-            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+            var certificateChain = _certificateChainProvider.GetCertificates();
+            signedCms.Certificates.AddRange(certificateChain);
         }
 
-        public byte[] GetSignature(byte[] content, bool includeChain, bool excludeCertificates = false, bool detached = true)
-        {
-            if (content == null) throw new ArgumentNullException(nameof(content));
+        var signer = new System.Security.Cryptography.Pkcs.CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
+        var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Snapshot);
+        if (excludeCertificates) signer.IncludeOption = X509IncludeOption.WholeChain;
 
-            var certificate = _certificateProvider.GetCertificate();
+        if (signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
 
-            if (!certificate.HasPrivateKey)
-                throw new InvalidOperationException(
-                    $"Certificate does not have a private key - Subject:{certificate.Subject} Thumbprint:{certificate.Thumbprint}.");
+        signer.SignedAttributes.Add(new CryptographicAttributeObject(signingTime.Oid, new AsnEncodedDataCollection(signingTime)));
 
-            var contentInfo = new ContentInfo(content);
-            var signedCms = new SignedCms(contentInfo, detached);
+        signedCms.ComputeSignature(signer);
 
-            if (includeChain)
-            {
-                var certificateChain = _certificateChainProvider.GetCertificates();
-                signedCms.Certificates.AddRange(certificateChain);
-            }
-
-            var signer = new System.Security.Cryptography.Pkcs.CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
-            var signingTime = new Pkcs9SigningTime(_dateTimeProvider.Snapshot);
-            if (excludeCertificates) signer.IncludeOption = X509IncludeOption.WholeChain;
-
-            if (signingTime.Oid == null) throw new Exception("PKCS signing failed to due to missing time.");
-
-            signer.SignedAttributes.Add(new CryptographicAttributeObject(signingTime.Oid, new AsnEncodedDataCollection(signingTime)));
-
-            signedCms.ComputeSignature(signer);
-
-            return signedCms.Encode();
-        }
+        return signedCms.Encode();
     }
 }

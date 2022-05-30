@@ -24,146 +24,144 @@ using NLog;
 using NLog.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool;
+
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+internal class Program
 {
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    internal class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        try
         {
-            try
-            {
-                var services = new ServiceCollection();
+            var services = new ServiceCollection();
 
-                Parser.Default.ParseArguments<DownloadOptions, UploadOptions, RevokeOptions>(args)
-                      .WithParsed<DownloadOptions>(opt =>
-                       {
-                           ConfigureContainer(services);
+            Parser.Default.ParseArguments<DownloadOptions, UploadOptions, RevokeOptions>(args)
+                  .WithParsed<DownloadOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
 
-                           // Register DownloadOptions as both the base type and concrete type such that it can be resolved by either
-                           services.AddSingleton(_ => opt);
-                           services.AddSingleton<Options>(_ => opt);
+                       // Register DownloadOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
 
-                           services.AddTransient<ICommand, DownloadCommand>();
+                       services.AddTransient<ICommand, DownloadCommand>();
 
-                           services.AddTransient(
-                               x => new TrustListValidator(
-                                   new CertificateProvider(
-                                       new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
-                                       x.GetRequiredService<ILogger<CertificateProvider>>()
-                                   )
-                               ));
+                       services.AddTransient(
+                           x => new TrustListValidator(
+                               new CertificateProvider(
+                                   new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
+                                   x.GetRequiredService<ILogger<CertificateProvider>>()
+                               )
+                           ));
 
-                           // Register formatter
-                           if (opt.Unformatted)
-                               services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
-                           else
-                               services.AddTransient<ITrustListFormatter, DutchFormatter>();
-                       })
-                      .WithParsed<UploadOptions>(opt =>
-                       {
-                           ConfigureContainer(services);
+                       // Register formatter
+                       if (opt.Unformatted)
+                           services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
+                       else
+                           services.AddTransient<ITrustListFormatter, DutchFormatter>();
+                   })
+                  .WithParsed<UploadOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
 
-                           // Register UploadOptions as both the base type and concrete type such that it can be resolved by either
-                           services.AddSingleton(_ => opt);
-                           services.AddSingleton<Options>(_ => opt);
+                       // Register UploadOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
 
-                           services.AddTransient<ICommand, UploadCommand>();
-                       })
-                      .WithParsed<RevokeOptions>(opt =>
-                       {
-                           ConfigureContainer(services);
+                       services.AddTransient<ICommand, UploadCommand>();
+                   })
+                  .WithParsed<RevokeOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
 
-                           // Register RevokeOptions as both the base type and concrete type such that it can be resolved by either
-                           services.AddSingleton(_ => opt);
-                           services.AddSingleton<Options>(_ => opt);
+                       // Register RevokeOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
 
-                           services.AddTransient<ICommand, RevokeCommand>();
-                       })
-                      .WithNotParsed(HandleParseError);
+                       services.AddTransient<ICommand, RevokeCommand>();
+                   })
+                  .WithNotParsed(HandleParseError);
 
-                using var serviceProvider = services.BuildServiceProvider();
-                var options = serviceProvider.GetRequiredService<Options>();
+            using var serviceProvider = services.BuildServiceProvider();
+            var options = serviceProvider.GetRequiredService<Options>();
 
-                var command = serviceProvider.GetRequiredService<ICommand>();
-                command.Execute().Wait();
+            var command = serviceProvider.GetRequiredService<ICommand>();
+            command.Execute().Wait();
 
-                if (!options.Pause) return;
+            if (!options.Pause) return;
 
-                Console.WriteLine();
-                Console.WriteLine("Finished! Press ENTER to exit.");
-                Console.ReadLine();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error with NLog configuration");
-
-                throw;
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                LogManager.Shutdown();
-            }
+            Console.WriteLine();
+            Console.WriteLine("Finished! Press ENTER to exit.");
+            Console.ReadLine();
         }
-
-        private static void ConfigureContainer(IServiceCollection services)
+        catch (Exception)
         {
-            services.AddLogging(loggingBuilder =>
-            {
-                // configure Logging with NLog
-                loggingBuilder.ClearProviders();
-                loggingBuilder.SetMinimumLevel(LogLevel.Trace);
-                // ReSharper disable once StringLiteralTypo
-                loggingBuilder.AddNLog("NLog.config");
-            });
+            Console.WriteLine("Error with NLog configuration");
 
-            services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
-            services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            services.AddTransient<HttpClient>();
-            services.AddTransient<IDgcgClient, DgcgClient>();
-            services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-            services.AddTransient<IJsonSerializer, UnsafeJsonSerializer>();
-            services.AddCertificateProviders();
-            services.AddLogging();
+            throw;
+        }
+        finally
+        {
+            // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+            LogManager.Shutdown();
+        }
+    }
 
-            services.AddSingleton<ICertificateLocationConfig>(
-                x => new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"));
+    private static void ConfigureContainer(IServiceCollection services)
+    {
+        services.AddLogging(loggingBuilder =>
+        {
+            // configure Logging with NLog
+            loggingBuilder.ClearProviders();
+            loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+            loggingBuilder.AddNLog("NLog.config");
+        });
 
-            services.AddTransient<IAuthenticationCertificateProvider>(
-                x => new CertificateProvider(
-                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"),
+        services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
+        services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+        services.AddTransient<HttpClient>();
+        services.AddTransient<IDgcgClient, DgcgClient>();
+        services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
+        services.AddTransient<IJsonSerializer, UnsafeJsonSerializer>();
+        services.AddCertificateProviders();
+        services.AddLogging();
+
+        services.AddSingleton<ICertificateLocationConfig>(
+            x => new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"));
+
+        services.AddTransient<IAuthenticationCertificateProvider>(
+            x => new CertificateProvider(
+                new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"),
+                x.GetRequiredService<ILogger<CertificateProvider>>()
+            ));
+
+        services.AddTransient<IContentSigner>(
+            x => new CmsSigner(
+                new CertificateProvider(
+                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignature"),
                     x.GetRequiredService<ILogger<CertificateProvider>>()
-                ));
+                ),
+                new CertificateChainProvider(
+                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignatureChain"),
+                    x.GetRequiredService<ILogger<CertificateChainProvider>>()
+                ),
+                x.GetRequiredService<IUtcDateTimeProvider>()
+            ));
 
-            services.AddTransient<IContentSigner>(
-                x => new CmsSigner(
-                    new CertificateProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignature"),
-                        x.GetRequiredService<ILogger<CertificateProvider>>()
-                    ),
-                    new CertificateChainProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignatureChain"),
-                        x.GetRequiredService<ILogger<CertificateChainProvider>>()
-                    ),
-                    x.GetRequiredService<IUtcDateTimeProvider>()
-                ));
+        // Defaults for client authentication
+        services
+           .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+           .AddCertificate();
 
-            // Defaults for client authentication
-            services
-               .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-               .AddCertificate();
+        // Dotnet configuration stuff
+        var configuration = ConfigurationRootBuilder.Build();
+        services.AddSingleton<IConfiguration>(configuration);
+    }
 
-            // Dotnet configuration stuff
-            var configuration = ConfigurationRootBuilder.Build();
-            services.AddSingleton<IConfiguration>(configuration);
-        }
+    private static void HandleParseError(IEnumerable<Error> errs)
+    {
+        Console.WriteLine("Error parsing input, please check your call and try again.");
 
-        private static void HandleParseError(IEnumerable<Error> errs)
-        {
-            Console.WriteLine("Error parsing input, please check your call and try again.");
-
-            Environment.Exit(0);
-        }
+        Environment.Exit(0);
     }
 }

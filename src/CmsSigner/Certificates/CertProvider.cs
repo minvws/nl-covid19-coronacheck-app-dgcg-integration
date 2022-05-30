@@ -2,15 +2,22 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using System.Security.Cryptography.X509Certificates;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 
-namespace CmsSigner.Certificates
+namespace CmsSigner.Certificates;
+
+internal class CertProvider : ICertificateProvider
 {
-    internal class CertProvider : ICertificateProvider
+    private readonly X509Certificate2 _cert;
+
+    public CertProvider(X509Certificate2 cert)
     {
-        private readonly X509Certificate2 _cert;
-        public CertProvider(X509Certificate2 cert) => _cert = cert;
-        public X509Certificate2 GetCertificate() => _cert;
+        _cert = cert;
+    }
+
+    public X509Certificate2 GetCertificate()
+    {
+        return _cert;
     }
 }
