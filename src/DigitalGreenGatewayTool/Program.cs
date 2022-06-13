@@ -60,10 +60,6 @@ internal class Program
                            services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
                        else
                            services.AddTransient<ITrustListFormatter, DutchFormatter>();
-
-                       // Disable the CRL check unless explicitly enabled
-                       if (!opt.EnableTlsCrlCheck)
-                           EnableTlsCrlCheck();
                    })
                   .WithParsed<UploadOptions>(opt =>
                    {
@@ -89,6 +85,8 @@ internal class Program
 
             using var serviceProvider = services.BuildServiceProvider();
             var options = serviceProvider.GetRequiredService<Options>();
+
+            ConfigureTlsCrlCheck(options.EnableTlsCrlCheck);
 
             var command = serviceProvider.GetRequiredService<ICommand>();
             command.Execute().Wait();
@@ -170,8 +168,10 @@ internal class Program
         Environment.Exit(0);
     }
 
-    private static void EnableTlsCrlCheck()
+    private static void ConfigureTlsCrlCheck(bool enable)
     {
+        if (enable) return;
+
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
     }
 }
