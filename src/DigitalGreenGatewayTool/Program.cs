@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
 using CommandLine;
 using Microsoft.AspNetCore.Authentication.Certificate;
@@ -59,6 +60,10 @@ internal class Program
                            services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
                        else
                            services.AddTransient<ITrustListFormatter, DutchFormatter>();
+
+                       // Disable the CRL check unless explicitly enabled
+                       if (!opt.EnableTlsCrlCheck)
+                           EnableTlsCrlCheck();
                    })
                   .WithParsed<UploadOptions>(opt =>
                    {
@@ -163,5 +168,10 @@ internal class Program
         Console.WriteLine("Error parsing input, please check your call and try again.");
 
         Environment.Exit(0);
+    }
+
+    private static void EnableTlsCrlCheck()
+    {
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
     }
 }
