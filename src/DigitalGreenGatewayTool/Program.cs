@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Net.Http;
 using CommandLine;
 using Microsoft.AspNetCore.Authentication.Certificate;
@@ -86,8 +85,6 @@ internal class Program
             using var serviceProvider = services.BuildServiceProvider();
             var options = serviceProvider.GetRequiredService<Options>();
 
-            ConfigureTlsCrlCheck(options.EnableTlsCrlCheck);
-
             var command = serviceProvider.GetRequiredService<ICommand>();
             command.Execute().Wait();
 
@@ -166,12 +163,5 @@ internal class Program
         Console.WriteLine("Error parsing input, please check your call and try again.");
 
         Environment.Exit(0);
-    }
-
-    private static void ConfigureTlsCrlCheck(bool enable)
-    {
-        if (enable) return;
-
-        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
     }
 }

@@ -22,14 +22,17 @@ public class DgcgClient : IDgcgClient
     private readonly IAuthenticationCertificateProvider _authCertProvider;
     private readonly IDgcgClientConfig _config;
     private readonly IJsonSerializer _jsonSerializer;
+    private readonly Options _options;
     private readonly IContentSigner _signer;
 
-    public DgcgClient(IDgcgClientConfig config, IJsonSerializer jsonSerializer, IAuthenticationCertificateProvider authCertProvider, IContentSigner signer)
+    public DgcgClient(IDgcgClientConfig config, IJsonSerializer jsonSerializer, IAuthenticationCertificateProvider authCertProvider, IContentSigner signer,
+                      Options options)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         _authCertProvider = authCertProvider ?? throw new ArgumentNullException(nameof(authCertProvider));
         _signer = signer ?? throw new ArgumentNullException(nameof(signer));
+        _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
     public async Task<IReadOnlyList<TrustListItem>> GetTrustList()
@@ -69,7 +72,8 @@ public class DgcgClient : IDgcgClient
         using var clientCert = _authCertProvider.GetCertificate();
         using var clientHandler = new HttpClientHandler
         {
-            ClientCertificateOptions = ClientCertificateOption.Manual
+            ClientCertificateOptions = ClientCertificateOption.Manual,
+            CheckCertificateRevocationList = _options.EnableTlsCrlCheck
         };
         clientHandler.ClientCertificates.Clear();
         clientHandler.ClientCertificates.Add(clientCert);
@@ -127,7 +131,8 @@ public class DgcgClient : IDgcgClient
         using var clientCert = _authCertProvider.GetCertificate();
         using var clientHandler = new HttpClientHandler
         {
-            ClientCertificateOptions = ClientCertificateOption.Manual
+            ClientCertificateOptions = ClientCertificateOption.Manual,
+            CheckCertificateRevocationList = _options.EnableTlsCrlCheck
         };
         clientHandler.ClientCertificates.Clear();
         clientHandler.ClientCertificates.Add(clientCert);
@@ -181,7 +186,8 @@ public class DgcgClient : IDgcgClient
         using var clientCert = _authCertProvider.GetCertificate();
         using var clientHandler = new HttpClientHandler
         {
-            ClientCertificateOptions = ClientCertificateOption.Manual
+            ClientCertificateOptions = ClientCertificateOption.Manual,
+            CheckCertificateRevocationList = _options.EnableTlsCrlCheck
         };
         clientHandler.ClientCertificates.Clear();
         clientHandler.ClientCertificates.Add(clientCert);
