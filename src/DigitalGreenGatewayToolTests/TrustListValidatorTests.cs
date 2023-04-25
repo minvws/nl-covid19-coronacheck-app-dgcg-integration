@@ -34,6 +34,25 @@ public class TrustListValidatorTests
         // Assert
         Assert.Empty(result.InvalidItems);
     }
+    
+    /// <summary>
+    /// This test is based on a case where the .Net CMS implementation fails to validate
+    /// an item that does validate on other platforms (and with BouncyCastle).
+    /// </summary>
+    [Fact]
+    public void Validate_supports_items_with_known_encoding_problem()
+    {
+        // Assemble
+        var serializer = new StandardJsonSerializer();
+        var trustList = serializer.Deserialize<List<TrustListItem>>(File.ReadAllText("trustlist_encoding_incompatibility_example.json"));
+        var validator = new TrustListValidator(new TrustAnchorProvider());
+
+        // Act
+        var result = validator.Validate(trustList);
+
+        // Assert
+        Assert.Empty(result.InvalidItems);
+    }
 }
 
 internal class TrustAnchorProvider : ICertificateProvider

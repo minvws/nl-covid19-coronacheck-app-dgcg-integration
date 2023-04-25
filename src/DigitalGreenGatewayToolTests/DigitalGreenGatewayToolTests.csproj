@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Update="trustlist_encoding_incompatibility_example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
