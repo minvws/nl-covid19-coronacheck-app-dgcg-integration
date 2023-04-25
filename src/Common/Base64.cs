@@ -2,35 +2,26 @@
 // Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
 // SPDX-License-Identifier: EUPL-1.2
 
+using System;
+using System.Linq;
 using static System.Convert;
-using static System.Text.Encoding;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common;
+
+public static class Base64
 {
-    public static class Base64
+    /// <summary>
+    ///     Converts the specified string, which encodes binary data as Base64 digits, to the equivalent byte array.
+    ///     Supports base64 which is missing the padding.
+    /// </summary>
+    /// <param name="s">The string to convert</param>
+    /// <returns>The array of bytes represented by the specified Base64 string.</returns>
+    public static byte[] Decode(string s)
     {
-        /// <summary>
-        ///     Decodes the given base64 string as UTF8 to a string
-        /// </summary>
-        /// <param name="b64String">Base64 encoded bytes which represent an UTF8 string</param>
-        /// <returns></returns>
-        public static string DecodeAsUtf8String(string b64String)
-        {
-            if (b64String.Length == 0) return string.Empty;
+        if (s.Length == 0) return Array.Empty<byte>();
 
-            var bytes = FromBase64String(b64String);
+        if (s.Length % 4 > 0) s += string.Concat(Enumerable.Repeat("=", 4 - s.Length % 4));
 
-            return UTF8.GetString(bytes);
-        }
-
-        /// <summary>
-        ///     Encodes the string encoded as UTF-8 to base64
-        /// </summary>
-        public static string Encode(string plainText)
-        {
-            var plainTextBytes = UTF8.GetBytes(plainText);
-
-            return ToBase64String(plainTextBytes);
-        }
+        return FromBase64String(s);
     }
 }

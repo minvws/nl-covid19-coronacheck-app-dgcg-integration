@@ -4,16 +4,15 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config
-{
-    public class StandardCertificateLocationConfig : AppSettingsReader, ICertificateLocationConfig
-    {
-        public StandardCertificateLocationConfig(IConfiguration config, string location = "Certificates:CmsSigning") : base(config, location)
-        {
-        }
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-        public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), false);
-        public string Path => GetConfigValue<string>(nameof(Path));
-        public string Password => GetConfigValue<string>(nameof(Password));
+public class StandardCertificateLocationConfig : AppSettingsReader, ICertificateLocationConfig
+{
+    public StandardCertificateLocationConfig(IConfiguration config, string location = "Certificates:CmsSigning") : base(config, location)
+    {
     }
+
+    public bool UseEmbedded => GetConfigValue(nameof(UseEmbedded), false);
+    public string Path => GetConfigValue<string>(nameof(Path));
+    public string Password => GetConfigValue<string>(nameof(Password));
 }

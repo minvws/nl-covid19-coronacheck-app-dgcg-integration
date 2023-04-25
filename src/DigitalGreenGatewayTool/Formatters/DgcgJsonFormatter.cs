@@ -7,23 +7,23 @@ using System.Collections.Generic;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
+
+/// <summary>
+///     Outputs JSON in the DGCG format
+/// </summary>
+public class DgcgJsonFormatter : ITrustListFormatter
 {
-    /// <summary>
-    ///     Outputs JSON in the DGCG format
-    /// </summary>
-    public class DgcgJsonFormatter : ITrustListFormatter
+    private readonly IJsonSerializer _jsonSerializer;
+
+    public DgcgJsonFormatter(IJsonSerializer serializer)
     {
-        private readonly IJsonSerializer _jsonSerializer;
+        _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+    }
 
-        public DgcgJsonFormatter(IJsonSerializer serializer)
-        {
-            _jsonSerializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-        }
-
-        public string Format(IEnumerable<TrustListItem> trustList)
-        {
-            return _jsonSerializer.Serialize(trustList);
-        }
+    public string Format(IEnumerable<TrustListItem> trustList, string thirdPartyKeyFile)
+    {
+        // Third-party keys aren't supported here to are just ignored
+        return _jsonSerializer.Serialize(trustList);
     }
 }

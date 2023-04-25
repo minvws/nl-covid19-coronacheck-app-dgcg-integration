@@ -11,7 +11,7 @@ This repository contains the implementation of the Dutch COVID-19 Digital Green 
 
 ### Prereqs
 
-* Dotnet 5 SDK (https://dotnet.microsoft.com/download/dotnet/5.0)
+* Dotnet 6 SDK (https://dotnet.microsoft.com/download/dotnet/6.0)
 
 ### Nice to have
 
@@ -38,7 +38,7 @@ We provide a `build.bat` (`build.sh`) and `publish.bat` (`publish.sh`) which bui
 
 ### Running the tool
 
-See the readme.md in `src/DigitalGreenGatewayTool` for more info!
+See the `readme.md` in `src/DigitalGreenGatewayTool` for more info!
 
 ## Development & Contribution process
 

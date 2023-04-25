@@ -3,33 +3,27 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
+
+public class FileSystemCertificateChainProvider : ICertificateChainProvider
 {
-    public class FileSystemCertificateChainProvider : ICertificateChainProvider
+    private readonly ICertificateLocationConfig _pathProvider;
+
+    public FileSystemCertificateChainProvider(ICertificateLocationConfig pathProvider)
     {
-        private readonly ICertificateLocationConfig _pathProvider;
+        _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+    }
 
-        public FileSystemCertificateChainProvider(ICertificateLocationConfig pathProvider)
-        {
-            _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
-        }
-
-        public X509Certificate2[] GetCertificates()
-        {
-            var certList = new List<X509Certificate2>();
-            var bytes = File.ReadAllBytes(_pathProvider.Path);
-            var result = new X509Certificate2Collection();
-            result.Import(bytes);
-            foreach (var c in result)
-                if (c.IssuerName.Name != c.SubjectName.Name)
-                    certList.Add(c);
-
-            return certList.ToArray();
-        }
+    public X509Certificate2[] GetCertificates()
+    {
+        var bytes = File.ReadAllBytes(_pathProvider.Path);
+        var result = new X509Certificate2Collection();
+        result.Import(bytes);
+        return result.Where(c => c.IssuerName.Name != c.SubjectName.Name).ToArray();
     }
 }

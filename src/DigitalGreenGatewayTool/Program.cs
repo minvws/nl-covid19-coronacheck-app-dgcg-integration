@@ -16,152 +16,152 @@ using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Certificates;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Config;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Services;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Signing;
-using NL.Rijksoverheid.CoronaCheck.BackEnd.Common.Web.Builders;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Client;
+using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Commands;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Formatters;
 using NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool.Validator;
 using NLog;
 using NLog.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool
+namespace NL.Rijksoverheid.CoronaCheck.BackEnd.DigitalGreenGatewayTool;
+
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+internal class Program
 {
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    internal class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        try
         {
-            try
-            {
-                var services = new ServiceCollection();
+            var services = new ServiceCollection();
 
-                Parser.Default.ParseArguments<Options>(args)
-                      .WithParsed(opt => ConfigureContainer(services, opt))
-                      .WithNotParsed(HandleParseError);
+            Parser.Default.ParseArguments<DownloadOptions, UploadOptions, RevokeOptions>(args)
+                  .WithParsed<DownloadOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
 
-                using var serviceProvider = services.BuildServiceProvider();
-                var options = serviceProvider.GetRequiredService<Options>();
-                options.ValidateSelectedOptions();
-                var app = serviceProvider.GetRequiredService<DgcgApp>();
-                app.Run().Wait();
+                       // Register DownloadOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
 
-                if (options.Pause)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Finished! Press ENTER to exit.");
-                    Console.ReadLine();
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error with NLog configuration");
+                       services.AddTransient<ICommand, DownloadCommand>();
 
-                throw;
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                LogManager.Shutdown();
-            }
+                       services.AddTransient(
+                           x => new TrustListValidator(
+                               new CertificateProvider(
+                                   new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
+                                   x.GetRequiredService<ILogger<CertificateProvider>>()
+                               )
+                           ));
+
+                       // Register formatter
+                       if (opt.Unformatted)
+                           services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
+                       else
+                           services.AddTransient<ITrustListFormatter, DutchFormatter>();
+                   })
+                  .WithParsed<UploadOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
+
+                       // Register UploadOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
+
+                       services.AddTransient<ICommand, UploadCommand>();
+                   })
+                  .WithParsed<RevokeOptions>(opt =>
+                   {
+                       ConfigureContainer(services);
+
+                       // Register RevokeOptions as both the base type and concrete type such that it can be resolved by either
+                       services.AddSingleton(_ => opt);
+                       services.AddSingleton<Options>(_ => opt);
+
+                       services.AddTransient<ICommand, RevokeCommand>();
+                   })
+                  .WithNotParsed(HandleParseError);
+
+            using var serviceProvider = services.BuildServiceProvider();
+            var options = serviceProvider.GetRequiredService<Options>();
+
+            var command = serviceProvider.GetRequiredService<ICommand>();
+            command.Execute().Wait();
+
+            if (!options.Pause) return;
+
+            Console.WriteLine();
+            Console.WriteLine("Finished! Press ENTER to exit.");
+            Console.ReadLine();
         }
-
-        private static void ConfigureContainer(ServiceCollection services, Options options)
+        catch (Exception)
         {
-            services.AddLogging(loggingBuilder =>
-            {
-                // configure Logging with NLog
-                loggingBuilder.ClearProviders();
-                loggingBuilder.SetMinimumLevel(LogLevel.Trace);
-                loggingBuilder.AddNLog("nlog.config");
-            });
+            Console.WriteLine("Error with NLog configuration");
 
-            services.AddSingleton(options);
-            services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
-            services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
-            services.AddTransient<HttpClient>();
-            services.AddTransient<IDgcgClient, DgcgClient>();
-            services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
-            services.AddTransient<IJsonSerializer, UnsafeJsonSerializer>();
-            services.AddCertificateProviders();
-            services.AddLogging();
+            throw;
+        }
+        finally
+        {
+            // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+            LogManager.Shutdown();
+        }
+    }
 
-            services.AddSingleton<ICertificateLocationConfig>(
-                x => new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"));
+    private static void ConfigureContainer(IServiceCollection services)
+    {
+        services.AddLogging(loggingBuilder =>
+        {
+            // configure Logging with NLog
+            loggingBuilder.ClearProviders();
+            loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+            loggingBuilder.AddNLog("NLog.config");
+        });
 
-            services.AddTransient<IAuthenticationCertificateProvider>(
-                x => new CertificateProvider(
-                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"),
+        services.AddSingleton<IDgcgClientConfig, DgcgClientConfig>();
+        services.AddSingleton<ICertificateLocationConfig, StandardCertificateLocationConfig>();
+        services.AddTransient<HttpClient>();
+        services.AddTransient<IDgcgClient, DgcgClient>();
+        services.AddTransient<IUtcDateTimeProvider, StandardUtcDateTimeProvider>();
+        services.AddTransient<IJsonSerializer, UnsafeJsonSerializer>();
+        services.AddCertificateProviders();
+        services.AddLogging();
+
+        services.AddSingleton<ICertificateLocationConfig>(
+            x => new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"));
+
+        services.AddTransient<IAuthenticationCertificateProvider>(
+            x => new CertificateProvider(
+                new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:Authentication"),
+                x.GetRequiredService<ILogger<CertificateProvider>>()
+            ));
+
+        services.AddTransient<IContentSigner>(
+            x => new CmsSigner(
+                new CertificateProvider(
+                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignature"),
                     x.GetRequiredService<ILogger<CertificateProvider>>()
-                ));
+                ),
+                new CertificateChainProvider(
+                    new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignatureChain"),
+                    x.GetRequiredService<ILogger<CertificateChainProvider>>()
+                ),
+                x.GetRequiredService<IUtcDateTimeProvider>()
+            ));
 
-            services.AddTransient<IContentSigner>(
-                x => new CmsSigner(
-                    new CertificateProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignature"),
-                        x.GetRequiredService<ILogger<CertificateProvider>>()
-                    ),
-                    new CertificateChainProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:UploadSignatureChain"),
-                        x.GetRequiredService<ILogger<CertificateChainProvider>>()
-                    ),
-                    x.GetRequiredService<IUtcDateTimeProvider>()
-                ));
+        // Defaults for client authentication
+        services
+           .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+           .AddCertificate();
 
-            services.AddTransient(
-                x => new TrustListValidator(
-                    new CertificateProvider(
-                        new StandardCertificateLocationConfig(x.GetRequiredService<IConfiguration>(), "Certificates:TrustAnchor"),
-                        x.GetRequiredService<ILogger<CertificateProvider>>()
-                    )
-                ));
+        // Dotnet configuration stuff
+        var configuration = ConfigurationRootBuilder.Build();
+        services.AddSingleton<IConfiguration>(configuration);
+    }
 
-            // Defaults for client authentication
-            services
-               .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-               .AddCertificate();
+    private static void HandleParseError(IEnumerable<Error> errs)
+    {
+        Console.WriteLine("Error parsing input, please check your call and try again.");
 
-            // Register formatter
-            if (options.Unformatted)
-                services.AddTransient<ITrustListFormatter, DgcgJsonFormatter>();
-            else
-                services.AddTransient<ITrustListFormatter, DutchFormatter>();
-
-            // Register the response wrapping
-            if (options.Wrap)
-                services.AddTransient<IResponseBuilder>(
-                    serviceProvider =>
-                    {
-                        var serializer = serviceProvider.GetRequiredService<IJsonSerializer>();
-                        var signer = new CmsSigner(
-                            new CertificateProvider(
-                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignature"),
-                                serviceProvider.GetRequiredService<ILogger<CertificateProvider>>()
-                            ),
-                            new CertificateChainProvider(
-                                new StandardCertificateLocationConfig(serviceProvider.GetRequiredService<IConfiguration>(), "Certificates:CmsSignatureChain"),
-                                serviceProvider.GetRequiredService<ILogger<CertificateChainProvider>>()
-                            ),
-                            serviceProvider.GetRequiredService<IUtcDateTimeProvider>()
-                        );
-
-                        return new SignedResponseBuilder(serializer, signer);
-                    });
-            else
-                services.AddTransient<IResponseBuilder, StandardResponseBuilder>();
-
-            // Dotnet configuration stuff
-            var configuration = ConfigurationRootBuilder.Build();
-            services.AddSingleton<IConfiguration>(configuration);
-
-            services.AddTransient(provider => options);
-            services.AddTransient<DgcgApp>();
-        }
-
-        private static void HandleParseError(IEnumerable<Error> errs)
-        {
-            Console.WriteLine("Error parsing input, please check your call and try again.");
-
-            Environment.Exit(0);
-        }
+        Environment.Exit(0);
     }
 }

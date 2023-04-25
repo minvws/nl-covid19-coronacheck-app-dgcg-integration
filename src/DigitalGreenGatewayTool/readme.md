@@ -15,17 +15,17 @@ Get help:
 
 Download the certs:
 
-```dggt -d -o path/to/save/trustlist.json```
+```dggt download -o path/to/save/trustlist.json```
 
 Upload a cert:
 
-```dggt -u -f path/to/cert.```
+```dggt upload -f path/to/cert.```
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
 Revoke a cert:
 
-```dggt -r -f path/to/cert.```
+```dggt revoke -f path/to/cert.```
 
 * File must be a DER encoded certificate; see the example below if you need to convert from PEM
 
@@ -38,7 +38,7 @@ Pauses once the task has executed until a key press.
 
 ## TrustList
 
-```-d | --download```
+```download```
 
 Download the trust list.
 
@@ -58,15 +58,31 @@ Output file; the TrustList will be output here.
 
 ```--unformatted```
 
-Outputs the raw unformatted trust list if set. Otherwise the output will be the output expected of our apps.
+Outputs the raw unformatted trust list if set. Does NOT append third party keys. Otherwise the output will be the output expected of our apps.
+This option exists in order to debug issues with the output from the DGCG server.
 
 ```-v | --validate```
 
 Validates the certificates on the trust list. This validates the trust chain as well as the format. Errors will be printed to the console and will not be included in the output.
 
+```--third-party-keys-file <path-to-file>```
+
+The keys included in the provided file will be appended to the trust list. All keys must belong to the same country, so only 1 country is supported.
+
+* The first two letters of the file name will be used as the country code.
+* The file itself must be in the following format:
+
+    [
+	    {
+		    "kid": "base64",
+		    "publicKey": "base64"
+	    },
+    ]
+
+
 ## Upload
 
-```-u | --upload```
+```upload```
 
 Upload the given file.
 
@@ -99,13 +115,13 @@ The configuration looks like this:
   "Certificates": {
     "Authentication": {
       "UseEmbedded": false,
-      "Path": "tls-cert.pfx",
-      "Password": "NWo3oXbmiLfZGf2n9BPf"
+      "Path": "auth.pfx",
+      "Password": "..."
     },
     "UploadSignature": {
       "UseEmbedded": false,
-      "Path": "upload-cert.pfx",
-      "Password": "SxEhZFOm2pnDDlntqK0V"
+      "Path": "sign.pfx",
+      "Password": ".."
     },
     "UploadSignatureChain": {
       "UseEmbedded": false,
@@ -115,16 +131,6 @@ The configuration looks like this:
     "TrustAnchor": {
       "UseEmbedded": false,
       "Path": "ta.pem",
-      "Password": ""
-    },
-    "CmsSignature": {
-      "UseEmbedded": false,
-      "Path": "cms-cert.p12",
-      "Password": "123456"
-    },
-    "CmsSignatureChain": {
-      "UseEmbedded": false,
-      "Path": "cms-cert-chain.p7b",
       "Password": ""
     }
   },
@@ -149,7 +155,6 @@ configure the `SigningChain` certificate if this is set.
 
 The flag `IncludeCertsInSignature` when set will include the certificates in the signature.
 
-
 The certificate map contains the various certificates. The option `UseEmbedded` should be set to `false` in all
 cases, and the password blank unless otherwise specified.
 
@@ -159,10 +164,7 @@ a `UploadSignatureChain` when `DgcgClient.IncludeChainInSignature` is set to `tr
 
 The `TrustAnchor` is the DGCG trust anchor certificate, containing the public key only.
 
-The certificates `CmsSignature` and `CmsSignatureChain` are the CMS signing cert and the chain for our own signing 
-certificate. These are both required to support the `-w` option (which outputs the Dutch format in the output wrapper).
-
-Passwords are required for `CmsSignature`, `Authentication` and `UploadSignature`.
+Passwords are required for `Authentication` and `UploadSignature`.
 
 Supported formats: PEM for the public keys. P12/PFX for certificates including private keys and P7B/PFX for chains.
 

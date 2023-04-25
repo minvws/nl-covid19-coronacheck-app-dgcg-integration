@@ -2,7 +2,7 @@
   "profiles": {
     "DigitalGreenGatewayTool": {
       "commandName": "Project",
-      "commandLineArgs": "-d -v -p -o \"output.json\" -w"
+      "commandLineArgs": "download -v -p -o \"output.json\""
     }
   }
 }
