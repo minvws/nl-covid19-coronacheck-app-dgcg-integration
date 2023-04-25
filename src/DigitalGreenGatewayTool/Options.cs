@@ -12,4 +12,8 @@ public abstract class Options
 {
     [Option('p', "pause", Required = false, HelpText = "Pause after execution until a key is pressed.")]
     public bool Pause { get; set; }
+
+    [Option("enable-tls-crl-check", Required = false,
+            HelpText = "Enable checking of the TLS certificate against the CRL. This will resolve the CAs CRL endpoint. Default is false.")]
+    public bool EnableTlsCrlCheck { get; set; }
 }
