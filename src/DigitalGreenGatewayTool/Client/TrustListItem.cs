@@ -87,16 +87,8 @@ public class TrustListItem
             var signedCms = new SignedCms(contentInfo, true);
             signedCms.Certificates.Add(certificate);
             signedCms.Decode(GetSignature());
-
-            try
-            {
-                signedCms.CheckSignature(true);
-                result = true;
-            }
-            catch (CryptographicException)
-            {
-                result = false;
-            }
+            signedCms.CheckSignature(true);
+            result = true;
         }
         catch (Exception e)
         {
