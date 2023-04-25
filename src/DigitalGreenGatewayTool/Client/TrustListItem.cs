@@ -79,34 +79,22 @@ public class TrustListItem
 
     public bool ValidateSignature(X509Certificate2 certificate)
     {
-        bool result;
-
         try
         {
             var contentInfo = new ContentInfo(GetCertificateBytes());
             var signedCms = new SignedCms(contentInfo, true);
             signedCms.Certificates.Add(certificate);
             signedCms.Decode(GetSignature());
-
-            try
-            {
-                signedCms.CheckSignature(true);
-                result = true;
-            }
-            catch (CryptographicException)
-            {
-                result = false;
-            }
+            signedCms.CheckSignature(true);
+            return true;
         }
         catch (Exception e)
         {
             // ReSharper disable once StringLiteralTypo
             Log.LogError(e, "Error validating signature with System.Security.Cryptography.Pkcs");
 
-            result = ValidateBouncy(certificate, GetSignature(), GetCertificateBytes());
+            return ValidateBouncy(certificate, GetSignature(), GetCertificateBytes());
         }
-
-        return result;
     }
 
     private static bool ValidateBouncy(X509Certificate2 certificate, byte[] signature, byte[] content)

@@ -132,7 +132,7 @@ public class TrustListValidator
             var validCscaCertificates = new Dictionary<string, List<X509Certificate2>>();
             foreach (var cscaItem in nestedTrustList[countryName][CertificateType.Csca])
             {
-                if (!cscaItem.ValidateSignature(uploadCertificates)) result.AddInvalid(cscaItem, "Invalid signature");
+                if (!cscaItem.ValidateSignature(uploadCertificates)) result.AddInvalid(cscaItem, "Invalid upload certificate signature");
 
                 var cscaCert = cscaItem.GetCertificate();
 
@@ -153,7 +153,7 @@ public class TrustListValidator
             // Validate DSG
             foreach (var dsgItem in nestedTrustList[countryName][CertificateType.Dsc])
             {
-                if (!dsgItem.ValidateSignature(uploadCertificates)) result.AddInvalid(dsgItem, "Invalid signature");
+                if (!dsgItem.ValidateSignature(uploadCertificates)) result.AddInvalid(dsgItem, "Invalid upload certificate signature");
 
                 var dsgCert = dsgItem.GetCertificate();
 
